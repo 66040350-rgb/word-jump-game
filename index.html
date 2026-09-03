@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Hunter Cyber Mission - Smooth Multiplayer Edition</title>
+  <title>Hunter Cyber Mission - Smooth & Music Edition</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
     * {
@@ -179,6 +179,15 @@
       pointer-events: auto;
       white-space: nowrap;
     }
+    .btn-music-toggle {
+      background: rgba(255, 255, 255, 0.94);
+      border: 1.5px solid #bae6fd;
+      border-radius: 18px;
+      padding: 6px 10px;
+      font-size: 13px;
+      cursor: pointer;
+      pointer-events: auto;
+    }
 
     /* Controls 3D Glassmorphism */
     .controls-bar {
@@ -255,6 +264,28 @@
       transform: translateY(5px);
       box-shadow: 0 3px 0 #047857;
       background: #059669;
+    }
+
+    /* Toast แจ้งเตือนสวยๆ ไม่บล็อกเกม */
+    #toast-msg {
+      position: absolute;
+      top: 60px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(15, 23, 42, 0.88);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: bold;
+      z-index: 150;
+      opacity: 0;
+      transition: opacity 0.25s, transform 0.25s;
+      pointer-events: none;
+    }
+    #toast-msg.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(10px);
     }
 
     @media (orientation: landscape) {
@@ -344,6 +375,9 @@
 </head>
 <body>
 
+  <div id="toast-msg">แจ้งเตือน</div>
+
+  <!-- 1. หน้าแรก -->
   <div id="view-mode" class="container">
     <h1>HUNTER CYBER MISSION</h1>
     <p style="color: #64748b; font-size:14px; margin-bottom: 16px;">เกมตอบคำถามชิงความสูง (Word Master)</p>
@@ -351,6 +385,7 @@
     <button class="btn" id="btn-mode-join" style="background:#475569;" onclick="switchScreen('view-join')">🎮 ผู้เรียน (Join เข้าเล่น)</button>
   </div>
 
+  <!-- 2. โฮสต์สร้างห้อง -->
   <div id="view-host" class="container hidden">
     <h2>ห้องควบคุมโฮสต์</h2>
     <p style="margin-bottom:2px; font-size:13px; color:#64748b;">รหัสเข้าห้อง (Room PIN):</p>
@@ -364,9 +399,9 @@
     <button class="btn" id="btn-copy-link" style="padding:8px; font-size:12px; margin:4px 0 8px 0;">📋 คัดลอกลิงก์ส่งให้นักเรียน</button>
 
     <div style="text-align: left; margin-top: 6px;">
-      <label style="color:#64748b; font-size:13px; font-weight:bold;">⚡ ค่าพลังงานเริ่มต้น (Initial Energy):</label>
+      <label style="color:#64748b; font-size:13px; font-weight:bold;">⚡ ค่าพลังงานเริ่มต้น:</label>
       <select id="select-energy">
-        <option value="3">3 ⚡ (ท้าทายมาก)</option>
+        <option value="3">3 ⚡ (ท้าทาย)</option>
         <option value="5" selected>5 ⚡ (มาตรฐาน)</option>
         <option value="8">8 ⚡ (ปานกลาง)</option>
         <option value="10">10 ⚡ (ง่าย)</option>
@@ -388,6 +423,7 @@
     <button id="btn-start" class="btn" style="background: linear-gradient(135deg, #10b981, #059669);" disabled>🚀 เริ่มการแข่งขัน</button>
   </div>
 
+  <!-- 3. โฮสต์ดูสด -->
   <div id="view-host-live" class="container hidden">
     <h2>📡 การแข่งขันสด</h2>
     <div style="font-size:32px; font-weight:900; color:#ef4444; margin:8px 0;">
@@ -396,6 +432,7 @@
     <div id="live-ranking" style="text-align: left; margin-top:10px; max-height:220px; overflow-y:auto;"></div>
   </div>
 
+  <!-- 4. หน้าเข้าห้องผู้เรียน -->
   <div id="view-join" class="container hidden">
     <h2>เข้าสู่สมรภูมิขนมหวาน</h2>
     <input type="text" id="input-pin" placeholder="รหัสห้อง 6 หลัก" maxlength="6" inputmode="numeric">
@@ -404,6 +441,7 @@
     <button class="btn" style="background:#64748b; padding:10px;" onclick="switchScreen('view-mode')">ย้อนกลับ</button>
   </div>
 
+  <!-- 5. ผู้เรียนรอเริ่ม -->
   <div id="view-waiting" class="container hidden">
     <h2>ห้องเตรียมพร้อม</h2>
     <p>รหัสห้อง: <b id="wait-pin" style="color:#e01e37;"></b></p>
@@ -411,6 +449,7 @@
     <p style="color: #f59e0b; margin-top:18px; font-size:15px; font-weight:bold;">⏳ รอสัญญาณปล่อยตัวจากผู้สอน...</p>
   </div>
 
+  <!-- 6. หน้าจอเล่นเกม Canvas -->
   <div id="game-wrapper" class="hidden">
     <canvas id="gameCanvas"></canvas>
 
@@ -419,6 +458,7 @@
       <button class="btn-top-quiz" id="btn-open-quiz">⚡ ตอบคำถาม (+3)</button>
       <div class="stat-pill">⏱️ <span id="ui-timer">00:00</span></div>
       <div class="stat-pill">🎯 <span id="ui-height" style="color:#0284c7;">0</span>m</div>
+      <button class="btn-music-toggle" id="btn-toggle-music">🔊</button>
     </div>
 
     <div class="controls-bar">
@@ -441,6 +481,7 @@
     </div>
   </div>
 
+  <!-- 7. สรุปผลการแข่งขัน -->
   <div id="view-result" class="container hidden">
     <h2 style="color:#d97706; margin-bottom:4px;">🏁 หมดเวลาการแข่งขัน!</h2>
     <p style="color:#64748b; font-size:13px; margin:0 0 10px 0;">ตารางสรุปคะแนนและอันดับ</p>
@@ -532,13 +573,77 @@
     let myStyleIndex = 0;
     let releaseFromTrapCallback = null;
 
-    // ตัวแปรเก็บตำแหน่งสมูทของเพื่อน (LERP Smoothing State)
     const smoothPositions = {};
 
     let walkCycle = 0;
     let blinkTimer = 0;
     let isBlinking = false;
     let facing = 'right';
+
+    // --- ระบบดนตรี 8-Bit Chiptune Synth ในตัว ไม่ต้องโหลดไฟล์นอก ---
+    let audioCtx = null;
+    let isMusicPlaying = false;
+    let musicInterval = null;
+
+    function initMusic() {
+      if (audioCtx) return;
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+
+    function playTone(freq, duration, type = 'square', gainVal = 0.05) {
+      if (!audioCtx || !isMusicPlaying) return;
+      try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(gainVal, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {}
+    }
+
+    const melody = [
+      { f: 261.63, d: 0.2 }, { f: 329.63, d: 0.2 }, { f: 392.00, d: 0.2 }, { f: 523.25, d: 0.3 },
+      { f: 392.00, d: 0.2 }, { f: 440.00, d: 0.2 }, { f: 523.25, d: 0.4 },
+      { f: 349.23, d: 0.2 }, { f: 440.00, d: 0.2 }, { f: 523.25, d: 0.2 }, { f: 587.33, d: 0.3 },
+      { f: 523.25, d: 0.2 }, { f: 392.00, d: 0.4 }
+    ];
+    let noteIdx = 0;
+
+    function startBackgroundMusic() {
+      initMusic();
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      isMusicPlaying = true;
+      document.getElementById('btn-toggle-music').innerText = "🔊";
+      if (musicInterval) clearInterval(musicInterval);
+      musicInterval = setInterval(() => {
+        if (!isMusicPlaying) return;
+        const note = melody[noteIdx % melody.length];
+        playTone(note.f, note.d, 'triangle', 0.06);
+        if (noteIdx % 2 === 0) playTone(note.f / 2, 0.15, 'square', 0.03); // bassline
+        noteIdx++;
+      }, 230);
+    }
+
+    document.getElementById('btn-toggle-music').onclick = () => {
+      initMusic();
+      if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+      isMusicPlaying = !isMusicPlaying;
+      document.getElementById('btn-toggle-music').innerText = isMusicPlaying ? "🔊" : "🔇";
+    };
+
+    function showToast(text) {
+      const el = document.getElementById('toast-msg');
+      el.innerText = text;
+      el.classList.add('show');
+      setTimeout(() => el.classList.remove('show'), 2000);
+    }
 
     const clouds = [
       { x: 50,  y: 100, scale: 0.9, speed: 0.3 },
@@ -569,7 +674,7 @@
 
       document.getElementById('btn-copy-link').onclick = () => {
         navigator.clipboard.writeText(joinUrl);
-        alert('📋 คัดลอกลิงก์เรียบร้อย');
+        showToast('📋 คัดลอกลิงก์เรียบร้อย');
       };
 
       set(ref(db, `rooms/${currentPin}`), { status: 'waiting' });
@@ -664,6 +769,7 @@
           switchScreen('game-wrapper');
           initSweetPlatformer();
           startPlayerTimer(room.endTime);
+          startBackgroundMusic(); // เริ่มเล่นเพลงอัตโนมัติ
         }
 
         if (room.status === 'ended' && !isGameOver) {
@@ -744,6 +850,8 @@
     function endGame() {
       isGameOver = true;
       if (timerInterval) clearInterval(timerInterval);
+      if (musicInterval) clearInterval(musicInterval);
+      isMusicPlaying = false;
       document.getElementById('quiz-modal').classList.add('hidden');
       showFinalLeaderboard();
     }
@@ -782,6 +890,7 @@
       switchScreen('view-result');
     }
 
+    // แก้ปัญหา Trap Lock: ปลดปล่อยตัวทันทีโดยไม่ใช้ alert() มาบล็อกเอนจิน
     function triggerQuizModal(fromTrap = false) {
       if (isGameOver) return;
       const q = quizData[currentQ % quizData.length];
@@ -812,21 +921,21 @@
         b.innerText = `${String.fromCharCode(65 + idx)}. ${choice}`;
         b.onclick = () => {
           if (idx === q.a) {
+            document.getElementById('quiz-modal').classList.add('hidden');
             if (fromTrap) {
-              alert('🔓 ถูกต้อง! ปลดล็อกออกจากกับดักเรียบร้อย');
               isTrapped = false;
-              trapImmunity = 90;
-              if (releaseFromTrapCallback) releaseFromTrapCallback();
+              trapImmunity = 100; // เวลาอมตะ 1.6 วินาที
+              if (releaseFromTrapCallback) releaseFromTrapCallback(); // ดีดตัวลอยขึ้นทันที
+              showToast('🔓 ถูกต้อง! ปลดล็อกกับดักแล้ว');
             } else {
-              alert('🎉 ถูกต้อง! ได้รับพลังงาน +3 ⚡');
               energy += 3;
               correctCount += 1;
               document.getElementById('ui-energy').innerText = energy;
+              showToast('🎉 ถูกต้อง! +3 ⚡');
             }
             currentQ++;
-            document.getElementById('quiz-modal').classList.add('hidden');
           } else {
-            alert('❌ คำตอบยังไม่ถูกต้อง ลองพิจารณาใหม่');
+            showToast('❌ คำตอบยังไม่ถูกต้อง ลองใหม่นะ');
             if (!fromTrap) {
               wrongCount += 1;
             }
@@ -1068,8 +1177,9 @@
         grounded: false
       };
 
+      // ฟังก์ชันปล่อยตัวเมื่อตอบถูก ดีดตัวลอยขึ้นทันที ไม่ติดขอบ
       releaseFromTrapCallback = () => {
-        player.vy = -7.5;
+        player.vy = -12.5; // ส่งแรงดีดสูงขึ้นเพื่อลอยพ้นจุดกับดักทันที
         player.grounded = false;
       };
 
@@ -1107,31 +1217,33 @@
 
         let type = platTypes[i % platTypes.length];
         let isMoving = false;
-        let moveSpeed = 0;
-        let minX = 15, maxX = screenW - w - 15;
+        let baseStartX = 0;
+        let moveAmplitude = 0;
+        let movePeriod = 2000;
 
         const moveChance = i < 40 ? 0.15 : (i < 120 ? 0.28 : 0.38);
         if (i > 3 && norm1 < moveChance) {
           isMoving = true;
-          const baseSpeed = i < 80 ? 1.0 : 1.4;
-          moveSpeed = (i % 2 === 0 ? 1 : -1) * (baseSpeed + norm2 * 0.7);
+          moveAmplitude = 50 + norm2 * 40;
+          movePeriod = 2200 + norm1 * 1000;
         }
 
         const xSpan = screenW - w - 40;
         const x = (i % 2 === 0) 
           ? (norm2 * (xSpan * 0.45) + 20) 
           : (screenW - w - 20 - norm2 * (xSpan * 0.45));
+        baseStartX = x;
 
         platforms.push({ 
           x: x, 
+          baseX: baseStartX,
           y: lastY, 
           w: w, 
           h: 22, 
           type: type,
           isMoving: isMoving,
-          moveSpeed: moveSpeed,
-          minX: minX,
-          maxX: maxX
+          moveAmplitude: moveAmplitude,
+          movePeriod: movePeriod
         });
 
         if (i > 2 && (norm1 > 0.82 || i % 15 === 0)) {
@@ -1250,6 +1362,7 @@
 
         const W = canvas.width;
         const H = canvas.height;
+        const currentTime = Date.now();
 
         if (trapImmunity > 0) trapImmunity--;
 
@@ -1262,12 +1375,12 @@
           }
         }
 
+        // แท่นเคลื่อนที่ตามเวลาสากล (Synchronized Motion) ทุกเครื่องเห็นตำแหน่งแท่นตรงกันเป๊ะ
         platforms.forEach((p, idx) => {
           if (p.isMoving) {
-            p.x += p.moveSpeed;
-            if (p.x <= p.minX || p.x >= p.maxX) {
-              p.moveSpeed = -p.moveSpeed;
-            }
+            const phase = (currentTime % p.movePeriod) / p.movePeriod * Math.PI * 2;
+            p.x = p.baseX + Math.sin(phase) * p.moveAmplitude;
+
             boosters.forEach(b => {
               if (b.parentIdx === idx) {
                 b.x = p.x + p.w / 2 - 16;
@@ -1313,9 +1426,6 @@
             player.grounded = true;
             player.vy = 0;
             player.y = p.y - player.h;
-            if (p.isMoving) {
-              player.x += p.moveSpeed;
-            }
           }
         });
 
@@ -1331,6 +1441,7 @@
           }
         });
 
+        // ชนกับดัก (หยุดนิ่งชั่วคราวเพื่อตอบคำถาม)
         if (!isTrapped && trapImmunity === 0) {
           traps.forEach(t => {
             if (
@@ -1355,7 +1466,7 @@
           document.getElementById('ui-height').innerText = maxHeightMeters;
         }
 
-        // ปรับการส่งพิกัดให้อยู่ที่ 110ms เพื่อไม่ให้เซิร์ฟเวอร์และเน็ตมือถือหน่วง
+        // ส่งข้อมูลพิกัดขึ้น Firebase ทุก 110ms ลดปัญหาคอขวดเน็ตมือถือ
         const now = Date.now();
         if (now - lastNetworkSync > 110) {
           lastNetworkSync = now;
@@ -1400,25 +1511,22 @@
           ctx.fill();
         });
 
-        // ====================================================
-        // ระบบ LERP (Linear Interpolation) ทำให้เห็นเพื่อนเดินลื่นไหล 60 FPS
-        // ====================================================
+        // ระบบ LERP Smoothing: คำนวณให้เพื่อนขยับลื่นไหล ไร้รอยต่อ
         Object.entries(allPlayersData).forEach(([pid, other]) => {
           if (pid === myPlayerId || other.x === undefined || other.y === undefined) return;
 
-          // สร้าง State ตำแหน่งสมูทเริ่มต้นถ้ายังไม่มี
           if (!smoothPositions[pid]) {
             smoothPositions[pid] = { x: other.x, y: other.y };
           }
 
-          // ค่อยๆ ปรับพิกัดเข้าหาตำแหน่งจริงจากเซิร์ฟเวอร์แบบนุ่มนวล (อัตราส่วน 0.22)
+          // ค่อยๆ ปรับพิกัดเข้าหาตำแหน่งจริงด้วย LERP (0.22)
           smoothPositions[pid].x += (other.x - smoothPositions[pid].x) * 0.22;
           smoothPositions[pid].y += (other.y - smoothPositions[pid].y) * 0.22;
 
           const ox = smoothPositions[pid].x + 17;
           const oy = smoothPositions[pid].y + 18 - cameraY;
 
-          // Viewport Culling: วาดเฉพาะเพื่อนที่ปรากฏอยู่ในกรอบหน้าจอเท่านั้น
+          // วาดเฉพาะคนที่มองเห็นในจอ (Viewport Culling)
           if (oy > -60 && oy < H + 60) {
             const otherColor = SWEET_PALETTES[other.styleIndex || 0];
             drawCuteCharacter(ctx, ox, oy, 20, false, otherColor, other.facing || 'right', false, other.name || 'Agent', false);
