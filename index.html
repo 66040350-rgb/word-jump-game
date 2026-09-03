@@ -314,7 +314,7 @@
       width: 82px;
       height: 82px;
       border-radius: 50%;
-      background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+      background: linear-gradient(180deg, #34d399 0%, #10b981 100%);
       border: 4px solid #ffffff;
       color: #ffffff;
       display: flex;
@@ -588,12 +588,12 @@
     </div>
   </div>
 
-  <!-- 4. Modal คลังข้อสอบ พรีเมียม (แสดงครบทุกข้อ พร้อมเพิ่ม/ลบได้) -->
+  <!-- 4. Modal คลังข้อสอบ พรีเมียม (จัดดีไซน์ใหม่ให้ไม่ล้นจอ อ่านง่าย และสวยงาม) -->
   <div id="questionBankModal" class="hidden">
-    <div class="container max-w-2xl w-full p-6 text-slate-800 max-h-[88vh] flex flex-col shadow-2xl overflow-hidden !border-indigo-200">
-      <div class="flex justify-between items-center border-b pb-3 mb-3 shrink-0">
-        <div class="text-left">
-          <h2 class="text-lg font-black text-indigo-600 flex items-center gap-2 m-0">
+    <div class="container max-w-2xl w-full p-6 text-slate-800 max-h-[85vh] flex flex-col shadow-2xl overflow-hidden !border-indigo-200" style="text-align: left;">
+      <div class="flex justify-between items-center border-b pb-3 mb-4 shrink-0">
+        <div>
+          <h2 class="text-base sm:text-lg font-black text-indigo-600 flex items-center gap-2 m-0">
             <span>📝</span> คลังข้อสอบทั้งหมด (<span id="bank-q-count">20</span> ข้อ)
           </h2>
           <p class="text-xs text-slate-500 m-0">ตรวจสอบโจทย์ รายละเอียดข้อสอบ และเพิ่มคำถามใหม่ได้ที่นี่</p>
@@ -601,9 +601,9 @@
         <button onclick="closeQuestionBankModal()" class="px-3.5 py-1.5 bg-slate-200 hover:bg-slate-300 rounded-xl text-xs font-bold transition-all cursor-pointer">✕ ปิด</button>
       </div>
 
-      <div class="flex-1 overflow-y-auto pr-1 space-y-3">
+      <div class="flex-1 overflow-y-auto pr-1 space-y-4">
         <!-- ฟอร์มเพิ่มคำถาม -->
-        <div class="bg-indigo-50/80 border-2 border-indigo-200 p-4 rounded-2xl text-xs text-left shadow-sm">
+        <div class="bg-indigo-50/80 border-2 border-indigo-200 p-4 rounded-2xl text-xs shadow-sm">
           <div class="font-bold text-indigo-600 mb-2.5 flex items-center gap-1.5 text-sm">
             <span>➕</span> เพิ่มคำถามใหม่เข้าไปในเกม:
           </div>
@@ -632,8 +632,8 @@
           </div>
         </div>
 
-        <div class="font-bold text-slate-700 text-xs mb-1 text-left">รายการโจทย์ทั้งหมดในระบบ:</div>
-        <div id="questionBankList" class="space-y-2.5 text-xs text-left"></div>
+        <div class="font-bold text-slate-700 text-xs">รายการโจทย์ทั้งหมดในระบบ:</div>
+        <div id="questionBankList" class="space-y-2.5 text-xs"></div>
       </div>
     </div>
   </div>
@@ -696,7 +696,6 @@
       🌟 ยอดเยี่ยมมากทุกคน! ไม่ว่าจะอยู่อันดับไหน ความพยายามในการเรียนรู้และฝึกฝนในวันนี้คือพัฒนาการที่ดีเยี่ยม ก้าวต่อไปนะ! 💖
     </div>
 
-    <!-- ส่วนแสดงข้อที่ผู้เรียนตอบผิดเพื่อทบทวน -->
     <div style="font-weight: bold; font-size: 13px; color: #1e293b; text-align: left; margin-top: 10px;">📝 รายการข้อสอบที่ควรทบทวน (ตอบผิดซ้ำ):</div>
     <div id="student-error-review" class="error-review-box">
       กำลังประมวลผลสถิติ...
@@ -1224,7 +1223,6 @@
         `;
       });
 
-      // แสดงรายการข้อสอบที่ผู้เล่นคนนี้ตอบผิด เพื่อให้ทบทวนตอนท้าย
       const reviewBox = document.getElementById('student-error-review');
       reviewBox.innerHTML = "";
       let wrongItemsCount = 0;
