@@ -287,6 +287,19 @@
       transform: translateX(-50%) translateY(10px);
     }
 
+    /* กล่องข้อความให้กำลังใจ */
+    .cheer-box {
+      background: linear-gradient(135deg, #fff1f2, #ffe4e6);
+      border: 2px dashed #ff758f;
+      border-radius: 18px;
+      padding: 14px;
+      margin: 12px 0;
+      font-size: 14px;
+      line-height: 1.5;
+      color: #9f1239;
+      font-weight: bold;
+    }
+
     @media (orientation: landscape) {
       .controls-bar {
         bottom: max(env(safe-area-inset-bottom), 10px);
@@ -448,7 +461,7 @@
 
     <div class="game-top-bar">
       <div class="stat-pill">⚡ <span id="ui-energy" style="color:#d97706;">5</span></div>
-      <button class="btn-top-quiz" id="btn-open-quiz">⚡ ตอบคำถาม (+3)</button>
+      <button class="btn-top-quiz" id="btn-open-quiz">⚡ ตอบคำถาม (+5)</button>
       <div class="stat-pill">⏱️ <span id="ui-timer">00:00</span></div>
       <div class="stat-pill">🎯 <span id="ui-height" style="color:#0284c7;">0</span>m</div>
       <button class="btn-music-toggle" id="btn-toggle-music">🔊</button>
@@ -466,7 +479,7 @@
 
     <div id="quiz-modal" class="hidden">
       <div class="quiz-card">
-        <h3 id="quiz-title" style="margin:0 0 10px 0; font-size:16px; color:#e01e37;">⚡ ตอบคำถาม</h3>
+        <h3 id="quiz-title" style="margin:0 0 10px 0; font-size:16px; color:#e01e37;">⚡ ตอบคำถาม (+5 ⚡)</h3>
         <p id="quiz-q-text" style="font-weight:bold; font-size:14px; margin:10px 0; color:#0f172a; line-height:1.4;"></p>
         <div id="quiz-options-list"></div>
         <button class="btn" id="btn-close-quiz" style="background:#64748b; margin-top:10px; padding:10px;">ปิดหน้าต่าง</button>
@@ -476,8 +489,13 @@
 
   <div id="view-result" class="container hidden">
     <h2 style="color:#d97706; margin-bottom:4px;">🏁 หมดเวลาการแข่งขัน!</h2>
-    <p style="color:#64748b; font-size:13px; margin:0 0 10px 0;">ตารางสรุปคะแนนและอันดับ</p>
+    <p style="color:#64748b; font-size:13px; margin:0 0 8px 0;">ตารางสรุปคะแนนและอันดับ</p>
     
+    <!-- กล่องข้อความให้กำลังใจ -->
+    <div id="cheer-message" class="cheer-box">
+      🌟 ยอดเยี่ยมมากทุกคน! ไม่ว่าจะอยู่อันดับไหน ความพยายามในการเรียนรู้และฝึกฝนในวันนี้คือพัฒนาการที่ดีเยี่ยม ก้าวต่อไปนะ! 💖
+    </div>
+
     <table class="leaderboard-table">
       <thead>
         <tr>
@@ -523,27 +541,28 @@
       { main: '#a3e635', dark: '#65a30d', blush: '#bef264' }
     ];
 
+    // ข้อสอบ 20 ข้อ พร้อม id สำหรับบันทึกสถิติรายข้อ
     const quizData = [
-      { q: "ปุ่มลัดใดใช้สำหรับ 'ปิดหน้าต่างเอกสารปัจจุบัน' ในโปรแกรม Microsoft Word?", c: ["Ctrl + W", "Ctrl + S", "Ctrl + N", "Ctrl + O"], a: 0 },
-      { q: "หากต้องการขึ้น 'หน้าใหม่' (Page Break) ทันทีโดยไม่ต้องกด Enter หลายครั้ง ควรใช้ปุ่มลัดใด?", c: ["Shift + Enter", "Ctrl + Enter", "Alt + Enter", "Tab + Enter"], a: 1 },
-      { q: "เครื่องมือ 'Text Highlight Color' (รูปปากกาเน้นข้อความ) มีประโยชน์อย่างไร?", c: ["เปลี่ยนสีของตัวอักษรทั้งหมด", "ไฮไลต์สีพื้นหลังของข้อความที่เลือกเพื่อเน้นจุดสำคัญ", "ลบข้อความที่เลือกทิ้ง", "ขีดเส้นใต้ข้อความแบบหนา"], a: 1 },
-      { q: "หากต้องการแทรก 'รูปร่างอัตโนมัติ' เช่น สี่เหลี่ยม วงกลม หรือลูกศร ควรเลือกคำสั่งใด?", c: ["Insert → Shapes", "Layout → Margins", "Home → Paragraph", "View → Zoom"], a: 0 },
-      { q: "หากต้องการจัดข้อความให้ 'ชิดขวา' หน้ากระดาษ ควรใช้ปุ่มลัดใด?", c: ["Ctrl + L", "Ctrl + E", "Ctrl + R", "Ctrl + J"], a: 2 },
-      { q: "เครื่องมือ 'WordArt' ในแท็บ Insert มีหน้าที่หลักคืออะไร?", c: ["ใส่ตารางคำนวณ", "สร้างข้อความศิลป์ที่มีรูปแบบสวยงามและมีมิติ", "วาดภาพลายเส้นแบบอิสระ", "ใส่กรอบหน้ากระดาษ"], a: 1 },
-      { q: "หากต้องการตรวจสอบการสะกดคำและไวยากรณ์ (Spelling & Grammar) ในเอกสาร ควรไปที่แท็บใด?", c: ["Home", "Insert", "Layout", "Review"], a: 3 },
-      { q: "เครื่องมือ 'Page Borders' (เส้นขอบหน้ากระดาษ) อยู่ในแท็บใดของ Microsoft Word?", c: ["Home", "Insert", "Design", "View"], a: 2 },
-      { q: "หากต้องการปรับ 'การตัดข้อความรอบรูปภาพ' (Wrap Text) ต้องคลิกที่รูปภาพแล้วเลือกแท็บใด?", c: ["Picture Format", "Table Design", "References", "Mailings"], a: 0 },
-      { q: "นามสกุลไฟล์เอกสารมาตรฐานของโปรแกรม Microsoft Word ในปัจจุบันคืออะไร?", c: [".xlsx", ".pptx", ".docx", ".html"], a: 2 },
-      { q: "หากต้องการเปิดเอกสาร Word ที่มีอยู่แล้ว ควรใช้คำสั่งใด?", c: ["New", "Open", "Close", "Print"], a: 1 },
-      { q: "หากต้องการเปลี่ยนขนาดตัวอักษรใน Microsoft Word ควรใช้เครื่องมือใด?", c: ["Font Size", "Font Color", "Paragraph", "Styles"], a: 0 },
-      { q: "ปุ่มลัด Ctrl + C มีหน้าที่อะไร?", c: ["วางข้อความ", "ตัดข้อความ", "คัดลอกข้อความ", "บันทึกเอกสาร"], a: 2 },
-      { q: "หากต้องการค้นหาคำหรือข้อความบางคำภายในเอกสารอย่างรวดเร็ว ควรใช้ปุ่มลัดใด?", c: ["Ctrl + F", "Ctrl + H", "Ctrl + E", "Ctrl + K"], a: 0 },
-      { q: "เครื่องมือ Bullets ใน Microsoft Word ใช้สำหรับทำอะไร?", c: ["สร้างรายการแบบหัวข้อย่อย", "เปลี่ยนสีตัวอักษร", "แทรกรูปภาพ", "เปลี่ยนขนาดกระดาษ"], a: 0 },
-      { q: "หากต้องการทำให้ข้อความมีเส้นขีดใต้ ควรใช้ปุ่มลัดใด?", c: ["Ctrl + B", "Ctrl + I", "Ctrl + U", "Ctrl + P"], a: 2 },
-      { q: "หากต้องการตั้งระยะขอบกระดาษของเอกสาร ควรเลือกคำสั่งใด?", c: ["Layout → Margins", "Insert → Table", "Home → Font", "Review → Language"], a: 0 },
-      { q: "หากต้องการพิมพ์เอกสารออกทางเครื่องพิมพ์ ควรใช้ปุ่มลัดใด?", c: ["Ctrl + S", "Ctrl + P", "Ctrl + C", "Ctrl + F"], a: 1 },
-      { q: "หากต้องการแทนที่คำหนึ่งด้วยอีกคำหนึ่งทั่วทั้งเอกสารอย่างรวดเร็ว ควรใช้คำสั่งใด?", c: ["Find", "Replace", "Zoom", "Copy"], a: 1 },
-      { q: "หากต้องการใส่หมายเลขหน้าให้กับเอกสาร ควรเลือกคำสั่งใด?", c: ["Insert → Page Number", "Home → Numbering", "Layout → Margins", "Review → Track Changes"], a: 0 }
+      { id: 1, q: "ปุ่มลัดใดใช้สำหรับ 'ปิดหน้าต่างเอกสารปัจจุบัน' ในโปรแกรม Microsoft Word?", c: ["Ctrl + W", "Ctrl + S", "Ctrl + N", "Ctrl + O"], a: 0 },
+      { id: 2, q: "หากต้องการขึ้น 'หน้าใหม่' (Page Break) ทันทีโดยไม่ต้องกด Enter หลายครั้ง ควรใช้ปุ่มลัดใด?", c: ["Shift + Enter", "Ctrl + Enter", "Alt + Enter", "Tab + Enter"], a: 1 },
+      { id: 3, q: "เครื่องมือ 'Text Highlight Color' (รูปปากกาเน้นข้อความ) มีประโยชน์อย่างไร?", c: ["เปลี่ยนสีของตัวอักษรทั้งหมด", "ไฮไลต์สีพื้นหลังของข้อความที่เลือกเพื่อเน้นจุดสำคัญ", "ลบข้อความที่เลือกทิ้ง", "ขีดเส้นใต้ข้อความแบบหนา"], a: 1 },
+      { id: 4, q: "หากต้องการแทรก 'รูปร่างอัตโนมัติ' เช่น สี่เหลี่ยม วงกลม หรือลูกศร ควรเลือกคำสั่งใด?", c: ["Insert → Shapes", "Layout → Margins", "Home → Paragraph", "View → Zoom"], a: 0 },
+      { id: 5, q: "หากต้องการจัดข้อความให้ 'ชิดขวา' หน้ากระดาษ ควรใช้ปุ่มลัดใด?", c: ["Ctrl + L", "Ctrl + E", "Ctrl + R", "Ctrl + J"], a: 2 },
+      { id: 6, q: "เครื่องมือ 'WordArt' ในแท็บ Insert มีหน้าที่หลักคืออะไร?", c: ["ใส่ตารางคำนวณ", "สร้างข้อความศิลป์ที่มีรูปแบบสวยงามและมีมิติ", "วาดภาพลายเส้นแบบอิสระ", "ใส่กรอบหน้ากระดาษ"], a: 1 },
+      { id: 7, q: "หากต้องการตรวจสอบการสะกดคำและไวยากรณ์ (Spelling & Grammar) ในเอกสาร ควรไปที่แท็บใด?", c: ["Home", "Insert", "Layout", "Review"], a: 3 },
+      { id: 8, q: "เครื่องมือ 'Page Borders' (เส้นขอบหน้ากระดาษ) อยู่ในแท็บใดของ Microsoft Word?", c: ["Home", "Insert", "Design", "View"], a: 2 },
+      { id: 9, q: "หากต้องการปรับ 'การตัดข้อความรอบรูปภาพ' (Wrap Text) ต้องคลิกที่รูปภาพแล้วเลือกแท็บใด?", c: ["Picture Format", "Table Design", "References", "Mailings"], a: 0 },
+      { id: 10, q: "นามสกุลไฟล์เอกสารมาตรฐานของโปรแกรม Microsoft Word ในปัจจุบันคืออะไร?", c: [".xlsx", ".pptx", ".docx", ".html"], a: 2 },
+      { id: 11, q: "หากต้องการเปิดเอกสาร Word ที่มีอยู่แล้ว ควรใช้คำสั่งใด?", c: ["New", "Open", "Close", "Print"], a: 1 },
+      { id: 12, q: "หากต้องการเปลี่ยนขนาดตัวอักษรใน Microsoft Word ควรใช้เครื่องมือใด?", c: ["Font Size", "Font Color", "Paragraph", "Styles"], a: 0 },
+      { id: 13, q: "ปุ่มลัด Ctrl + C มีหน้าที่อะไร?", c: ["วางข้อความ", "ตัดข้อความ", "คัดลอกข้อความ", "บันทึกเอกสาร"], a: 2 },
+      { id: 14, q: "หากต้องการค้นหาคำหรือข้อความบางคำภายในเอกสารอย่างรวดเร็ว ควรใช้ปุ่มลัดใด?", c: ["Ctrl + F", "Ctrl + H", "Ctrl + E", "Ctrl + K"], a: 0 },
+      { id: 15, q: "เครื่องมือ Bullets ใน Microsoft Word ใช้สำหรับทำอะไร?", c: ["สร้างรายการแบบหัวข้อย่อย", "เปลี่ยนสีตัวอักษร", "แทรกรูปภาพ", "เปลี่ยนขนาดกระดาษ"], a: 0 },
+      { id: 16, q: "หากต้องการทำให้ข้อความมีเส้นขีดใต้ ควรใช้ปุ่มลัดใด?", c: ["Ctrl + B", "Ctrl + I", "Ctrl + U", "Ctrl + P"], a: 2 },
+      { id: 17, q: "หากต้องการตั้งระยะขอบกระดาษของเอกสาร ควรเลือกคำสั่งใด?", c: ["Layout → Margins", "Insert → Table", "Home → Font", "Review → Language"], a: 0 },
+      { id: 18, q: "หากต้องการพิมพ์เอกสารออกทางเครื่องพิมพ์ ควรใช้ปุ่มลัดใด?", c: ["Ctrl + S", "Ctrl + P", "Ctrl + C", "Ctrl + F"], a: 1 },
+      { id: 19, q: "หากต้องการแทนที่คำหนึ่งด้วยอีกคำหนึ่งทั่วทั้งเอกสารอย่างรวดเร็ว ควรใช้คำสั่งใด?", c: ["Find", "Replace", "Zoom", "Copy"], a: 1 },
+      { id: 20, q: "หากต้องการใส่หมายเลขหน้าให้กับเอกสาร ควรเลือกคำสั่งใด?", c: ["Insert → Page Number", "Home → Numbering", "Layout → Margins", "Review → Track Changes"], a: 0 }
     ];
 
     quizData.sort(() => Math.random() - 0.5);
@@ -564,6 +583,12 @@
     let trapImmunity = 0;
     let myStyleIndex = 0;
     let releaseFromTrapCallback = null;
+
+    // เก็บประวัติการตอบรายข้อของผู้เล่น { qId: { correct: true/false, wrongAttempts: 0 } }
+    let myQuizAnswers = {};
+    quizData.forEach(q => {
+      myQuizAnswers[q.id] = { correct: false, wrongAttempts: 0 };
+    });
 
     const smoothPositions = {};
 
@@ -743,7 +768,8 @@
             facing: 'right',
             styleIndex: myStyleIndex,
             correct: 0,
-            wrong: 0
+            wrong: 0,
+            quizStats: myQuizAnswers
           });
           document.getElementById('wait-pin').innerText = pin;
           document.getElementById('wait-name').innerText = name;
@@ -770,6 +796,7 @@
       });
     };
 
+    // ส่งออก Excel พร้อมรายงานผลการตอบรายข้อ
     document.getElementById('btn-export-excel').onclick = () => {
       const sorted = Object.values(allPlayersData)
         .sort((a,b) => (b.height || 0) - (a.height || 0));
@@ -777,7 +804,13 @@
       if (sorted.length === 0) return alert('ไม่มีข้อมูลคะแนน');
 
       let csvContent = "\uFEFF";
-      csvContent += "อันดับ,ชื่อผู้เล่น,ความสูงสูงสุด (เมตร),ตอบถูก (ข้อ),ตอบผิด (ข้อ),รวมข้อที่ตอบ (ข้อ),ความแม่นยำ (%)\n";
+      
+      // สร้าง Header พร้อมหัวข้อคำถามข้อ 1 - 20
+      let header = "อันดับ,ชื่อผู้เล่น,ความสูงสูงสุด (เมตร),ตอบถูกรวม (ข้อ),ตอบผิดรวม (ข้อ),ความแม่นยำ (%)";
+      for (let i = 1; i <= 20; i++) {
+        header += `,ข้อ ${i} (ผล/ผิดกี่ครั้ง)`;
+      }
+      csvContent += header + "\n";
 
       sorted.forEach((p, idx) => {
         const correct = p.correct || 0;
@@ -785,14 +818,29 @@
         const total = correct + wrong;
         const accuracy = total > 0 ? ((correct / total) * 100).toFixed(1) : "0.0";
         const safeName = `"${(p.name || 'Agent').replace(/"/g, '""')}"`;
-        csvContent += `${idx + 1},${safeName},${p.height || 0},${correct},${wrong},${total},${accuracy}%\n`;
+        
+        let row = `${idx + 1},${safeName},${p.height || 0},${correct},${wrong},${accuracy}%`;
+
+        // ตรวจสอบประวัติรายข้อ 1 - 20
+        const pStats = p.quizStats || {};
+        for (let i = 1; i <= 20; i++) {
+          const qStat = pStats[i] || { correct: false, wrongAttempts: 0 };
+          let resText = "";
+          if (qStat.correct) {
+            resText = qStat.wrongAttempts > 0 ? `ผ่าน (ผิด ${qStat.wrongAttempts} ครั้ง)` : "ถูกครั้งแรก";
+          } else {
+            resText = qStat.wrongAttempts > 0 ? `ยังไม่ผ่าน (ผิด ${qStat.wrongAttempts} ครั้ง)` : "ยังไม่ได้ตอบ";
+          }
+          row += `,"${resText}"`;
+        }
+        csvContent += row + "\n";
       });
 
       const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.setAttribute("href", url);
-      link.setAttribute("download", `คะแนนเกม_${currentPin || 'SweetWord'}.csv`);
+      link.setAttribute("download", `คะแนนเกม_พร้อมสถิติรายข้อ_${currentPin || 'SweetWord'}.csv`);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -872,6 +920,17 @@
         `;
       });
 
+      // ข้อความให้กำลังใจแบบไดนามิก
+      const myRank = sorted.findIndex(p => p.name === playerName);
+      const cheerEl = document.getElementById('cheer-message');
+      if (myRank === 0) {
+        cheerEl.innerHTML = "🏆 ยอดเยี่ยมที่สุด! คุณคว้าอันดับ 1 มาครองได้อย่างสง่างาม ทั้งทักษะการกระโดดและความรู้ Word สุดยอดมากๆ! 🌟";
+      } else if (myRank >= 1 && myRank <= 2) {
+        cheerEl.innerHTML = "🎉 เก่งมากๆ! คุณติด Top 3 บนโพเดียม เก่งและมีความพยายามสูงมาก ภูมิใจในตัวเองได้เลย! 💖";
+      } else {
+        cheerEl.innerHTML = "🌟 ยอดเยี่ยมมาก! ทุกความสูงและทุกคำถามที่ตอบ คือก้าวสำคัญของการเรียนรู้ ฝึกฝนต่อไปเรื่อยๆ คุณทำได้ดียิ่งขึ้นแน่นอน สู้ๆ นะ! 💪✨";
+      }
+
       const btnExcel = document.getElementById('btn-export-excel');
       if (isHost) {
         btnExcel.classList.remove('hidden');
@@ -882,6 +941,7 @@
       switchScreen('view-result');
     }
 
+    // ตอบคำถามถูก ปรับเพิ่มไฟเป็น +5 ⚡ พร้อมบันทึกสถิติรายข้อ
     function triggerQuizModal(fromTrap = false) {
       if (isGameOver) return;
       const q = quizData[currentQ % quizData.length];
@@ -897,11 +957,11 @@
         modalTitle.style.color = "#ef4444";
         btnClose.classList.add('hidden');
       } else if (energy <= 0) {
-        modalTitle.innerText = "⚠️ พลังงานหมด! ตอบเพื่อชาร์จ (+3 ⚡)";
+        modalTitle.innerText = "⚠️ พลังงานหมด! ตอบเพื่อชาร์จ (+5 ⚡)";
         modalTitle.style.color = "#d97706";
         btnClose.classList.add('hidden');
       } else {
-        modalTitle.innerText = "⚡ ตอบคำถามชาร์จพลังงาน (+3 ⚡)";
+        modalTitle.innerText = "⚡ ตอบคำถามชาร์จพลังงาน (+5 ⚡)";
         modalTitle.style.color = "#e01e37";
         btnClose.classList.remove('hidden');
       }
@@ -919,23 +979,33 @@
               if (releaseFromTrapCallback) releaseFromTrapCallback();
               showToast('🔓 ถูกต้อง! ปลดล็อกกับดักแล้ว');
             } else {
-              energy += 3;
+              energy += 5; // ปรับเพิ่มพลังงานเป็น 5
               correctCount += 1;
               document.getElementById('ui-energy').innerText = energy;
-              showToast('🎉 ถูกต้อง! +3 ⚡');
+              showToast('🎉 ถูกต้อง! +5 ⚡');
+              
+              // บันทึกว่าข้อนี้ตอบถูกแล้ว
+              if (myQuizAnswers[q.id]) {
+                myQuizAnswers[q.id].correct = true;
+              }
             }
             currentQ++;
           } else {
             showToast('❌ คำตอบยังไม่ถูกต้อง ลองใหม่นะ');
             if (!fromTrap) {
               wrongCount += 1;
+              // บันทึกจำนวนครั้งที่ตอบผิดในข้อนี้
+              if (myQuizAnswers[q.id]) {
+                myQuizAnswers[q.id].wrongAttempts += 1;
+              }
             }
           }
 
           if (currentPin && myPlayerId && !fromTrap) {
             update(ref(db, `rooms/${currentPin}/players/${myPlayerId}`), {
               correct: correctCount,
-              wrong: wrongCount
+              wrong: wrongCount,
+              quizStats: myQuizAnswers // ซิงค์ประวัติรายข้อขึ้น Firebase
             });
           }
         };
@@ -1077,7 +1147,6 @@
       ctx.restore();
     }
 
-    // วาดแท่นขนมหวานรองรับแท่นน้ำแข็งไส และแท่นสลายตัว
     function drawCutePlatform(ctx, p, dy) {
       ctx.save();
       ctx.shadowColor = 'rgba(0, 0, 0, 0.06)';
@@ -1086,7 +1155,6 @@
       let px = p.x;
       let py = dy;
 
-      // เอฟเฟกต์สั่นถ้าเป็นแท่นกำลังสลายตัว
       if (p.isDisappearing && p.stepped) {
         px += (Math.random() - 0.5) * 4;
         ctx.globalAlpha = Math.max(0.2, 1 - (p.stepTimer / 90));
@@ -1125,7 +1193,6 @@
         ctx.fill();
 
       } else if (p.type === 'ice') {
-        // แท่นน้ำแข็งไสลื่น
         ctx.fillStyle = '#cffafe';
         ctx.beginPath();
         ctx.roundRect(px, py, p.w, p.h, 12);
@@ -1140,7 +1207,6 @@
         ctx.fill();
 
       } else if (p.type === 'disappear') {
-        // แท่นเยลลี่เปราะบาง (สลายตัว)
         ctx.fillStyle = '#fbcfe8';
         ctx.beginPath();
         ctx.roundRect(px, py, p.w, p.h, 10);
@@ -1228,14 +1294,13 @@
         const pR2 = Math.cos(i * 41 + 5) * 10000;
         const norm2 = pR2 - Math.floor(pR2);
 
-        // คำนวณความยาก: ยิ่งสูง แท่นยิ่งเล็กและท้าทาย
         let w = 135;
         if (i < 30) {
-          w = Math.floor(norm1 * 20) + 125; // เริ่มต้น: กว้าง 125-145
+          w = Math.floor(norm1 * 20) + 125;
         } else if (i < 100) {
-          w = Math.floor(norm1 * 20) + 95;  // ชั้นกลาง: 95-115
+          w = Math.floor(norm1 * 20) + 95;
         } else {
-          w = Math.floor(norm1 * 20) + 75;  // ชั้นสูง: 75-95 (แคบ ท้าทาย เล็งดีๆ)
+          w = Math.floor(norm1 * 20) + 75;
         }
 
         const distY = 48;
@@ -1244,7 +1309,6 @@
         let type = platTypes[i % platTypes.length];
         let isDisappearing = false;
 
-        // สุ่มแท่นสลายตัว (Disappearing Jelly) ในช่วงชั้นกลางเป็นต้นไป
         if (i > 25 && norm2 < 0.22 && type !== 'ice') {
           type = 'disappear';
           isDisappearing = true;
@@ -1255,12 +1319,11 @@
         let moveAmplitude = 0;
         let movePeriod = 2000;
 
-        // โอกาสแท่นเคลื่อนที่เพิ่มขึ้นตามระดับความสูง
         const moveChance = i < 30 ? 0.2 : (i < 100 ? 0.45 : 0.65);
         if (i > 4 && norm1 < moveChance && !isDisappearing) {
           isMoving = true;
           moveAmplitude = (i < 80 ? 45 : 70) + norm2 * 30;
-          movePeriod = (i < 80 ? 2400 : 1800) + norm1 * 600; // ชั้นบนขยับเร็วขึ้น
+          movePeriod = (i < 80 ? 2400 : 1800) + norm1 * 600;
         }
 
         const xSpan = screenW - w - 40;
@@ -1285,12 +1348,10 @@
           broken: false
         });
 
-        // สปริงบูสเตอร์ช่วยส่งตัว
         if (i > 2 && (norm1 > 0.85 || i % 18 === 0)) {
           boosters.push({ x: x + w / 2 - 14, y: lastY - 8, w: 28, h: 8, parentIdx: platforms.length - 1 });
         }
 
-        // กับดักวางสลับบนแท่นคงที่
         if (i > 5 && norm2 < 0.25 && !isMoving && !isDisappearing) {
           traps.push({ x: x + w / 2 - 10, y: lastY - 5, w: 20, h: 5 });
         }
@@ -1416,7 +1477,6 @@
           }
         }
 
-        // ขยับแท่นตามเวลาสากล
         platforms.forEach((p, idx) => {
           if (p.isMoving) {
             const phase = (currentTime % p.movePeriod) / p.movePeriod * Math.PI * 2;
@@ -1429,16 +1489,15 @@
             });
           }
 
-          // นับถอยหลังแท่นสลายตัว
           if (p.isDisappearing && p.stepped && !p.broken) {
             p.stepTimer++;
             if (p.stepTimer > 70) {
-              p.broken = true; // แตกสลาย
+              p.broken = true;
               setTimeout(() => {
                 p.broken = false;
                 p.stepped = false;
                 p.stepTimer = 0;
-              }, 2200); // ฟื้นตัวหลังจาก 2.2 วินาที
+              }, 2200);
             }
           }
         });
@@ -1448,18 +1507,15 @@
           walkCycle += 0.25;
         }
 
-        // คำนวณฟิสิกส์การเคลื่อนที่ (มีระบบน้ำแข็งไสลื่นไถล)
         if (energy <= 0 || isTrapped) {
           player.vx = 0;
           keys.left = false;
           keys.right = false;
         } else if (player.onIce) {
-          // ฟิสิกส์ลื่นน้ำแข็ง
           if (keys.left) player.vx = Math.max(player.vx - 0.4, -player.speed * 1.15);
           else if (keys.right) player.vx = Math.min(player.vx + 0.4, player.speed * 1.15);
-          else player.vx *= 0.96; // ไถลต่อ
+          else player.vx *= 0.96;
         } else {
-          // ฟิสิกส์ปกติ
           if (keys.left && !keys.right) player.vx = -player.speed;
           else if (keys.right && !keys.left) player.vx = player.speed;
           else player.vx = 0;
@@ -1547,7 +1603,8 @@
               styleIndex: myStyleIndex,
               height: maxHeightMeters,
               correct: correctCount,
-              wrong: wrongCount
+              wrong: wrongCount,
+              quizStats: myQuizAnswers
             });
           }
         }
