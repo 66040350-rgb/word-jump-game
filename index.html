@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Hunter Cyber Mission - Hardcore Sweet Edition</title>
+  <title>Hunter Cyber Mission - Pro Host Edition</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
     * {
@@ -19,8 +19,8 @@
       height: 100dvh;
       min-height: -webkit-fill-available;
       overflow: hidden;
-      background: #e0f2fe;
-      color: #0f172a;
+      background: #0f172a;
+      color: #f8fafc;
       font-family: system-ui, -apple-system, sans-serif;
       position: fixed;
     }
@@ -44,6 +44,7 @@
       overflow-y: auto;
       z-index: 100;
       position: relative;
+      color: #0f172a;
     }
     h1 {
       color: #e01e37;
@@ -66,8 +67,15 @@
       display: block;
     }
     .btn:active { transform: scale(0.98); }
-    .btn-excel {
+    .btn-sweet-green {
       background: linear-gradient(135deg, #10b981, #047857);
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      width: 100%;
       box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
     }
     input, select {
@@ -141,7 +149,6 @@
       height: 100%;
     }
 
-    /* Top Bar */
     .game-top-bar {
       position: absolute;
       top: env(safe-area-inset-top, 10px);
@@ -189,7 +196,6 @@
       pointer-events: auto;
     }
 
-    /* Controls 3D Glassmorphism */
     .controls-bar {
       position: absolute;
       bottom: max(env(safe-area-inset-bottom), 18px);
@@ -287,7 +293,6 @@
       transform: translateX(-50%) translateY(10px);
     }
 
-    /* กล่องข้อความให้กำลังใจ */
     .cheer-box {
       background: linear-gradient(135deg, #fff1f2, #ffe4e6);
       border: 2px dashed #ff758f;
@@ -357,21 +362,9 @@
     }
     .quiz-option:active { background: #ff758f; color: white; border-color: #ff758f; }
 
-    .leaderboard-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 10px;
-      text-align: left;
-      font-size: 14px;
-    }
-    .leaderboard-table th {
-      color: #64748b;
-      padding: 8px 4px;
-      border-bottom: 2px solid #e2e8f0;
-    }
-    .leaderboard-table td {
-      padding: 10px 4px;
-      border-bottom: 1px solid #f1f5f9;
+    .bento-card {
+      background: rgba(30, 41, 59, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.1);
     }
   </style>
   <script>
@@ -389,13 +382,15 @@
 
   <div id="toast-msg">แจ้งเตือน</div>
 
+  <!-- 1. หน้าแรก -->
   <div id="view-mode" class="container">
     <h1>HUNTER CYBER MISSION</h1>
-    <p style="color: #64748b; font-size:14px; margin-bottom: 16px;">เกมตอบคำถามชิงความสูง (Hardcore Sweet)</p>
+    <p style="color: #64748b; font-size:14px; margin-bottom: 16px;">เกมตอบคำถามชิงความสูง (Word Master)</p>
     <button class="btn" id="btn-mode-host" onclick="window.onHostClick ? window.onHostClick() : switchScreen('view-host')">👑 ผู้สอน (Host สร้างห้อง)</button>
     <button class="btn" id="btn-mode-join" style="background:#475569;" onclick="switchScreen('view-join')">🎮 ผู้เรียน (Join เข้าเล่น)</button>
   </div>
 
+  <!-- 2. โฮสต์สร้างห้อง -->
   <div id="view-host" class="container hidden">
     <h2>ห้องควบคุมโฮสต์</h2>
     <p style="margin-bottom:2px; font-size:13px; color:#64748b;">รหัสเข้าห้อง (Room PIN):</p>
@@ -433,14 +428,115 @@
     <button id="btn-start" class="btn" style="background: linear-gradient(135deg, #10b981, #059669);" disabled>🚀 เริ่มการแข่งขัน</button>
   </div>
 
-  <div id="view-host-live" class="container hidden">
-    <h2>📡 การแข่งขันสด</h2>
-    <div style="font-size:32px; font-weight:900; color:#ef4444; margin:8px 0;">
-      ⏳ <span id="host-timer">00:00</span>
+  <!-- 3. หน้าจอหลักของ Host / Admin (Live Monitor) -->
+  <div id="view-host-live" class="hidden w-full h-full bg-slate-900 text-white flex flex-col p-4 sm:p-6 overflow-hidden z-40">
+    <div class="bento-card !bg-slate-800/95 !border-slate-700 p-4 rounded-3xl flex flex-wrap justify-between items-center gap-3 shadow-xl">
+      <div class="flex items-center gap-3">
+        <button onclick="location.reload()" class="px-3.5 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-2xl font-bold text-xs transition-all cursor-pointer">
+          🔙 ออกจากห้อง
+        </button>
+        <div>
+          <h2 class="text-lg font-black text-rose-400 mb-0">👑 HOST MONITOR</h2>
+          <p class="text-xs text-slate-400">ห้อง: <span id="live-room-pin" class="font-bold text-rose-300">------</span> | ออนไลน์: <span id="live-player-count" class="font-bold text-emerald-400">0</span> คน</p>
+        </div>
+      </div>
+      
+      <div class="flex items-center gap-2 flex-wrap">
+        <button onclick="openQuestionBankModal()" class="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-2xl font-bold text-xs transition-all cursor-pointer flex items-center gap-1.5 shadow-md">
+          <span>📝</span> จัดการคำถาม (<span id="total-q-count">20</span> ข้อ)
+        </button>
+        <div class="bg-black/50 border border-white/20 px-4 py-1.5 rounded-2xl font-mono text-xl text-yellow-300 font-black">
+          ⏱️ <span id="host-timer-text">03:00</span>
+        </div>
+        <button onclick="exportDataCSV()" class="btn-sweet-green !w-auto !py-2 !px-4 !my-0 text-xs font-black">
+          📥 Export รายงาน Excel
+        </button>
+      </div>
     </div>
-    <div id="live-ranking" style="text-align: left; margin-top:10px; max-height:220px; overflow-y:auto;"></div>
+
+    <!-- แถบไฮไลต์คนนำอันดับ 1 แบบสดๆ -->
+    <div class="mt-3 bg-gradient-to-r from-amber-500/20 via-yellow-500/10 to-transparent border border-amber-500/40 p-3 rounded-2xl flex items-center justify-between shadow-sm">
+      <div class="flex items-center gap-2.5">
+        <span class="text-2xl animate-bounce">👑</span>
+        <div>
+          <div class="text-[11px] text-amber-300 font-bold uppercase">ผู้นำอันดับ 1 ตอนนี้</div>
+          <div id="leader-name" class="text-sm sm:text-base font-bold text-white">รอเริ่มกระโดด...</div>
+        </div>
+      </div>
+      <div class="text-right">
+        <div class="text-[11px] text-amber-300 font-bold uppercase">ระยะทางนำ</div>
+        <div id="leader-meters" class="text-lg sm:text-xl font-black text-yellow-400 font-mono">0 m</div>
+      </div>
+    </div>
+
+    <!-- ตารางสรุปคะแนนผู้เล่นทุกคนแบบ Real-time -->
+    <div class="mt-3 flex-1 overflow-auto bg-slate-800/80 border border-slate-700 rounded-3xl p-3 sm:p-4">
+      <table class="w-full text-left border-collapse text-xs sm:text-sm">
+        <thead>
+          <tr class="border-b border-slate-700 text-slate-400">
+            <th class="p-2.5">อันดับ</th>
+            <th class="p-2.5">ชื่อผู้เรียน</th>
+            <th class="p-2.5 text-center">ความสูง (m)</th>
+            <th class="p-2.5 text-center">ตอบถูก</th>
+            <th class="p-2.5 text-center">ตอบผิด</th>
+            <th class="p-2.5 text-center">ความแม่นยำ</th>
+            <th class="p-2.5 text-center">พลังงาน</th>
+          </tr>
+        </thead>
+        <tbody id="host-live-table" class="divide-y divide-slate-700/50"></tbody>
+      </table>
+    </div>
   </div>
 
+  <!-- 4. Modal ป๊อปอัป: จัดการคลังคำถาม + ฟอร์มพิมพ์เพิ่มข้อใหม่ -->
+  <div id="questionBankModal" class="hidden fixed inset-0 bg-black/75 backdrop-blur-md flex items-center justify-center z-50 p-4">
+    <div class="container max-w-2xl w-full p-6 text-slate-800 max-h-[90vh] flex flex-col shadow-2xl">
+      <div class="flex justify-between items-center border-b pb-3 mb-3">
+        <div>
+          <h2 class="text-lg font-black text-rose-600 flex items-center gap-2">
+            <span>📝</span> คลังข้อสอบ & เพิ่มคำถามใหม่
+          </h2>
+          <p class="text-xs text-slate-500">คุณครูสามารถตรวจสอบคำถาม หรือพิมพ์เพิ่มข้อใหม่ได้ทันที</p>
+        </div>
+        <button onclick="closeQuestionBankModal()" class="px-3.5 py-1.5 bg-slate-200 hover:bg-slate-300 rounded-xl text-xs font-bold transition-all">✕ ปิด</button>
+      </div>
+
+      <!-- ฟอร์มพิมพ์คำถามใหม่ -->
+      <div class="bg-pink-50/90 border-2 border-pink-200 p-3.5 rounded-2xl mb-4 text-xs text-left">
+        <div class="font-bold text-rose-600 mb-2 flex items-center gap-1.5">
+          <span>➕</span> เพิ่มคำถามใหม่เข้าไปในเกม:
+        </div>
+        <div class="space-y-2">
+          <input id="new-q-text" type="text" placeholder="พิมพ์โจทย์คำถาม..." class="w-full p-2 rounded-xl border border-pink-300 bg-white font-semibold text-slate-800 outline-none">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <input id="new-q-a1" type="text" placeholder="ตัวเลือก 1" class="p-2 rounded-xl border border-pink-200 bg-white outline-none">
+            <input id="new-q-a2" type="text" placeholder="ตัวเลือก 2" class="p-2 rounded-xl border border-pink-200 bg-white outline-none">
+            <input id="new-q-a3" type="text" placeholder="ตัวเลือก 3" class="p-2 rounded-xl border border-pink-200 bg-white outline-none">
+            <input id="new-q-a4" type="text" placeholder="ตัวเลือก 4" class="p-2 rounded-xl border border-pink-200 bg-white outline-none">
+          </div>
+          <div class="flex items-center justify-between pt-1 gap-2">
+            <div class="flex items-center gap-1.5 font-bold text-slate-600">
+              <span>เฉลยข้อที่ถูก:</span>
+              <select id="new-q-correct" class="p-1.5 rounded-lg border border-pink-300 bg-white font-bold text-rose-600 !my-0 !w-auto">
+                <option value="0">ตัวเลือก 1</option>
+                <option value="1">ตัวเลือก 2</option>
+                <option value="2">ตัวเลือก 3</option>
+                <option value="3">ตัวเลือก 4</option>
+              </select>
+            </div>
+            <button onclick="addNewCustomQuestion()" class="btn-sweet-green !w-auto !py-2 !px-5 rounded-xl font-bold text-xs shadow-md">
+              บันทึกข้อสอบ ➕
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="font-bold text-slate-700 text-xs mb-1.5 text-left">รายการคำถามทั้งหมดในเกม (<span id="bank-q-count">0</span> ข้อ):</div>
+      <div id="questionBankList" class="flex-1 overflow-y-auto space-y-2.5 pr-1.5 text-xs text-left max-h-48"></div>
+    </div>
+  </div>
+
+  <!-- 5. หน้าเข้าห้องผู้เรียน -->
   <div id="view-join" class="container hidden">
     <h2>เข้าสู่สมรภูมิขนมหวาน</h2>
     <input type="text" id="input-pin" placeholder="รหัสห้อง 6 หลัก" maxlength="6" inputmode="numeric">
@@ -449,6 +545,7 @@
     <button class="btn" style="background:#64748b; padding:10px;" onclick="switchScreen('view-mode')">ย้อนกลับ</button>
   </div>
 
+  <!-- 6. ผู้เรียนรอเริ่ม -->
   <div id="view-waiting" class="container hidden">
     <h2>ห้องเตรียมพร้อม</h2>
     <p>รหัสห้อง: <b id="wait-pin" style="color:#e01e37;"></b></p>
@@ -456,6 +553,7 @@
     <p style="color: #f59e0b; margin-top:18px; font-size:15px; font-weight:bold;">⏳ รอสัญญาณปล่อยตัวจากผู้สอน...</p>
   </div>
 
+  <!-- 7. หน้าจอเล่นเกม Canvas -->
   <div id="game-wrapper" class="hidden">
     <canvas id="gameCanvas"></canvas>
 
@@ -482,16 +580,16 @@
         <h3 id="quiz-title" style="margin:0 0 10px 0; font-size:16px; color:#e01e37;">⚡ ตอบคำถาม (+5 ⚡)</h3>
         <p id="quiz-q-text" style="font-weight:bold; font-size:14px; margin:10px 0; color:#0f172a; line-height:1.4;"></p>
         <div id="quiz-options-list"></div>
-        <button class="btn" id="btn-close-quiz" style="background:#64748b; margin-top:10px; padding:10px;">ปิดหน้าต่าง</button>
+        <button class="btn hidden" id="btn-close-quiz" style="background:#64748b; margin-top:10px; padding:10px;">ปิดหน้าต่าง</button>
       </div>
     </div>
   </div>
 
+  <!-- 8. สรุปผลการแข่งขัน -->
   <div id="view-result" class="container hidden">
     <h2 style="color:#d97706; margin-bottom:4px;">🏁 หมดเวลาการแข่งขัน!</h2>
     <p style="color:#64748b; font-size:13px; margin:0 0 8px 0;">ตารางสรุปคะแนนและอันดับ</p>
     
-    <!-- กล่องข้อความให้กำลังใจ -->
     <div id="cheer-message" class="cheer-box">
       🌟 ยอดเยี่ยมมากทุกคน! ไม่ว่าจะอยู่อันดับไหน ความพยายามในการเรียนรู้และฝึกฝนในวันนี้คือพัฒนาการที่ดีเยี่ยม ก้าวต่อไปนะ! 💖
     </div>
@@ -541,8 +639,7 @@
       { main: '#a3e635', dark: '#65a30d', blush: '#bef264' }
     ];
 
-    // ข้อสอบ 20 ข้อ พร้อม id สำหรับบันทึกสถิติรายข้อ
-    const quizData = [
+    let quizData = [
       { id: 1, q: "ปุ่มลัดใดใช้สำหรับ 'ปิดหน้าต่างเอกสารปัจจุบัน' ในโปรแกรม Microsoft Word?", c: ["Ctrl + W", "Ctrl + S", "Ctrl + N", "Ctrl + O"], a: 0 },
       { id: 2, q: "หากต้องการขึ้น 'หน้าใหม่' (Page Break) ทันทีโดยไม่ต้องกด Enter หลายครั้ง ควรใช้ปุ่มลัดใด?", c: ["Shift + Enter", "Ctrl + Enter", "Alt + Enter", "Tab + Enter"], a: 1 },
       { id: 3, q: "เครื่องมือ 'Text Highlight Color' (รูปปากกาเน้นข้อความ) มีประโยชน์อย่างไร?", c: ["เปลี่ยนสีของตัวอักษรทั้งหมด", "ไฮไลต์สีพื้นหลังของข้อความที่เลือกเพื่อเน้นจุดสำคัญ", "ลบข้อความที่เลือกทิ้ง", "ขีดเส้นใต้ข้อความแบบหนา"], a: 1 },
@@ -584,7 +681,6 @@
     let myStyleIndex = 0;
     let releaseFromTrapCallback = null;
 
-    // เก็บประวัติการตอบรายข้อของผู้เล่น { qId: { correct: true/false, wrongAttempts: 0 } }
     let myQuizAnswers = {};
     quizData.forEach(q => {
       myQuizAnswers[q.id] = { correct: false, wrongAttempts: 0 };
@@ -597,7 +693,6 @@
     let isBlinking = false;
     let facing = 'right';
 
-    // ระบบดนตรี 8-Bit Chiptune Synth
     let audioCtx = null;
     let isMusicPlaying = false;
     let musicInterval = null;
@@ -675,6 +770,127 @@
       return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
     }
 
+    // --- ฟังก์ชันจัดการ Modal คลังข้อสอบ ---
+    window.openQuestionBankModal = function() {
+      renderQuestionBankList();
+      document.getElementById('questionBankModal').classList.remove('hidden');
+    }
+
+    window.closeQuestionBankModal = function() {
+      document.getElementById('questionBankModal').classList.add('hidden');
+    }
+
+    window.renderQuestionBankList = function() {
+      const listEl = document.getElementById('questionBankList');
+      document.getElementById('total-q-count').innerText = quizData.length;
+      document.getElementById('bank-q-count').innerText = quizData.length;
+      listEl.innerHTML = "";
+
+      quizData.forEach((item, index) => {
+        const div = document.createElement('div');
+        div.className = "p-2.5 bg-slate-50 border border-slate-200 rounded-xl flex items-start justify-between gap-2";
+        div.innerHTML = `
+          <div>
+            <div class="font-bold text-slate-800">ข้อที่ ${index + 1}: ${item.q}</div>
+            <div class="text-[11px] text-slate-500 mt-0.5">
+              ตัวเลือก: ${item.c.map((c, i) => `<span class="${i === item.a ? 'text-emerald-600 font-bold' : ''}">(${String.fromCharCode(65+i)}) ${c}</span>`).join(' | ')}
+            </div>
+          </div>
+          <button onclick="deleteQuestion(${item.id})" class="text-rose-500 hover:text-rose-700 font-bold px-2 py-1 bg-white border border-rose-200 rounded-lg shrink-0">ลบ</button>
+        `;
+        listEl.appendChild(div);
+      });
+    }
+
+    window.addNewCustomQuestion = function() {
+      const qText = document.getElementById('new-q-text').value.trim();
+      const a1 = document.getElementById('new-q-a1').value.trim();
+      const a2 = document.getElementById('new-q-a2').value.trim();
+      const a3 = document.getElementById('new-q-a3').value.trim();
+      const a4 = document.getElementById('new-q-a4').value.trim();
+      const correctIdx = parseInt(document.getElementById('new-q-correct').value);
+
+      if (!qText || !a1 || !a2 || !a3 || !a4) {
+        return alert('กรุณากรอกโจทย์และตัวเลือกให้ครบทั้ง 4 ข้อครับ');
+      }
+
+      const newId = quizData.length > 0 ? Math.max(...quizData.map(q => q.id)) + 1 : 1;
+      quizData.push({
+        id: newId,
+        q: qText,
+        c: [a1, a2, a3, a4],
+        a: correctIdx
+      });
+
+      myQuizAnswers[newId] = { correct: false, wrongAttempts: 0 };
+
+      // ล้างฟอร์ม
+      document.getElementById('new-q-text').value = "";
+      document.getElementById('new-q-a1').value = "";
+      document.getElementById('new-q-a2').value = "";
+      document.getElementById('new-q-a3').value = "";
+      document.getElementById('new-q-a4').value = "";
+
+      renderQuestionBankList();
+      showToast('➕ เพิ่มคำถามสำเร็จ!');
+    }
+
+    window.deleteQuestion = function(id) {
+      if (quizData.length <= 3) {
+        return alert('ต้องมีข้อสอบอย่างน้อย 3 ข้อครับ');
+      }
+      quizData = quizData.filter(q => q.id !== id);
+      renderQuestionBankList();
+      showToast('🗑️ ลบคำถามเรียบร้อย');
+    }
+
+    window.exportDataCSV = function() {
+      const sorted = Object.values(allPlayersData)
+        .sort((a,b) => (b.height || 0) - (a.height || 0));
+
+      if (sorted.length === 0) return alert('ไม่มีข้อมูลคะแนน');
+
+      let csvContent = "\uFEFF";
+      let header = "อันดับ,ชื่อผู้เล่น,ความสูงสูงสุด (เมตร),ตอบถูกรวม (ข้อ),ตอบผิดรวม (ข้อ),ความแม่นยำ (%)";
+      quizData.forEach((q, idx) => {
+        header += `,ข้อ ${idx+1} (ผล/ผิดกี่ครั้ง)`;
+      });
+      csvContent += header + "\n";
+
+      sorted.forEach((p, idx) => {
+        const correct = p.correct || 0;
+        const wrong = p.wrong || 0;
+        const total = correct + wrong;
+        const accuracy = total > 0 ? ((correct / total) * 100).toFixed(1) : "0.0";
+        const safeName = `"${(p.name || 'Agent').replace(/"/g, '""')}"`;
+        
+        let row = `${idx + 1},${safeName},${p.height || 0},${correct},${wrong},${accuracy}%`;
+
+        const pStats = p.quizStats || {};
+        quizData.forEach(q => {
+          const qStat = pStats[q.id] || { correct: false, wrongAttempts: 0 };
+          let resText = "";
+          if (qStat.correct) {
+            resText = qStat.wrongAttempts > 0 ? `ผ่าน (ผิด ${qStat.wrongAttempts} ครั้ง)` : "ถูกครั้งแรก";
+          } else {
+            resText = qStat.wrongAttempts > 0 ? `ยังไม่ผ่าน (ผิด ${qStat.wrongAttempts} ครั้ง)` : "ยังไม่ได้ตอบ";
+          }
+          row += `,"${resText}"`;
+        });
+        csvContent += row + "\n";
+      });
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.setAttribute("href", url);
+      link.setAttribute("download", `คะแนนเกม_พร้อมสถิติรายข้อ_${currentPin || 'SweetWord'}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    };
+
     window.onHostClick = function() {
       isHost = true;
       switchScreen('view-host');
@@ -699,6 +915,7 @@
       onValue(ref(db, `rooms/${currentPin}/players`), (snap) => {
         allPlayersData = snap.val() || {};
         const keys = Object.keys(allPlayersData);
+        document.getElementById('live-player-count').innerText = keys.length;
         document.getElementById('player-count').innerText = keys.length;
         
         const list = document.getElementById('host-players');
@@ -710,7 +927,7 @@
           list.appendChild(b);
         });
         document.getElementById('btn-start').disabled = keys.length === 0;
-        renderLiveRanking();
+        renderHostLiveTable();
       });
 
       onValue(ref(db, `rooms/${currentPin}/status`), (snap) => {
@@ -731,11 +948,18 @@
         initialEnergy: initialEnergy
       });
 
+      document.getElementById('live-room-pin').innerText = currentPin;
       switchScreen('view-host-live');
 
       const timerInt = setInterval(() => {
         const remainSec = Math.max(0, Math.floor((endTime - Date.now()) / 1000));
-        document.getElementById('host-timer').innerText = formatTime(remainSec);
+        const formatted = formatTime(remainSec);
+        document.getElementById('host-timer-text').innerText = formatted;
+        
+        if (currentPin) {
+          update(ref(db, `rooms/${currentPin}`), { timerText: formatted });
+        }
+
         if (remainSec <= 0) {
           clearInterval(timerInt);
           update(ref(db, `rooms/${currentPin}`), { status: 'ended' });
@@ -796,57 +1020,6 @@
       });
     };
 
-    // ส่งออก Excel พร้อมรายงานผลการตอบรายข้อ
-    document.getElementById('btn-export-excel').onclick = () => {
-      const sorted = Object.values(allPlayersData)
-        .sort((a,b) => (b.height || 0) - (a.height || 0));
-
-      if (sorted.length === 0) return alert('ไม่มีข้อมูลคะแนน');
-
-      let csvContent = "\uFEFF";
-      
-      // สร้าง Header พร้อมหัวข้อคำถามข้อ 1 - 20
-      let header = "อันดับ,ชื่อผู้เล่น,ความสูงสูงสุด (เมตร),ตอบถูกรวม (ข้อ),ตอบผิดรวม (ข้อ),ความแม่นยำ (%)";
-      for (let i = 1; i <= 20; i++) {
-        header += `,ข้อ ${i} (ผล/ผิดกี่ครั้ง)`;
-      }
-      csvContent += header + "\n";
-
-      sorted.forEach((p, idx) => {
-        const correct = p.correct || 0;
-        const wrong = p.wrong || 0;
-        const total = correct + wrong;
-        const accuracy = total > 0 ? ((correct / total) * 100).toFixed(1) : "0.0";
-        const safeName = `"${(p.name || 'Agent').replace(/"/g, '""')}"`;
-        
-        let row = `${idx + 1},${safeName},${p.height || 0},${correct},${wrong},${accuracy}%`;
-
-        // ตรวจสอบประวัติรายข้อ 1 - 20
-        const pStats = p.quizStats || {};
-        for (let i = 1; i <= 20; i++) {
-          const qStat = pStats[i] || { correct: false, wrongAttempts: 0 };
-          let resText = "";
-          if (qStat.correct) {
-            resText = qStat.wrongAttempts > 0 ? `ผ่าน (ผิด ${qStat.wrongAttempts} ครั้ง)` : "ถูกครั้งแรก";
-          } else {
-            resText = qStat.wrongAttempts > 0 ? `ยังไม่ผ่าน (ผิด ${qStat.wrongAttempts} ครั้ง)` : "ยังไม่ได้ตอบ";
-          }
-          row += `,"${resText}"`;
-        }
-        csvContent += row + "\n";
-      });
-
-      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.setAttribute("href", url);
-      link.setAttribute("download", `คะแนนเกม_พร้อมสถิติรายข้อ_${currentPin || 'SweetWord'}.csv`);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-    };
-
     document.getElementById('btn-open-quiz').onclick = () => triggerQuizModal(false);
     document.getElementById('btn-close-quiz').onclick = () => {
       if (energy > 0 && !isTrapped) document.getElementById('quiz-modal').classList.add('hidden');
@@ -859,19 +1032,43 @@
       switchScreen('view-join');
     }
 
-    function renderLiveRanking() {
-      const rankDiv = document.getElementById('live-ranking');
-      if (!rankDiv) return;
-      rankDiv.innerHTML = "";
-      Object.values(allPlayersData)
-        .sort((a,b) => (b.height || 0) - (a.height || 0))
-        .forEach((p, idx) => {
-          rankDiv.innerHTML += `
-            <div style="padding:6px 0; border-bottom:1px solid #ffe4e6; font-size:13px; display:flex; justify-content:space-between;">
-              <span><b>#${idx+1} ${p.name}</b></span>
-              <span>สูง: <b style="color:#0284c7;">${p.height || 0}m</b> | ถูก: <b style="color:#10b981;">${p.correct || 0}</b></span>
-            </div>`;
-        });
+    // แสดงตารางคะแนนโฮสต์แบบ Real-time พร้อมไฮไลต์ผู้นำ
+    function renderHostLiveTable() {
+      const tbody = document.getElementById('host-live-table');
+      if (!tbody) return;
+      tbody.innerHTML = "";
+
+      const sorted = Object.values(allPlayersData)
+        .sort((a,b) => (b.height || 0) - (a.height || 0));
+
+      if (sorted.length > 0) {
+        document.getElementById('leader-name').innerText = sorted[0].name || 'Agent';
+        document.getElementById('leader-meters').innerText = (sorted[0].height || 0) + " m";
+      }
+
+      sorted.forEach((p, idx) => {
+        const correct = p.correct || 0;
+        const wrong = p.wrong || 0;
+        const total = correct + wrong;
+        const accuracy = total > 0 ? ((correct / total) * 100).toFixed(0) + "%" : "0%";
+
+        let badgeColor = "text-slate-300";
+        if (idx === 0) badgeColor = "text-amber-400 font-black";
+        else if (idx === 1) badgeColor = "text-slate-200 font-bold";
+        else if (idx === 2) badgeColor = "text-amber-600 font-bold";
+
+        tbody.innerHTML += `
+          <tr class="hover:bg-slate-700/40 transition-all">
+            <td class="p-2.5 ${badgeColor}">#${idx + 1}</td>
+            <td class="p-2.5 font-bold text-white">${p.name}</td>
+            <td class="p-2.5 text-center font-mono font-bold text-cyan-400">${p.height || 0} m</td>
+            <td class="p-2.5 text-center font-bold text-emerald-400">${correct}</td>
+            <td class="p-2.5 text-center font-bold text-rose-400">${wrong}</td>
+            <td class="p-2.5 text-center text-slate-300">${accuracy}</td>
+            <td class="p-2.5 text-center font-bold text-amber-300">⚡ ${energy}</td>
+          </tr>
+        `;
+      });
     }
 
     function startPlayerTimer(endTime) {
@@ -920,7 +1117,6 @@
         `;
       });
 
-      // ข้อความให้กำลังใจแบบไดนามิก
       const myRank = sorted.findIndex(p => p.name === playerName);
       const cheerEl = document.getElementById('cheer-message');
       if (myRank === 0) {
@@ -931,39 +1127,28 @@
         cheerEl.innerHTML = "🌟 ยอดเยี่ยมมาก! ทุกความสูงและทุกคำถามที่ตอบ คือก้าวสำคัญของการเรียนรู้ ฝึกฝนต่อไปเรื่อยๆ คุณทำได้ดียิ่งขึ้นแน่นอน สู้ๆ นะ! 💪✨";
       }
 
-      const btnExcel = document.getElementById('btn-export-excel');
-      if (isHost) {
-        btnExcel.classList.remove('hidden');
-      } else {
-        btnExcel.classList.add('hidden');
-      }
-
       switchScreen('view-result');
     }
 
-    // ตอบคำถามถูก ปรับเพิ่มไฟเป็น +5 ⚡ พร้อมบันทึกสถิติรายข้อ
     function triggerQuizModal(fromTrap = false) {
       if (isGameOver) return;
+      
       const q = quizData[currentQ % quizData.length];
       document.getElementById('quiz-q-text').innerText = q.q;
       const list = document.getElementById('quiz-options-list');
       list.innerHTML = "";
 
       const modalTitle = document.getElementById('quiz-title');
-      const btnClose = document.getElementById('btn-close-quiz');
 
       if (fromTrap) {
-        modalTitle.innerText = "🚨 ติดกับดัก! ตอบเพื่อปลดปล่อย (ไม่คิดคะแนน)";
+        modalTitle.innerText = "🚨 ติดกับดัก! ตอบให้ถูกเพื่อปลดปล่อย";
         modalTitle.style.color = "#ef4444";
-        btnClose.classList.add('hidden');
       } else if (energy <= 0) {
-        modalTitle.innerText = "⚠️ พลังงานหมด! ตอบเพื่อชาร์จ (+5 ⚡)";
+        modalTitle.innerText = "⚠️ พลังงานหมด! ตอบให้ถูกเพื่อชาร์จ (+5 ⚡)";
         modalTitle.style.color = "#d97706";
-        btnClose.classList.add('hidden');
       } else {
         modalTitle.innerText = "⚡ ตอบคำถามชาร์จพลังงาน (+5 ⚡)";
         modalTitle.style.color = "#e01e37";
-        btnClose.classList.remove('hidden');
       }
 
       q.c.forEach((choice, idx) => {
@@ -979,34 +1164,40 @@
               if (releaseFromTrapCallback) releaseFromTrapCallback();
               showToast('🔓 ถูกต้อง! ปลดล็อกกับดักแล้ว');
             } else {
-              energy += 5; // ปรับเพิ่มพลังงานเป็น 5
+              energy += 5;
               correctCount += 1;
               document.getElementById('ui-energy').innerText = energy;
               showToast('🎉 ถูกต้อง! +5 ⚡');
               
-              // บันทึกว่าข้อนี้ตอบถูกแล้ว
               if (myQuizAnswers[q.id]) {
                 myQuizAnswers[q.id].correct = true;
               }
             }
             currentQ++;
+
+            if (currentPin && myPlayerId && !fromTrap) {
+              update(ref(db, `rooms/${currentPin}/players/${myPlayerId}`), {
+                correct: correctCount,
+                wrong: wrongCount,
+                quizStats: myQuizAnswers
+              });
+            }
           } else {
-            showToast('❌ คำตอบยังไม่ถูกต้อง ลองใหม่นะ');
+            showToast('❌ ผิด! เปลี่ยนคำถามใหม่ ลองตอบข้อนี้ดู');
             if (!fromTrap) {
               wrongCount += 1;
-              // บันทึกจำนวนครั้งที่ตอบผิดในข้อนี้
               if (myQuizAnswers[q.id]) {
                 myQuizAnswers[q.id].wrongAttempts += 1;
               }
+              if (currentPin && myPlayerId) {
+                update(ref(db, `rooms/${currentPin}/players/${myPlayerId}`), {
+                  wrong: wrongCount,
+                  quizStats: myQuizAnswers
+                });
+              }
             }
-          }
-
-          if (currentPin && myPlayerId && !fromTrap) {
-            update(ref(db, `rooms/${currentPin}/players/${myPlayerId}`), {
-              correct: correctCount,
-              wrong: wrongCount,
-              quizStats: myQuizAnswers // ซิงค์ประวัติรายข้อขึ้น Firebase
-            });
+            currentQ++;
+            triggerQuizModal(fromTrap);
           }
         };
         list.appendChild(b);
