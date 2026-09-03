@@ -3,14 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Hunter Cyber Mission - Endless Sweet Edition</title>
+  <title>Hunter Cyber Mission - Responsive Edition</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
     * {
       box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
       user-select: none;
       -webkit-user-select: none;
-      -webkit-touch-callout: none;
+      touch-action: manipulation;
     }
     html, body {
       margin: 0;
@@ -21,26 +22,28 @@
       background: #e0f2fe;
       color: #0f172a;
       font-family: system-ui, -apple-system, sans-serif;
-      touch-action: none;
     }
     body {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      position: relative;
     }
     .container {
-      background: rgba(255, 255, 255, 0.96);
+      background: rgba(255, 255, 255, 0.98);
       border: 2px solid #ff758f;
       border-radius: 24px;
-      padding: 22px;
+      padding: 20px;
       max-width: 480px;
       width: 90%;
       text-align: center;
-      box-shadow: 0 12px 35px rgba(255, 117, 143, 0.15);
+      box-shadow: 0 12px 35px rgba(255, 117, 143, 0.2);
       backdrop-filter: blur(12px);
       max-height: 94vh;
       overflow-y: auto;
+      z-index: 100;
+      position: relative;
     }
     h1 {
       color: #e01e37;
@@ -59,8 +62,8 @@
       cursor: pointer;
       width: 100%;
       margin: 8px 0;
-      touch-action: manipulation;
       box-shadow: 0 4px 14px rgba(255, 77, 109, 0.3);
+      display: block;
     }
     .btn:active { transform: scale(0.98); }
     .btn-excel {
@@ -79,6 +82,8 @@
       font-size: 16px;
       font-weight: bold;
       outline: none;
+      user-select: auto;
+      -webkit-user-select: auto;
     }
     .pin-display {
       font-size: 38px;
@@ -121,11 +126,14 @@
     .hidden { display: none !important; }
 
     #game-wrapper {
-      position: relative;
+      position: fixed;
+      top: 0;
+      left: 0;
       width: 100vw;
       height: 100vh;
       background: #e0f2fe;
       overflow: hidden;
+      z-index: 50;
     }
     canvas {
       display: block;
@@ -133,37 +141,56 @@
       height: 100%;
     }
 
+    /* แถบด้านบน: รวมคะแนน เวลา และปุ่มตอบคำถามไว้ข้างบนทั้งหมด */
     .game-top-bar {
       position: absolute;
-      top: env(safe-area-inset-top, 12px);
+      top: env(safe-area-inset-top, 10px);
       left: 12px;
       right: 12px;
       display: flex;
       justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      z-index: 70;
       pointer-events: none;
-      z-index: 10;
     }
     .stat-pill {
-      background: rgba(255, 255, 255, 0.92);
+      background: rgba(255, 255, 255, 0.94);
       border: 1.5px solid rgba(255, 117, 143, 0.4);
       backdrop-filter: blur(8px);
-      padding: 6px 14px;
+      padding: 6px 12px;
       border-radius: 20px;
       font-weight: 800;
-      font-size: 14px;
+      font-size: 13px;
       color: #0f172a;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      white-space: nowrap;
     }
+    .btn-top-quiz {
+      background: linear-gradient(135deg, #ff758f, #ff4d6d);
+      border: 1.5px solid #ffffff;
+      color: white;
+      padding: 7px 14px;
+      border-radius: 20px;
+      font-weight: 900;
+      font-size: 13px;
+      cursor: pointer;
+      box-shadow: 0 3px 10px rgba(255, 77, 109, 0.35);
+      pointer-events: auto;
+      white-space: nowrap;
+    }
+    .btn-top-quiz:active { transform: scale(0.95); }
 
+    /* แผงควบคุมมือถือด้านล่าง: แยกซ้าย-ขวา ชัดเจน ไม่ปนกับปุ่มอื่น */
     .controls-bar {
       position: absolute;
-      bottom: env(safe-area-inset-bottom, 14px);
+      bottom: env(safe-area-inset-bottom, 16px);
       left: 16px;
       right: 16px;
       display: flex;
       justify-content: space-between;
       align-items: flex-end;
-      z-index: 15;
+      z-index: 70;
       pointer-events: none;
     }
     .d-pad {
@@ -177,7 +204,7 @@
     .ctrl-btn {
       width: 72px;
       height: 72px;
-      background: rgba(255, 255, 255, 0.95);
+      background: rgba(255, 255, 255, 0.92);
       border: 2.5px solid #ff758f;
       color: #e01e37;
       font-size: 30px;
@@ -185,8 +212,9 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      touch-action: none;
       box-shadow: 0 6px 16px rgba(255, 117, 143, 0.25);
+      cursor: pointer;
+      touch-action: none;
     }
     .ctrl-btn:active {
       background: #ffe4e6;
@@ -196,43 +224,44 @@
       background: #10b981;
       border-color: #059669;
       color: white;
-      width: 80px;
-      height: 80px;
-      font-size: 36px;
+      width: 82px;
+      height: 82px;
+      font-size: 38px;
       box-shadow: 0 6px 18px rgba(16, 185, 129, 0.35);
     }
     .btn-jump-action:active {
       background: #047857;
       transform: scale(0.92);
     }
-    
-    .btn-answer-quiz {
-      position: absolute;
-      bottom: env(safe-area-inset-bottom, 20px);
-      left: 50%;
-      transform: translateX(-50%);
-      background: linear-gradient(180deg, #ff758f, #ff4d6d);
-      border: 2px solid #ffffff;
-      color: white;
-      padding: 12px 20px;
-      border-radius: 20px;
-      font-weight: 900;
-      font-size: 13px;
-      pointer-events: auto;
-      white-space: nowrap;
-      box-shadow: 0 4px 16px rgba(255, 77, 109, 0.35);
+
+    /* ปรับแต่งเมื่อหมุนเป็นแนวนอน */
+    @media (orientation: landscape) {
+      .ctrl-btn {
+        width: 65px;
+        height: 65px;
+        font-size: 26px;
+      }
+      .btn-jump-action {
+        width: 74px;
+        height: 74px;
+        font-size: 32px;
+      }
+      .controls-bar {
+        bottom: env(safe-area-inset-bottom, 10px);
+        left: 24px;
+        right: 24px;
+      }
     }
-    .btn-answer-quiz:active { transform: translateX(-50%) scale(0.95); }
 
     #quiz-modal {
-      position: absolute;
+      position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(15, 23, 42, 0.65);
       backdrop-filter: blur(8px);
       display: flex;
       align-items: center;
       justify-content: center;
-      z-index: 30;
+      z-index: 200;
       padding: 16px;
     }
     .quiz-card {
@@ -244,6 +273,8 @@
       border: 2px solid #ff758f;
       text-align: center;
       box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+      max-height: 90vh;
+      overflow-y: auto;
     }
     .quiz-option {
       background: #fff5f7;
@@ -257,7 +288,6 @@
       text-align: left;
       font-size: 14px;
       font-weight: 600;
-      transition: background 0.15s;
     }
     .quiz-option:active { background: #ff758f; color: white; border-color: #ff758f; }
 
@@ -278,16 +308,28 @@
       border-bottom: 1px solid #f1f5f9;
     }
   </style>
+  <script>
+    function switchScreen(id) {
+      ['view-mode', 'view-host', 'view-host-live', 'view-join', 'view-waiting', 'game-wrapper', 'view-result'].forEach(function(v) {
+        var el = document.getElementById(v);
+        if (el) el.classList.add('hidden');
+      });
+      var target = document.getElementById(id);
+      if (target) target.classList.remove('hidden');
+    }
+  </script>
 </head>
 <body>
 
+  <!-- 1. หน้าแรก -->
   <div id="view-mode" class="container">
     <h1>HUNTER CYBER MISSION</h1>
-    <p style="color: #64748b; font-size:14px; margin-bottom: 16px;">เกมตอบคำถามชิงความสูง (Endless Sweet Edition)</p>
-    <button class="btn" id="btn-mode-host">👑 ผู้สอน (Host สร้างห้อง)</button>
-    <button class="btn" id="btn-mode-join" style="background:#475569;">🎮 ผู้เรียน (Join เข้าเล่น)</button>
+    <p style="color: #64748b; font-size:14px; margin-bottom: 16px;">เกมตอบคำถามชิงความสูง (Word Master)</p>
+    <button class="btn" id="btn-mode-host" onclick="window.onHostClick ? window.onHostClick() : switchScreen('view-host')">👑 ผู้สอน (Host สร้างห้อง)</button>
+    <button class="btn" id="btn-mode-join" style="background:#475569;" onclick="switchScreen('view-join')">🎮 ผู้เรียน (Join เข้าเล่น)</button>
   </div>
 
+  <!-- 2. โฮสต์สร้างห้อง -->
   <div id="view-host" class="container hidden">
     <h2>ห้องควบคุมโฮสต์</h2>
     <p style="margin-bottom:2px; font-size:13px; color:#64748b;">รหัสเข้าห้อง (Room PIN):</p>
@@ -313,6 +355,7 @@
     <button id="btn-start" class="btn" style="background: linear-gradient(135deg, #10b981, #059669);" disabled>🚀 เริ่มการแข่งขัน</button>
   </div>
 
+  <!-- 3. โฮสต์ดูสด -->
   <div id="view-host-live" class="container hidden">
     <h2>📡 การแข่งขันสด</h2>
     <div style="font-size:32px; font-weight:900; color:#ef4444; margin:8px 0;">
@@ -321,13 +364,16 @@
     <div id="live-ranking" style="text-align: left; margin-top:10px; max-height:220px; overflow-y:auto;"></div>
   </div>
 
+  <!-- 4. หน้าเข้าห้องผู้เรียน -->
   <div id="view-join" class="container hidden">
     <h2>เข้าสู่สมรภูมิขนมหวาน</h2>
     <input type="text" id="input-pin" placeholder="รหัสห้อง 6 หลัก" maxlength="6" inputmode="numeric">
     <input type="text" id="input-name" placeholder="ชื่อเล่นของคุณ" maxlength="12">
     <button class="btn" id="btn-do-join">เข้าสู่ห้อง</button>
+    <button class="btn" style="background:#64748b; padding:10px;" onclick="switchScreen('view-mode')">ย้อนกลับ</button>
   </div>
 
+  <!-- 5. ผู้เรียนรอเริ่ม -->
   <div id="view-waiting" class="container hidden">
     <h2>ห้องเตรียมพร้อม</h2>
     <p>รหัสห้อง: <b id="wait-pin" style="color:#e01e37;"></b></p>
@@ -335,17 +381,19 @@
     <p style="color: #f59e0b; margin-top:18px; font-size:15px; font-weight:bold;">⏳ รอสัญญาณปล่อยตัวจากผู้สอน...</p>
   </div>
 
+  <!-- 6. หน้าจอเล่นเกม Canvas -->
   <div id="game-wrapper" class="hidden">
     <canvas id="gameCanvas"></canvas>
 
+    <!-- แถบด้านบน รวมปุ่มคำถามกับสถานะ -->
     <div class="game-top-bar">
       <div class="stat-pill">⚡ <span id="ui-energy" style="color:#d97706;">5</span></div>
-      <div class="stat-pill" style="color:#ef4444;">⏱️ <span id="ui-timer">00:00</span></div>
-      <div class="stat-pill">🎯 <span id="ui-height" style="color:#0284c7;">0</span> m</div>
+      <button class="btn-top-quiz" id="btn-open-quiz">⚡ ตอบคำถาม (+3)</button>
+      <div class="stat-pill">⏱️ <span id="ui-timer">00:00</span></div>
+      <div class="stat-pill">🎯 <span id="ui-height" style="color:#0284c7;">0</span>m</div>
     </div>
 
-    <button class="btn-answer-quiz" id="btn-open-quiz">⚡ ตอบคำถาม (+3 ⚡)</button>
-
+    <!-- แผงสัมผัสซ้าย-ขวา แยกกันสมบูรณ์ -->
     <div class="controls-bar">
       <div class="d-pad">
         <div class="ctrl-btn" id="btn-left">◀</div>
@@ -366,6 +414,7 @@
     </div>
   </div>
 
+  <!-- 7. สรุปผลการแข่งขัน -->
   <div id="view-result" class="container hidden">
     <h2 style="color:#d97706; margin-bottom:4px;">🏁 หมดเวลาการแข่งขัน!</h2>
     <p style="color:#64748b; font-size:13px; margin:0 0 10px 0;">ตารางสรุปคะแนนและอันดับ</p>
@@ -468,35 +517,18 @@
       { x: 300, y: 550, scale: 1.0, speed: 0.35 }
     ];
 
-    function showView(id) {
-      ['view-mode', 'view-host', 'view-host-live', 'view-join', 'view-waiting', 'game-wrapper', 'view-result'].forEach(v => {
-        document.getElementById(v).classList.add('hidden');
-      });
-      document.getElementById(id).classList.remove('hidden');
-    }
-
     function formatTime(seconds) {
       const m = Math.floor(seconds / 60);
       const s = seconds % 60;
       return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
     }
 
-    window.addEventListener('DOMContentLoaded', () => {
-      const urlParams = new URLSearchParams(window.location.search);
-      const pinParam = urlParams.get('pin');
-      if (pinParam) {
-        document.getElementById('input-pin').value = pinParam;
-        showView('view-join');
-      }
-    });
-
-    document.getElementById('btn-mode-host').onclick = async () => {
-      showView('view-host');
+    window.onHostClick = function() {
+      switchScreen('view-host');
       currentPin = Math.floor(100000 + Math.random() * 900000).toString();
       document.getElementById('host-pin').innerText = currentPin;
 
       const joinUrl = window.location.origin + window.location.pathname + '?pin=' + currentPin;
-
       document.getElementById('qrcode').innerHTML = "";
       new QRCode(document.getElementById("qrcode"), {
         text: joinUrl,
@@ -509,7 +541,7 @@
         alert('📋 คัดลอกลิงก์เรียบร้อย');
       };
 
-      await set(ref(db, `rooms/${currentPin}`), { status: 'waiting' });
+      set(ref(db, `rooms/${currentPin}`), { status: 'waiting' });
 
       onValue(ref(db, `rooms/${currentPin}/players`), (snap) => {
         allPlayersData = snap.val() || {};
@@ -525,7 +557,6 @@
           list.appendChild(b);
         });
         document.getElementById('btn-start').disabled = keys.length === 0;
-
         renderLiveRanking();
       });
 
@@ -536,8 +567,6 @@
       });
     };
 
-    document.getElementById('btn-mode-join').onclick = () => showView('view-join');
-
     document.getElementById('btn-start').onclick = async () => {
       const minutes = parseInt(document.getElementById('select-duration').value) || 3;
       const endTime = Date.now() + (minutes * 60 * 1000);
@@ -547,7 +576,7 @@
         endTime: endTime
       });
 
-      showView('view-host-live');
+      switchScreen('view-host-live');
 
       const timerInt = setInterval(() => {
         const remainSec = Math.max(0, Math.floor((endTime - Date.now()) / 1000));
@@ -558,21 +587,6 @@
         }
       }, 500);
     };
-
-    function renderLiveRanking() {
-      const rankDiv = document.getElementById('live-ranking');
-      if (!rankDiv) return;
-      rankDiv.innerHTML = "";
-      Object.values(allPlayersData)
-        .sort((a,b) => (b.height || 0) - (a.height || 0))
-        .forEach((p, idx) => {
-          rankDiv.innerHTML += `
-            <div style="padding:6px 0; border-bottom:1px solid #ffe4e6; font-size:13px; display:flex; justify-content:space-between;">
-              <span><b>#${idx+1} ${p.name}</b></span>
-              <span>สูง: <b style="color:#0284c7;">${p.height || 0}m</b> | ถูก: <b style="color:#10b981;">${p.correct || 0}</b></span>
-            </div>`;
-        });
-    }
 
     document.getElementById('btn-do-join').onclick = () => {
       const pin = document.getElementById('input-pin').value.trim();
@@ -602,7 +616,7 @@
           });
           document.getElementById('wait-pin').innerText = pin;
           document.getElementById('wait-name').innerText = name;
-          showView('view-waiting');
+          switchScreen('view-waiting');
 
           onValue(ref(db, `rooms/${pin}/players`), (pSnap) => {
             allPlayersData = pSnap.val() || {};
@@ -610,7 +624,7 @@
         }
 
         if (room.status === 'playing' && !isGameOver && document.getElementById('game-wrapper').classList.contains('hidden')) {
-          showView('game-wrapper');
+          switchScreen('game-wrapper');
           initSweetPlatformer();
           startPlayerTimer(room.endTime);
         }
@@ -620,6 +634,62 @@
         }
       });
     };
+
+    document.getElementById('btn-export-excel').onclick = () => {
+      const sorted = Object.values(allPlayersData)
+        .sort((a,b) => (b.height || 0) - (a.height || 0));
+
+      if (sorted.length === 0) return alert('ไม่มีข้อมูลคะแนน');
+
+      let csvContent = "\uFEFF";
+      csvContent += "อันดับ,ชื่อผู้เล่น,ความสูงสูงสุด (เมตร),ตอบถูก (ข้อ),ตอบผิด (ข้อ),รวมข้อที่ตอบ (ข้อ),ความแม่นยำ (%)\n";
+
+      sorted.forEach((p, idx) => {
+        const correct = p.correct || 0;
+        const wrong = p.wrong || 0;
+        const total = correct + wrong;
+        const accuracy = total > 0 ? ((correct / total) * 100).toFixed(1) : "0.0";
+        const safeName = `"${(p.name || 'Agent').replace(/"/g, '""')}"`;
+        csvContent += `${idx + 1},${safeName},${p.height || 0},${correct},${wrong},${total},${accuracy}%\n`;
+      });
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.setAttribute("href", url);
+      link.setAttribute("download", `คะแนนเกม_${currentPin || 'SweetWord'}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    };
+
+    document.getElementById('btn-open-quiz').onclick = () => triggerQuizModal(false);
+    document.getElementById('btn-close-quiz').onclick = () => {
+      if (energy > 0 && !isTrapped) document.getElementById('quiz-modal').classList.add('hidden');
+    };
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const pinParam = urlParams.get('pin');
+    if (pinParam) {
+      document.getElementById('input-pin').value = pinParam;
+      switchScreen('view-join');
+    }
+
+    function renderLiveRanking() {
+      const rankDiv = document.getElementById('live-ranking');
+      if (!rankDiv) return;
+      rankDiv.innerHTML = "";
+      Object.values(allPlayersData)
+        .sort((a,b) => (b.height || 0) - (a.height || 0))
+        .forEach((p, idx) => {
+          rankDiv.innerHTML += `
+            <div style="padding:6px 0; border-bottom:1px solid #ffe4e6; font-size:13px; display:flex; justify-content:space-between;">
+              <span><b>#${idx+1} ${p.name}</b></span>
+              <span>สูง: <b style="color:#0284c7;">${p.height || 0}m</b> | ถูก: <b style="color:#10b981;">${p.correct || 0}</b></span>
+            </div>`;
+        });
+    }
 
     function startPlayerTimer(endTime) {
       if (timerInterval) clearInterval(timerInterval);
@@ -665,37 +735,8 @@
         `;
       });
 
-      showView('view-result');
+      switchScreen('view-result');
     }
-
-    document.getElementById('btn-export-excel').onclick = () => {
-      const sorted = Object.values(allPlayersData)
-        .sort((a,b) => (b.height || 0) - (a.height || 0));
-
-      if (sorted.length === 0) return alert('ไม่มีข้อมูลคะแนน');
-
-      let csvContent = "\uFEFF";
-      csvContent += "อันดับ,ชื่อผู้เล่น,ความสูงสูงสุด (เมตร),ตอบถูก (ข้อ),ตอบผิด (ข้อ),รวมข้อที่ตอบ (ข้อ),ความแม่นยำ (%)\n";
-
-      sorted.forEach((p, idx) => {
-        const correct = p.correct || 0;
-        const wrong = p.wrong || 0;
-        const total = correct + wrong;
-        const accuracy = total > 0 ? ((correct / total) * 100).toFixed(1) : "0.0";
-        const safeName = `"${(p.name || 'Agent').replace(/"/g, '""')}"`;
-        csvContent += `${idx + 1},${safeName},${p.height || 0},${correct},${wrong},${total},${accuracy}%\n`;
-      });
-
-      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.setAttribute("href", url);
-      link.setAttribute("download", `คะแนนเกม_${currentPin || 'SweetWord'}_${new Date().toLocaleDateString('th-TH')}.csv`);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-    };
 
     function triggerQuizModal(fromTrap = false) {
       if (isGameOver) return;
@@ -969,6 +1010,7 @@
       }
       resize();
       window.addEventListener('resize', resize);
+      window.addEventListener('orientationchange', () => setTimeout(resize, 200));
 
       const player = {
         x: canvas.width / 2 - 17,
@@ -999,8 +1041,6 @@
       let lastY = canvas.height - 110;
       const screenW = Math.max(360, canvas.width);
       const platTypes = ['waffle', 'jelly', 'cake', 'choco'];
-
-      // ขยายด่านเป็น 350 แท่น (ความสูงเกิน 2,500+ เมตร รองรับเวลาการแข่งขันเต็มที่)
       const TOTAL_PLATFORMS = 350;
 
       for (let i = 0; i < TOTAL_PLATFORMS; i++) {
@@ -1009,17 +1049,15 @@
         const pR2 = Math.cos(i * 41 + 5) * 10000;
         const norm2 = pR2 - Math.floor(pR2);
 
-        // คำนวณความกว้างตามระดับความสูง (ช่วงล่างกว้างกว่า ช่วงบนท้าทายขึ้นแต่ยังเหยียบง่าย)
         let w = 135;
         if (i < 40) {
-          w = Math.floor(norm1 * 20) + 130; // 130 - 150px
+          w = Math.floor(norm1 * 20) + 130;
         } else if (i < 120) {
-          w = Math.floor(norm1 * 20) + 115; // 115 - 135px
+          w = Math.floor(norm1 * 20) + 115;
         } else {
-          w = Math.floor(norm1 * 20) + 100; // 100 - 120px
+          w = Math.floor(norm1 * 20) + 100;
         }
 
-        // ล็อกระยะห่างแนวตั้ง 46 - 48px การันตีกระโดดถึง 100% แน่นอน
         const distY = 47;
         lastY -= distY;
 
@@ -1028,7 +1066,6 @@
         let moveSpeed = 0;
         let minX = 15, maxX = screenW - w - 15;
 
-        // สุ่มแท่นเคลื่อนที่ (ความถี่ตามระดับความสูง)
         const moveChance = i < 40 ? 0.15 : (i < 120 ? 0.28 : 0.38);
         if (i > 3 && norm1 < moveChance) {
           isMoving = true;
@@ -1036,7 +1073,6 @@
           moveSpeed = (i % 2 === 0 ? 1 : -1) * (baseSpeed + norm2 * 0.7);
         }
 
-        // สลับตำแหน่งซ้าย-ขวาอย่างสมดุล ไม่หลุดจอ
         const xSpan = screenW - w - 40;
         const x = (i % 2 === 0) 
           ? (norm2 * (xSpan * 0.45) + 20) 
@@ -1054,12 +1090,10 @@
           maxX: maxX
         });
 
-        // สปริงบูสเตอร์เด้งสูง (กระจายสม่ำเสมอทุกๆ ช่วงความสูง)
         if (i > 2 && (norm1 > 0.82 || i % 15 === 0)) {
           boosters.push({ x: x + w / 2 - 16, y: lastY - 8, w: 32, h: 8, parentIdx: platforms.length - 1 });
         }
 
-        // กับดักวางเฉพาะบนแท่นที่ไม่เคลื่อนที่ และเว้นที่ว่างให้เหยียบหลบได้
         if (i > 4 && norm2 < 0.22 && !isMoving) {
           traps.push({ x: x + w / 2 - 10, y: lastY - 5, w: 20, h: 5 });
         }
@@ -1067,10 +1101,12 @@
 
       const keys = { left: false, right: false };
 
-      const bindTouch = (id, keyName, dir) => {
+      const setupButton = (id, keyName, dir) => {
         const el = document.getElementById(id);
-        const onStart = (e) => {
-          e.preventDefault();
+        if (!el) return;
+
+        const startAction = (e) => {
+          if (e.cancelable) e.preventDefault();
           if (isTrapped) return;
           if (energy <= 0) {
             triggerQuizModal(false);
@@ -1079,28 +1115,29 @@
           keys[keyName] = true;
           facing = dir;
         };
-        const onEnd = (e) => {
-          e.preventDefault();
+
+        const stopAction = (e) => {
+          if (e.cancelable) e.preventDefault();
           keys[keyName] = false;
         };
 
-        el.addEventListener('touchstart', onStart, { passive: false });
-        el.addEventListener('touchend', onEnd, { passive: false });
-        el.addEventListener('pointerdown', onStart);
-        el.addEventListener('pointerup', onEnd);
-        el.addEventListener('pointercancel', onEnd);
+        el.addEventListener('touchstart', startAction, { passive: false });
+        el.addEventListener('touchend', stopAction, { passive: false });
+        el.addEventListener('mousedown', startAction);
+        el.addEventListener('mouseup', stopAction);
+        el.addEventListener('mouseleave', stopAction);
       };
 
-      bindTouch('btn-left', 'left', 'left');
-      bindTouch('btn-right', 'right', 'right');
+      setupButton('btn-left', 'left', 'left');
+      setupButton('btn-right', 'right', 'right');
 
       const btnJump = document.getElementById('btn-jump');
-      const onJumpPress = (e) => {
-        e.preventDefault();
+      const jumpAction = (e) => {
+        if (e.cancelable) e.preventDefault();
         doJump();
       };
-      btnJump.addEventListener('touchstart', onJumpPress, { passive: false });
-      btnJump.addEventListener('pointerdown', onJumpPress);
+      btnJump.addEventListener('touchstart', jumpAction, { passive: false });
+      btnJump.addEventListener('mousedown', jumpAction);
 
       window.addEventListener('keydown', (e) => {
         if (isGameOver || isTrapped) return;
@@ -1307,11 +1344,6 @@
 
       gameLoop();
     }
-
-    document.getElementById('btn-open-quiz').onclick = () => triggerQuizModal(false);
-    document.getElementById('btn-close-quiz').onclick = () => {
-      if (energy > 0 && !isTrapped) document.getElementById('quiz-modal').classList.add('hidden');
-    };
   </script>
 </body>
 </html>
