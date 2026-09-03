@@ -1,0 +1,1317 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Hunter Cyber Mission - Endless Sweet Edition</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
+    }
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #e0f2fe;
+      color: #0f172a;
+      font-family: system-ui, -apple-system, sans-serif;
+      touch-action: none;
+    }
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .container {
+      background: rgba(255, 255, 255, 0.96);
+      border: 2px solid #ff758f;
+      border-radius: 24px;
+      padding: 22px;
+      max-width: 480px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 12px 35px rgba(255, 117, 143, 0.15);
+      backdrop-filter: blur(12px);
+      max-height: 94vh;
+      overflow-y: auto;
+    }
+    h1 {
+      color: #e01e37;
+      margin: 0 0 8px 0;
+      font-size: 24px;
+      letter-spacing: 0.5px;
+    }
+    .btn {
+      background: linear-gradient(135deg, #ff758f, #ff4d6d);
+      color: white;
+      border: none;
+      padding: 13px;
+      border-radius: 14px;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      width: 100%;
+      margin: 8px 0;
+      touch-action: manipulation;
+      box-shadow: 0 4px 14px rgba(255, 77, 109, 0.3);
+    }
+    .btn:active { transform: scale(0.98); }
+    .btn-excel {
+      background: linear-gradient(135deg, #10b981, #047857);
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
+    }
+    input, select {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      border-radius: 12px;
+      border: 1.5px solid #ff758f;
+      background: #fff5f7;
+      color: #e01e37;
+      text-align: center;
+      font-size: 16px;
+      font-weight: bold;
+      outline: none;
+    }
+    .pin-display {
+      font-size: 38px;
+      letter-spacing: 6px;
+      font-weight: 900;
+      color: #e01e37;
+      background: #ffe4e6;
+      padding: 6px;
+      border-radius: 14px;
+      margin: 8px 0;
+      border: 2px dashed #ff758f;
+    }
+    .qr-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: #fff;
+      padding: 10px;
+      border-radius: 14px;
+      width: fit-content;
+      margin: 8px auto;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    }
+    .badge-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      justify-content: center;
+      margin: 10px 0;
+    }
+    .badge {
+      background: #ffe4e6;
+      border: 1px solid #ff758f;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      color: #e01e37;
+      font-weight: bold;
+    }
+    .hidden { display: none !important; }
+
+    #game-wrapper {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      background: #e0f2fe;
+      overflow: hidden;
+    }
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .game-top-bar {
+      position: absolute;
+      top: env(safe-area-inset-top, 12px);
+      left: 12px;
+      right: 12px;
+      display: flex;
+      justify-content: space-between;
+      pointer-events: none;
+      z-index: 10;
+    }
+    .stat-pill {
+      background: rgba(255, 255, 255, 0.92);
+      border: 1.5px solid rgba(255, 117, 143, 0.4);
+      backdrop-filter: blur(8px);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-weight: 800;
+      font-size: 14px;
+      color: #0f172a;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .controls-bar {
+      position: absolute;
+      bottom: env(safe-area-inset-bottom, 14px);
+      left: 16px;
+      right: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      z-index: 15;
+      pointer-events: none;
+    }
+    .d-pad {
+      display: flex;
+      gap: 14px;
+      pointer-events: auto;
+    }
+    .action-pad {
+      pointer-events: auto;
+    }
+    .ctrl-btn {
+      width: 72px;
+      height: 72px;
+      background: rgba(255, 255, 255, 0.95);
+      border: 2.5px solid #ff758f;
+      color: #e01e37;
+      font-size: 30px;
+      border-radius: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      touch-action: none;
+      box-shadow: 0 6px 16px rgba(255, 117, 143, 0.25);
+    }
+    .ctrl-btn:active {
+      background: #ffe4e6;
+      transform: scale(0.92);
+    }
+    .btn-jump-action {
+      background: #10b981;
+      border-color: #059669;
+      color: white;
+      width: 80px;
+      height: 80px;
+      font-size: 36px;
+      box-shadow: 0 6px 18px rgba(16, 185, 129, 0.35);
+    }
+    .btn-jump-action:active {
+      background: #047857;
+      transform: scale(0.92);
+    }
+    
+    .btn-answer-quiz {
+      position: absolute;
+      bottom: env(safe-area-inset-bottom, 20px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(180deg, #ff758f, #ff4d6d);
+      border: 2px solid #ffffff;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 20px;
+      font-weight: 900;
+      font-size: 13px;
+      pointer-events: auto;
+      white-space: nowrap;
+      box-shadow: 0 4px 16px rgba(255, 77, 109, 0.35);
+    }
+    .btn-answer-quiz:active { transform: translateX(-50%) scale(0.95); }
+
+    #quiz-modal {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 30;
+      padding: 16px;
+    }
+    .quiz-card {
+      background: #ffffff;
+      padding: 22px;
+      border-radius: 22px;
+      width: 100%;
+      max-width: 440px;
+      border: 2px solid #ff758f;
+      text-align: center;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+    }
+    .quiz-option {
+      background: #fff5f7;
+      border: 1.5px solid #ffccd5;
+      color: #e01e37;
+      padding: 12px 14px;
+      border-radius: 14px;
+      width: 100%;
+      margin: 8px 0;
+      cursor: pointer;
+      text-align: left;
+      font-size: 14px;
+      font-weight: 600;
+      transition: background 0.15s;
+    }
+    .quiz-option:active { background: #ff758f; color: white; border-color: #ff758f; }
+
+    .leaderboard-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      text-align: left;
+      font-size: 14px;
+    }
+    .leaderboard-table th {
+      color: #64748b;
+      padding: 8px 4px;
+      border-bottom: 2px solid #e2e8f0;
+    }
+    .leaderboard-table td {
+      padding: 10px 4px;
+      border-bottom: 1px solid #f1f5f9;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="view-mode" class="container">
+    <h1>HUNTER CYBER MISSION</h1>
+    <p style="color: #64748b; font-size:14px; margin-bottom: 16px;">เกมตอบคำถามชิงความสูง (Endless Sweet Edition)</p>
+    <button class="btn" id="btn-mode-host">👑 ผู้สอน (Host สร้างห้อง)</button>
+    <button class="btn" id="btn-mode-join" style="background:#475569;">🎮 ผู้เรียน (Join เข้าเล่น)</button>
+  </div>
+
+  <div id="view-host" class="container hidden">
+    <h2>ห้องควบคุมโฮสต์</h2>
+    <p style="margin-bottom:2px; font-size:13px; color:#64748b;">รหัสเข้าห้อง (Room PIN):</p>
+    <div id="host-pin" class="pin-display">------</div>
+    
+    <div class="qr-container">
+      <div id="qrcode"></div>
+      <span style="color:#e01e37; font-size:11px; font-weight:bold; margin-top:4px;">สแกนเพื่อเข้าห้อง</span>
+    </div>
+    
+    <button class="btn" id="btn-copy-link" style="padding:8px; font-size:12px; margin:4px 0 8px 0;">📋 คัดลอกลิงก์ส่งให้นักเรียน</button>
+
+    <label style="color:#64748b; font-size:12px;">ระยะเวลาแข่งขัน:</label>
+    <select id="select-duration">
+      <option value="1">1 นาที (ทดสอบ)</option>
+      <option value="3" selected>3 นาที</option>
+      <option value="5">5 นาที</option>
+      <option value="10">10 นาที</option>
+    </select>
+
+    <p style="margin: 8px 0 4px 0; font-size:13px; color:#64748b;">ผู้เล่นในห้อง (<span id="player-count">0</span> คน):</p>
+    <div id="host-players" class="badge-list"></div>
+    <button id="btn-start" class="btn" style="background: linear-gradient(135deg, #10b981, #059669);" disabled>🚀 เริ่มการแข่งขัน</button>
+  </div>
+
+  <div id="view-host-live" class="container hidden">
+    <h2>📡 การแข่งขันสด</h2>
+    <div style="font-size:32px; font-weight:900; color:#ef4444; margin:8px 0;">
+      ⏳ <span id="host-timer">00:00</span>
+    </div>
+    <div id="live-ranking" style="text-align: left; margin-top:10px; max-height:220px; overflow-y:auto;"></div>
+  </div>
+
+  <div id="view-join" class="container hidden">
+    <h2>เข้าสู่สมรภูมิขนมหวาน</h2>
+    <input type="text" id="input-pin" placeholder="รหัสห้อง 6 หลัก" maxlength="6" inputmode="numeric">
+    <input type="text" id="input-name" placeholder="ชื่อเล่นของคุณ" maxlength="12">
+    <button class="btn" id="btn-do-join">เข้าสู่ห้อง</button>
+  </div>
+
+  <div id="view-waiting" class="container hidden">
+    <h2>ห้องเตรียมพร้อม</h2>
+    <p>รหัสห้อง: <b id="wait-pin" style="color:#e01e37;"></b></p>
+    <p>ผู้เล่น: <b id="wait-name" style="color:#10b981;"></b></p>
+    <p style="color: #f59e0b; margin-top:18px; font-size:15px; font-weight:bold;">⏳ รอสัญญาณปล่อยตัวจากผู้สอน...</p>
+  </div>
+
+  <div id="game-wrapper" class="hidden">
+    <canvas id="gameCanvas"></canvas>
+
+    <div class="game-top-bar">
+      <div class="stat-pill">⚡ <span id="ui-energy" style="color:#d97706;">5</span></div>
+      <div class="stat-pill" style="color:#ef4444;">⏱️ <span id="ui-timer">00:00</span></div>
+      <div class="stat-pill">🎯 <span id="ui-height" style="color:#0284c7;">0</span> m</div>
+    </div>
+
+    <button class="btn-answer-quiz" id="btn-open-quiz">⚡ ตอบคำถาม (+3 ⚡)</button>
+
+    <div class="controls-bar">
+      <div class="d-pad">
+        <div class="ctrl-btn" id="btn-left">◀</div>
+        <div class="ctrl-btn" id="btn-right">▶</div>
+      </div>
+      <div class="action-pad">
+        <div class="ctrl-btn btn-jump-action" id="btn-jump">▲</div>
+      </div>
+    </div>
+
+    <div id="quiz-modal" class="hidden">
+      <div class="quiz-card">
+        <h3 id="quiz-title" style="margin:0 0 10px 0; font-size:16px; color:#e01e37;">⚡ ตอบคำถาม</h3>
+        <p id="quiz-q-text" style="font-weight:bold; font-size:14px; margin:10px 0; color:#0f172a; line-height:1.4;"></p>
+        <div id="quiz-options-list"></div>
+        <button class="btn" id="btn-close-quiz" style="background:#64748b; margin-top:10px; padding:10px;">ปิดหน้าต่าง</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="view-result" class="container hidden">
+    <h2 style="color:#d97706; margin-bottom:4px;">🏁 หมดเวลาการแข่งขัน!</h2>
+    <p style="color:#64748b; font-size:13px; margin:0 0 10px 0;">ตารางสรุปคะแนนและอันดับ</p>
+    
+    <table class="leaderboard-table">
+      <thead>
+        <tr>
+          <th>อันดับ/ผู้เล่น</th>
+          <th style="text-align:center;">ความสูง</th>
+          <th style="text-align:center;">ถูก (⚡)</th>
+          <th style="text-align:center;">ผิด</th>
+        </tr>
+      </thead>
+      <tbody id="result-leaderboard-body"></tbody>
+    </table>
+
+    <button class="btn btn-excel" id="btn-export-excel">📥 บันทึกคะแนนลงใน Excel (.csv)</button>
+    <button class="btn" onclick="location.reload()" style="margin-top:6px; background:#475569;">🔄 เริ่มเกมใหม่</button>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+    import { getDatabase, ref, set, update, onValue, push } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyA9RMnSd0hFU1g3dySplJI1wEkKZxERsc0",
+      authDomain: "hunter-cyber-mission.firebaseapp.com",
+      databaseURL: "https://hunter-cyber-mission-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "hunter-cyber-mission",
+      storageBucket: "hunter-cyber-mission.firebasestorage.app",
+      messagingSenderId: "1039291880413",
+      appId: "1:1039291880413:web:fe7815591317e09ad91c34",
+      measurementId: "G-HC5E16JK92"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const SWEET_PALETTES = [
+      { main: '#ff758f', dark: '#e01e37', blush: '#ff4d6d' },
+      { main: '#38bdf8', dark: '#0284c7', blush: '#7dd3fc' },
+      { main: '#34d399', dark: '#059669', blush: '#6ee7b7' },
+      { main: '#fbbf24', dark: '#d97706', blush: '#fcd34d' },
+      { main: '#c084fc', dark: '#7c3aed', blush: '#d8b4fe' },
+      { main: '#f472b6', dark: '#db2777', blush: '#f9a8d4' },
+      { main: '#2dd4bf', dark: '#0d9488', blush: '#5eead4' },
+      { main: '#a3e635', dark: '#65a30d', blush: '#bef264' }
+    ];
+
+    const quizData = [
+      { q: "ปุ่มลัดใดใช้สำหรับ 'ปิดหน้าต่างเอกสารปัจจุบัน' ในโปรแกรม Microsoft Word?", c: ["Ctrl + W", "Ctrl + S", "Ctrl + N", "Ctrl + O"], a: 0 },
+      { q: "หากต้องการขึ้น 'หน้าใหม่' (Page Break) ทันทีโดยไม่ต้องกด Enter หลายครั้ง ควรใช้ปุ่มลัดใด?", c: ["Shift + Enter", "Ctrl + Enter", "Alt + Enter", "Tab + Enter"], a: 1 },
+      { q: "เครื่องมือ 'Text Highlight Color' (รูปปากกาเน้นข้อความ) มีประโยชน์อย่างไร?", c: ["เปลี่ยนสีของตัวอักษรทั้งหมด", "ไฮไลต์สีพื้นหลังของข้อความที่เลือกเพื่อเน้นจุดสำคัญ", "ลบข้อความที่เลือกทิ้ง", "ขีดเส้นใต้ข้อความแบบหนา"], a: 1 },
+      { q: "หากต้องการแทรก 'รูปร่างอัตโนมัติ' เช่น สี่เหลี่ยม วงกลม หรือลูกศร ควรเลือกคำสั่งใด?", c: ["Insert → Shapes", "Layout → Margins", "Home → Paragraph", "View → Zoom"], a: 0 },
+      { q: "หากต้องการจัดข้อความให้ 'ชิดขวา' หน้ากระดาษ ควรใช้ปุ่มลัดใด?", c: ["Ctrl + L", "Ctrl + E", "Ctrl + R", "Ctrl + J"], a: 2 },
+      { q: "เครื่องมือ 'WordArt' ในแท็บ Insert มีหน้าที่หลักคืออะไร?", c: ["ใส่ตารางคำนวณ", "สร้างข้อความศิลป์ที่มีรูปแบบสวยงามและมีมิติ", "วาดภาพลายเส้นแบบอิสระ", "ใส่กรอบหน้ากระดาษ"], a: 1 },
+      { q: "หากต้องการตรวจสอบการสะกดคำและไวยากรณ์ (Spelling & Grammar) ในเอกสาร ควรไปที่แท็บใด?", c: ["Home", "Insert", "Layout", "Review"], a: 3 },
+      { q: "เครื่องมือ 'Page Borders' (เส้นขอบหน้ากระดาษ) อยู่ในแท็บใดของ Microsoft Word?", c: ["Home", "Insert", "Design", "View"], a: 2 },
+      { q: "หากต้องการปรับ 'การตัดข้อความรอบรูปภาพ' (Wrap Text) ต้องคลิกที่รูปภาพแล้วเลือกแท็บใด?", c: ["Picture Format", "Table Design", "References", "Mailings"], a: 0 },
+      { q: "นามสกุลไฟล์เอกสารมาตรฐานของโปรแกรม Microsoft Word ในปัจจุบันคืออะไร?", c: [".xlsx", ".pptx", ".docx", ".html"], a: 2 },
+      { q: "หากต้องการเปิดเอกสาร Word ที่มีอยู่แล้ว ควรใช้คำสั่งใด?", c: ["New", "Open", "Close", "Print"], a: 1 },
+      { q: "หากต้องการเปลี่ยนขนาดตัวอักษรใน Microsoft Word ควรใช้เครื่องมือใด?", c: ["Font Size", "Font Color", "Paragraph", "Styles"], a: 0 },
+      { q: "ปุ่มลัด Ctrl + C มีหน้าที่อะไร?", c: ["วางข้อความ", "ตัดข้อความ", "คัดลอกข้อความ", "บันทึกเอกสาร"], a: 2 },
+      { q: "หากต้องการค้นหาคำหรือข้อความบางคำภายในเอกสารอย่างรวดเร็ว ควรใช้ปุ่มลัดใด?", c: ["Ctrl + F", "Ctrl + H", "Ctrl + E", "Ctrl + K"], a: 0 },
+      { q: "เครื่องมือ Bullets ใน Microsoft Word ใช้สำหรับทำอะไร?", c: ["สร้างรายการแบบหัวข้อย่อย", "เปลี่ยนสีตัวอักษร", "แทรกรูปภาพ", "เปลี่ยนขนาดกระดาษ"], a: 0 },
+      { q: "หากต้องการทำให้ข้อความมีเส้นขีดใต้ ควรใช้ปุ่มลัดใด?", c: ["Ctrl + B", "Ctrl + I", "Ctrl + U", "Ctrl + P"], a: 2 },
+      { q: "หากต้องการตั้งระยะขอบกระดาษของเอกสาร ควรเลือกคำสั่งใด?", c: ["Layout → Margins", "Insert → Table", "Home → Font", "Review → Language"], a: 0 },
+      { q: "หากต้องการพิมพ์เอกสารออกทางเครื่องพิมพ์ ควรใช้ปุ่มลัดใด?", c: ["Ctrl + S", "Ctrl + P", "Ctrl + C", "Ctrl + F"], a: 1 },
+      { q: "หากต้องการแทนที่คำหนึ่งด้วยอีกคำหนึ่งทั่วทั้งเอกสารอย่างรวดเร็ว ควรใช้คำสั่งใด?", c: ["Find", "Replace", "Zoom", "Copy"], a: 1 },
+      { q: "หากต้องการใส่หมายเลขหน้าให้กับเอกสาร ควรเลือกคำสั่งใด?", c: ["Insert → Page Number", "Home → Numbering", "Layout → Margins", "Review → Track Changes"], a: 0 }
+    ];
+
+    quizData.sort(() => Math.random() - 0.5);
+
+    let currentPin = null;
+    let myPlayerId = null;
+    let playerName = "Agent";
+    let energy = 5;
+    let maxHeightMeters = 0;
+    let correctCount = 0;
+    let wrongCount = 0;
+    let currentQ = 0;
+    let isGameOver = false;
+    let timerInterval = null;
+    let allPlayersData = {};
+    let isTrapped = false;
+    let trapImmunity = 0;
+    let myStyleIndex = 0;
+    let releaseFromTrapCallback = null;
+
+    let walkCycle = 0;
+    let blinkTimer = 0;
+    let isBlinking = false;
+    let facing = 'right';
+
+    const clouds = [
+      { x: 50,  y: 100, scale: 0.9, speed: 0.3 },
+      { x: 220, y: 200, scale: 1.2, speed: 0.4 },
+      { x: 120, y: 400, scale: 0.8, speed: 0.25 },
+      { x: 300, y: 550, scale: 1.0, speed: 0.35 }
+    ];
+
+    function showView(id) {
+      ['view-mode', 'view-host', 'view-host-live', 'view-join', 'view-waiting', 'game-wrapper', 'view-result'].forEach(v => {
+        document.getElementById(v).classList.add('hidden');
+      });
+      document.getElementById(id).classList.remove('hidden');
+    }
+
+    function formatTime(seconds) {
+      const m = Math.floor(seconds / 60);
+      const s = seconds % 60;
+      return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const pinParam = urlParams.get('pin');
+      if (pinParam) {
+        document.getElementById('input-pin').value = pinParam;
+        showView('view-join');
+      }
+    });
+
+    document.getElementById('btn-mode-host').onclick = async () => {
+      showView('view-host');
+      currentPin = Math.floor(100000 + Math.random() * 900000).toString();
+      document.getElementById('host-pin').innerText = currentPin;
+
+      const joinUrl = window.location.origin + window.location.pathname + '?pin=' + currentPin;
+
+      document.getElementById('qrcode').innerHTML = "";
+      new QRCode(document.getElementById("qrcode"), {
+        text: joinUrl,
+        width: 130,
+        height: 130
+      });
+
+      document.getElementById('btn-copy-link').onclick = () => {
+        navigator.clipboard.writeText(joinUrl);
+        alert('📋 คัดลอกลิงก์เรียบร้อย');
+      };
+
+      await set(ref(db, `rooms/${currentPin}`), { status: 'waiting' });
+
+      onValue(ref(db, `rooms/${currentPin}/players`), (snap) => {
+        allPlayersData = snap.val() || {};
+        const keys = Object.keys(allPlayersData);
+        document.getElementById('player-count').innerText = keys.length;
+        
+        const list = document.getElementById('host-players');
+        list.innerHTML = "";
+        keys.forEach(k => {
+          const b = document.createElement('div');
+          b.className = 'badge';
+          b.innerText = allPlayersData[k].name;
+          list.appendChild(b);
+        });
+        document.getElementById('btn-start').disabled = keys.length === 0;
+
+        renderLiveRanking();
+      });
+
+      onValue(ref(db, `rooms/${currentPin}/status`), (snap) => {
+        if (snap.val() === 'ended') {
+          showFinalLeaderboard();
+        }
+      });
+    };
+
+    document.getElementById('btn-mode-join').onclick = () => showView('view-join');
+
+    document.getElementById('btn-start').onclick = async () => {
+      const minutes = parseInt(document.getElementById('select-duration').value) || 3;
+      const endTime = Date.now() + (minutes * 60 * 1000);
+
+      await update(ref(db, `rooms/${currentPin}`), {
+        status: 'playing',
+        endTime: endTime
+      });
+
+      showView('view-host-live');
+
+      const timerInt = setInterval(() => {
+        const remainSec = Math.max(0, Math.floor((endTime - Date.now()) / 1000));
+        document.getElementById('host-timer').innerText = formatTime(remainSec);
+        if (remainSec <= 0) {
+          clearInterval(timerInt);
+          update(ref(db, `rooms/${currentPin}`), { status: 'ended' });
+        }
+      }, 500);
+    };
+
+    function renderLiveRanking() {
+      const rankDiv = document.getElementById('live-ranking');
+      if (!rankDiv) return;
+      rankDiv.innerHTML = "";
+      Object.values(allPlayersData)
+        .sort((a,b) => (b.height || 0) - (a.height || 0))
+        .forEach((p, idx) => {
+          rankDiv.innerHTML += `
+            <div style="padding:6px 0; border-bottom:1px solid #ffe4e6; font-size:13px; display:flex; justify-content:space-between;">
+              <span><b>#${idx+1} ${p.name}</b></span>
+              <span>สูง: <b style="color:#0284c7;">${p.height || 0}m</b> | ถูก: <b style="color:#10b981;">${p.correct || 0}</b></span>
+            </div>`;
+        });
+    }
+
+    document.getElementById('btn-do-join').onclick = () => {
+      const pin = document.getElementById('input-pin').value.trim();
+      const name = document.getElementById('input-name').value.trim();
+      if (!pin || !name) return alert('กรุณากรอก PIN และชื่อ');
+
+      playerName = name;
+      myStyleIndex = Math.floor(Math.random() * SWEET_PALETTES.length);
+
+      onValue(ref(db, `rooms/${pin}`), (snap) => {
+        const room = snap.val();
+        if (!room) return alert('ไม่พบห้องนี้');
+
+        if (!myPlayerId) {
+          currentPin = pin;
+          const pRef = push(ref(db, `rooms/${pin}/players`));
+          myPlayerId = pRef.key;
+          set(pRef, {
+            name: playerName,
+            height: 0,
+            x: 200,
+            y: 400,
+            facing: 'right',
+            styleIndex: myStyleIndex,
+            correct: 0,
+            wrong: 0
+          });
+          document.getElementById('wait-pin').innerText = pin;
+          document.getElementById('wait-name').innerText = name;
+          showView('view-waiting');
+
+          onValue(ref(db, `rooms/${pin}/players`), (pSnap) => {
+            allPlayersData = pSnap.val() || {};
+          });
+        }
+
+        if (room.status === 'playing' && !isGameOver && document.getElementById('game-wrapper').classList.contains('hidden')) {
+          showView('game-wrapper');
+          initSweetPlatformer();
+          startPlayerTimer(room.endTime);
+        }
+
+        if (room.status === 'ended' && !isGameOver) {
+          endGame();
+        }
+      });
+    };
+
+    function startPlayerTimer(endTime) {
+      if (timerInterval) clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        const remainSec = Math.max(0, Math.floor((endTime - Date.now()) / 1000));
+        document.getElementById('ui-timer').innerText = formatTime(remainSec);
+
+        if (remainSec <= 0) {
+          clearInterval(timerInterval);
+          endGame();
+        }
+      }, 500);
+    }
+
+    function endGame() {
+      isGameOver = true;
+      if (timerInterval) clearInterval(timerInterval);
+      document.getElementById('quiz-modal').classList.add('hidden');
+      showFinalLeaderboard();
+    }
+
+    function showFinalLeaderboard() {
+      const tbody = document.getElementById('result-leaderboard-body');
+      tbody.innerHTML = "";
+
+      const sorted = Object.values(allPlayersData)
+        .sort((a,b) => (b.height || 0) - (a.height || 0));
+
+      sorted.forEach((p, idx) => {
+        let badge = `#${idx + 1}`;
+        if (idx === 0) badge = "🥇 1";
+        else if (idx === 1) badge = "🥈 2";
+        else if (idx === 2) badge = "🥉 3";
+
+        const isMe = (p.name === playerName);
+        tbody.innerHTML += `
+          <tr style="${isMe ? 'background: #ffe4e6; font-weight:bold;' : ''}">
+            <td>${badge} 🍬 ${p.name} ${isMe ? '(คุณ)' : ''}</td>
+            <td style="text-align:center; color:#0284c7;">${p.height || 0} m</td>
+            <td style="text-align:center; color:#10b981;">${p.correct || 0}</td>
+            <td style="text-align:center; color:#ef4444;">${p.wrong || 0}</td>
+          </tr>
+        `;
+      });
+
+      showView('view-result');
+    }
+
+    document.getElementById('btn-export-excel').onclick = () => {
+      const sorted = Object.values(allPlayersData)
+        .sort((a,b) => (b.height || 0) - (a.height || 0));
+
+      if (sorted.length === 0) return alert('ไม่มีข้อมูลคะแนน');
+
+      let csvContent = "\uFEFF";
+      csvContent += "อันดับ,ชื่อผู้เล่น,ความสูงสูงสุด (เมตร),ตอบถูก (ข้อ),ตอบผิด (ข้อ),รวมข้อที่ตอบ (ข้อ),ความแม่นยำ (%)\n";
+
+      sorted.forEach((p, idx) => {
+        const correct = p.correct || 0;
+        const wrong = p.wrong || 0;
+        const total = correct + wrong;
+        const accuracy = total > 0 ? ((correct / total) * 100).toFixed(1) : "0.0";
+        const safeName = `"${(p.name || 'Agent').replace(/"/g, '""')}"`;
+        csvContent += `${idx + 1},${safeName},${p.height || 0},${correct},${wrong},${total},${accuracy}%\n`;
+      });
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.setAttribute("href", url);
+      link.setAttribute("download", `คะแนนเกม_${currentPin || 'SweetWord'}_${new Date().toLocaleDateString('th-TH')}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    };
+
+    function triggerQuizModal(fromTrap = false) {
+      if (isGameOver) return;
+      const q = quizData[currentQ % quizData.length];
+      document.getElementById('quiz-q-text').innerText = q.q;
+      const list = document.getElementById('quiz-options-list');
+      list.innerHTML = "";
+
+      const modalTitle = document.getElementById('quiz-title');
+      const btnClose = document.getElementById('btn-close-quiz');
+
+      if (fromTrap) {
+        modalTitle.innerText = "🚨 ติดกับดัก! ตอบเพื่อปลดปล่อย (ไม่คิดคะแนน)";
+        modalTitle.style.color = "#ef4444";
+        btnClose.classList.add('hidden');
+      } else if (energy <= 0) {
+        modalTitle.innerText = "⚠️ พลังงานหมด! ตอบเพื่อชาร์จ (+3 ⚡)";
+        modalTitle.style.color = "#d97706";
+        btnClose.classList.add('hidden');
+      } else {
+        modalTitle.innerText = "⚡ ตอบคำถามชาร์จพลังงาน (+3 ⚡)";
+        modalTitle.style.color = "#e01e37";
+        btnClose.classList.remove('hidden');
+      }
+
+      q.c.forEach((choice, idx) => {
+        const b = document.createElement('button');
+        b.className = 'quiz-option';
+        b.innerText = `${String.fromCharCode(65 + idx)}. ${choice}`;
+        b.onclick = () => {
+          if (idx === q.a) {
+            if (fromTrap) {
+              alert('🔓 ถูกต้อง! ปลดล็อกออกจากกับดักเรียบร้อย');
+              isTrapped = false;
+              trapImmunity = 90;
+              if (releaseFromTrapCallback) releaseFromTrapCallback();
+            } else {
+              alert('🎉 ถูกต้อง! ได้รับพลังงาน +3 ⚡');
+              energy += 3;
+              correctCount += 1;
+              document.getElementById('ui-energy').innerText = energy;
+            }
+            currentQ++;
+            document.getElementById('quiz-modal').classList.add('hidden');
+          } else {
+            alert('❌ คำตอบยังไม่ถูกต้อง ลองพิจารณาใหม่');
+            if (!fromTrap) {
+              wrongCount += 1;
+            }
+          }
+
+          if (currentPin && myPlayerId && !fromTrap) {
+            update(ref(db, `rooms/${currentPin}/players/${myPlayerId}`), {
+              correct: correctCount,
+              wrong: wrongCount
+            });
+          }
+        };
+        list.appendChild(b);
+      });
+
+      document.getElementById('quiz-modal').classList.remove('hidden');
+    }
+
+    function drawCuteCloud(ctx, x, y, scale) {
+      ctx.save();
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+      ctx.beginPath();
+      ctx.arc(x, y, 20 * scale, 0, Math.PI * 2);
+      ctx.arc(x + 18 * scale, y - 10 * scale, 24 * scale, 0, Math.PI * 2);
+      ctx.arc(x + 40 * scale, y, 20 * scale, 0, Math.PI * 2);
+      ctx.arc(x + 20 * scale, y + 8 * scale, 18 * scale, 0, Math.PI * 2);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.fillStyle = '#ff8fa3';
+      ctx.beginPath();
+      ctx.arc(x + 10 * scale, y + 2 * scale, 3 * scale, 0, Math.PI * 2);
+      ctx.arc(x + 30 * scale, y + 2 * scale, 3 * scale, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = '#64748b';
+      ctx.beginPath();
+      ctx.arc(x + 14 * scale, y - 2 * scale, 2.5 * scale, 0, Math.PI * 2);
+      ctx.arc(x + 26 * scale, y - 2 * scale, 2.5 * scale, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+
+    function drawSkyBackground(ctx, width, height, camY) {
+      const skyGrad = ctx.createLinearGradient(0, 0, 0, height);
+      skyGrad.addColorStop(0, '#93c5fd');
+      skyGrad.addColorStop(0.5, '#bae6fd');
+      skyGrad.addColorStop(1, '#e0f2fe');
+      ctx.fillStyle = skyGrad;
+      ctx.fillRect(0, 0, width, height);
+
+      clouds.forEach(c => {
+        c.x += c.speed;
+        if (c.x > width + 80) c.x = -80;
+        const cy = (c.y - camY * 0.25) % (height * 1.5);
+        drawCuteCloud(ctx, c.x, cy < 0 ? cy + height * 1.5 : cy, c.scale);
+      });
+    }
+
+    function drawCuteCharacter(ctx, cx, cy, r, isMoving = false, customColor = null, charFacing = 'right', charBlink = false, charName = '', charTrapped = false) {
+      ctx.save();
+      const color = customColor || SWEET_PALETTES[0];
+
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.12)';
+      ctx.beginPath();
+      ctx.ellipse(cx, cy + r + 3, 14, 4, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      const legOffset = isMoving ? Math.sin(walkCycle) * 5 : 0;
+      ctx.fillStyle = color.dark;
+      ctx.beginPath();
+      ctx.arc(cx - 8, cy + r + 2 + legOffset, 5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(cx + 8, cy + r + 2 - legOffset, 5, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = color.dark;
+      ctx.beginPath();
+      ctx.arc(cx - 14, cy - r + 4, 7, 0, Math.PI * 2);
+      ctx.arc(cx + 14, cy - r + 4, 7, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#ffb3c6';
+      ctx.beginPath();
+      ctx.arc(cx - 14, cy - r + 4, 4, 0, Math.PI * 2);
+      ctx.arc(cx + 14, cy - r + 4, 4, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = color.main;
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = '#ffffff';
+      ctx.stroke();
+
+      ctx.fillStyle = color.blush;
+      ctx.beginPath();
+      ctx.arc(cx - 11, cy + 5, 4.5, 0, Math.PI * 2);
+      ctx.arc(cx + 11, cy + 5, 4.5, 0, Math.PI * 2);
+      ctx.fill();
+
+      const eyeLook = (charFacing === 'left') ? -4 : 4;
+
+      if (charBlink) {
+        ctx.strokeStyle = '#0f172a';
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.arc(cx - 6 + eyeLook, cy - 1, 3, 0.2, Math.PI - 0.2);
+        ctx.arc(cx + 6 + eyeLook, cy - 1, 3, 0.2, Math.PI - 0.2);
+        ctx.stroke();
+      } else {
+        ctx.fillStyle = '#0f172a';
+        ctx.beginPath();
+        ctx.arc(cx - 6 + eyeLook, cy - 2, 4, 0, Math.PI * 2);
+        ctx.arc(cx + 6 + eyeLook, cy - 2, 4, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(cx - 7 + eyeLook, cy - 3.5, 1.8, 0, Math.PI * 2);
+        ctx.arc(cx + 5 + eyeLook, cy - 3.5, 1.8, 0, Math.PI * 2);
+        ctx.arc(cx - 5 + eyeLook, cy - 0.5, 0.9, 0, Math.PI * 2);
+        ctx.arc(cx + 7 + eyeLook, cy - 0.5, 0.9, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      ctx.strokeStyle = '#0f172a';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(cx + (eyeLook * 0.4), cy + 4, 3.5, 0.2, Math.PI - 0.2);
+      ctx.stroke();
+
+      if (charName) {
+        ctx.fillStyle = '#e01e37';
+        ctx.font = 'bold 11px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(`🍓 ${charName}`, cx, cy - r - 8);
+      }
+
+      if (charTrapped) {
+        ctx.fillStyle = '#ef4444';
+        ctx.font = 'bold 10px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('⚠️ ติดกับดัก!', cx, cy - r - 20);
+      }
+
+      ctx.restore();
+    }
+
+    function drawCutePlatform(ctx, p, dy) {
+      ctx.save();
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.06)';
+      ctx.shadowOffsetY = 4;
+
+      const px = p.x;
+      const py = dy;
+
+      if (p.type === 'waffle') {
+        ctx.fillStyle = '#fed7aa';
+        ctx.beginPath();
+        ctx.roundRect(px, py, p.w, p.h, 12);
+        ctx.fill();
+        ctx.strokeStyle = '#f97316';
+        ctx.lineWidth = 2.5;
+        ctx.stroke();
+
+        ctx.fillStyle = '#fef08a';
+        ctx.beginPath();
+        ctx.roundRect(px + p.w / 2 - 12, py - 5, 24, 10, 4);
+        ctx.fill();
+        ctx.strokeStyle = '#eab308';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+
+      } else if (p.type === 'jelly') {
+        ctx.fillStyle = '#a7f3d0';
+        ctx.beginPath();
+        ctx.roundRect(px, py, p.w, p.h, 12);
+        ctx.fill();
+        ctx.strokeStyle = '#10b981';
+        ctx.lineWidth = 2.5;
+        ctx.stroke();
+
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(px + 20, py + 8, 3.5, 0, Math.PI * 2);
+        ctx.arc(px + p.w - 25, py + 9, 4.5, 0, Math.PI * 2);
+        ctx.fill();
+
+      } else if (p.type === 'cake') {
+        ctx.fillStyle = '#ffe4e6';
+        ctx.beginPath();
+        ctx.roundRect(px, py, p.w, p.h, 12);
+        ctx.fill();
+        ctx.fillStyle = '#fb7185';
+        ctx.beginPath();
+        ctx.roundRect(px, py, p.w, 7, [12, 12, 0, 0]);
+        ctx.fill();
+        ctx.strokeStyle = '#f43f5e';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+      } else {
+        ctx.fillStyle = '#b45309';
+        ctx.beginPath();
+        ctx.roundRect(px, py, p.w, p.h, 10);
+        ctx.fill();
+        ctx.fillStyle = '#78350f';
+        for (let i = 10; i < p.w - 15; i += 24) {
+          ctx.fillRect(px + i, py + 4, 16, p.h - 8);
+        }
+      }
+
+      ctx.restore();
+    }
+
+    function initSweetPlatformer() {
+      const canvas = document.getElementById('gameCanvas');
+      const ctx = canvas.getContext('2d');
+
+      function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      resize();
+      window.addEventListener('resize', resize);
+
+      const player = {
+        x: canvas.width / 2 - 17,
+        y: canvas.height - 120,
+        w: 34,
+        h: 40,
+        vx: 0,
+        vy: 0,
+        speed: 5.6,
+        jumpPower: -15.4,
+        grounded: false
+      };
+
+      releaseFromTrapCallback = () => {
+        player.vy = -7.5;
+        player.grounded = false;
+      };
+
+      let cameraY = 0;
+      let lastNetworkSync = 0;
+
+      const platforms = [
+        { x: -100, y: canvas.height - 60, w: 2500, h: 100, type: 'cake' }
+      ];
+      const boosters = [];
+      const traps = [];
+
+      let lastY = canvas.height - 110;
+      const screenW = Math.max(360, canvas.width);
+      const platTypes = ['waffle', 'jelly', 'cake', 'choco'];
+
+      // ขยายด่านเป็น 350 แท่น (ความสูงเกิน 2,500+ เมตร รองรับเวลาการแข่งขันเต็มที่)
+      const TOTAL_PLATFORMS = 350;
+
+      for (let i = 0; i < TOTAL_PLATFORMS; i++) {
+        const pR1 = Math.sin(i * 77 + 2) * 10000;
+        const norm1 = pR1 - Math.floor(pR1);
+        const pR2 = Math.cos(i * 41 + 5) * 10000;
+        const norm2 = pR2 - Math.floor(pR2);
+
+        // คำนวณความกว้างตามระดับความสูง (ช่วงล่างกว้างกว่า ช่วงบนท้าทายขึ้นแต่ยังเหยียบง่าย)
+        let w = 135;
+        if (i < 40) {
+          w = Math.floor(norm1 * 20) + 130; // 130 - 150px
+        } else if (i < 120) {
+          w = Math.floor(norm1 * 20) + 115; // 115 - 135px
+        } else {
+          w = Math.floor(norm1 * 20) + 100; // 100 - 120px
+        }
+
+        // ล็อกระยะห่างแนวตั้ง 46 - 48px การันตีกระโดดถึง 100% แน่นอน
+        const distY = 47;
+        lastY -= distY;
+
+        let type = platTypes[i % platTypes.length];
+        let isMoving = false;
+        let moveSpeed = 0;
+        let minX = 15, maxX = screenW - w - 15;
+
+        // สุ่มแท่นเคลื่อนที่ (ความถี่ตามระดับความสูง)
+        const moveChance = i < 40 ? 0.15 : (i < 120 ? 0.28 : 0.38);
+        if (i > 3 && norm1 < moveChance) {
+          isMoving = true;
+          const baseSpeed = i < 80 ? 1.0 : 1.4;
+          moveSpeed = (i % 2 === 0 ? 1 : -1) * (baseSpeed + norm2 * 0.7);
+        }
+
+        // สลับตำแหน่งซ้าย-ขวาอย่างสมดุล ไม่หลุดจอ
+        const xSpan = screenW - w - 40;
+        const x = (i % 2 === 0) 
+          ? (norm2 * (xSpan * 0.45) + 20) 
+          : (screenW - w - 20 - norm2 * (xSpan * 0.45));
+
+        platforms.push({ 
+          x: x, 
+          y: lastY, 
+          w: w, 
+          h: 22, 
+          type: type,
+          isMoving: isMoving,
+          moveSpeed: moveSpeed,
+          minX: minX,
+          maxX: maxX
+        });
+
+        // สปริงบูสเตอร์เด้งสูง (กระจายสม่ำเสมอทุกๆ ช่วงความสูง)
+        if (i > 2 && (norm1 > 0.82 || i % 15 === 0)) {
+          boosters.push({ x: x + w / 2 - 16, y: lastY - 8, w: 32, h: 8, parentIdx: platforms.length - 1 });
+        }
+
+        // กับดักวางเฉพาะบนแท่นที่ไม่เคลื่อนที่ และเว้นที่ว่างให้เหยียบหลบได้
+        if (i > 4 && norm2 < 0.22 && !isMoving) {
+          traps.push({ x: x + w / 2 - 10, y: lastY - 5, w: 20, h: 5 });
+        }
+      }
+
+      const keys = { left: false, right: false };
+
+      const bindTouch = (id, keyName, dir) => {
+        const el = document.getElementById(id);
+        const onStart = (e) => {
+          e.preventDefault();
+          if (isTrapped) return;
+          if (energy <= 0) {
+            triggerQuizModal(false);
+            return;
+          }
+          keys[keyName] = true;
+          facing = dir;
+        };
+        const onEnd = (e) => {
+          e.preventDefault();
+          keys[keyName] = false;
+        };
+
+        el.addEventListener('touchstart', onStart, { passive: false });
+        el.addEventListener('touchend', onEnd, { passive: false });
+        el.addEventListener('pointerdown', onStart);
+        el.addEventListener('pointerup', onEnd);
+        el.addEventListener('pointercancel', onEnd);
+      };
+
+      bindTouch('btn-left', 'left', 'left');
+      bindTouch('btn-right', 'right', 'right');
+
+      const btnJump = document.getElementById('btn-jump');
+      const onJumpPress = (e) => {
+        e.preventDefault();
+        doJump();
+      };
+      btnJump.addEventListener('touchstart', onJumpPress, { passive: false });
+      btnJump.addEventListener('pointerdown', onJumpPress);
+
+      window.addEventListener('keydown', (e) => {
+        if (isGameOver || isTrapped) return;
+        if (energy <= 0) {
+          triggerQuizModal(false);
+          return;
+        }
+        if (e.code === 'ArrowLeft' || e.code === 'KeyA') { keys.left = true; facing = 'left'; }
+        if (e.code === 'ArrowRight' || e.code === 'KeyD') { keys.right = true; facing = 'right'; }
+        if (e.code === 'ArrowUp' || e.code === 'Space' || e.code === 'KeyW') doJump();
+      });
+      window.addEventListener('keyup', (e) => {
+        if (e.code === 'ArrowLeft' || e.code === 'KeyA') keys.left = false;
+        if (e.code === 'ArrowRight' || e.code === 'KeyD') keys.right = false;
+      });
+
+      function doJump(isBoost = false) {
+        if (isGameOver || isTrapped) return;
+        if (player.grounded || isBoost) {
+          if (energy > 0 || isBoost) {
+            if (!isBoost) energy -= 1;
+            player.vy = isBoost ? -20.5 : player.jumpPower;
+            player.grounded = false;
+            document.getElementById('ui-energy').innerText = energy;
+
+            if (energy === 0 && !isBoost) {
+              setTimeout(() => triggerQuizModal(false), 380);
+            }
+          } else {
+            triggerQuizModal(false);
+          }
+        }
+      }
+
+      function gameLoop() {
+        if (isGameOver) return;
+
+        const W = canvas.width;
+        const H = canvas.height;
+
+        if (trapImmunity > 0) trapImmunity--;
+
+        blinkTimer++;
+        if (blinkTimer > 180) {
+          isBlinking = true;
+          if (blinkTimer > 192) {
+            isBlinking = false;
+            blinkTimer = 0;
+          }
+        }
+
+        platforms.forEach((p, idx) => {
+          if (p.isMoving) {
+            p.x += p.moveSpeed;
+            if (p.x <= p.minX || p.x >= p.maxX) {
+              p.moveSpeed = -p.moveSpeed;
+            }
+            boosters.forEach(b => {
+              if (b.parentIdx === idx) {
+                b.x = p.x + p.w / 2 - 16;
+              }
+            });
+          }
+        });
+
+        const isMoving = (keys.left || keys.right) && energy > 0 && !isTrapped;
+        if (isMoving) {
+          walkCycle += 0.25;
+        }
+
+        if (energy <= 0 || isTrapped) {
+          player.vx = 0;
+          keys.left = false;
+          keys.right = false;
+        } else if (keys.left && !keys.right) {
+          player.vx = -player.speed;
+        } else if (keys.right && !keys.left) {
+          player.vx = player.speed;
+        } else {
+          player.vx = 0;
+        }
+
+        player.x += player.vx;
+        if (player.x < 10) player.x = 10;
+        if (player.x + player.w > W - 10) player.x = W - player.w - 10;
+
+        player.vy += 0.65;
+        if (player.vy > 14) player.vy = 14;
+        player.y += player.vy;
+
+        player.grounded = false;
+        platforms.forEach(p => {
+          if (
+            player.x + player.w * 0.75 > p.x &&
+            player.x + player.w * 0.25 < p.x + p.w &&
+            player.y + player.h >= p.y &&
+            player.y + player.h <= p.y + p.h * 0.5 + player.vy &&
+            player.vy >= 0
+          ) {
+            player.grounded = true;
+            player.vy = 0;
+            player.y = p.y - player.h;
+            if (p.isMoving) {
+              player.x += p.moveSpeed;
+            }
+          }
+        });
+
+        boosters.forEach(b => {
+          if (
+            player.x + player.w > b.x &&
+            player.x < b.x + b.w &&
+            player.y + player.h >= b.y &&
+            player.y + player.h <= b.y + b.h + player.vy &&
+            player.vy >= 0
+          ) {
+            doJump(true);
+          }
+        });
+
+        if (!isTrapped && trapImmunity === 0) {
+          traps.forEach(t => {
+            if (
+              player.x + player.w * 0.7 > t.x &&
+              player.x + player.w * 0.3 < t.x + t.w &&
+              player.y + player.h >= t.y &&
+              player.y + player.h <= t.y + t.h + 8
+            ) {
+              isTrapped = true;
+              player.vy = 0;
+              triggerQuizModal(true);
+            }
+          });
+        }
+
+        const targetCamY = player.y - (H * 0.6);
+        cameraY += (targetCamY - cameraY) * 0.12;
+
+        const currentMeters = Math.max(0, Math.floor(((canvas.height - 60) - (player.y + player.h)) / 6.5));
+        if (currentMeters > maxHeightMeters) {
+          maxHeightMeters = currentMeters;
+          document.getElementById('ui-height').innerText = maxHeightMeters;
+        }
+
+        const now = Date.now();
+        if (now - lastNetworkSync > 60) {
+          lastNetworkSync = now;
+          if (currentPin && myPlayerId) {
+            update(ref(db, `rooms/${currentPin}/players/${myPlayerId}`), {
+              x: Math.round(player.x),
+              y: Math.round(player.y),
+              facing: facing,
+              styleIndex: myStyleIndex,
+              height: maxHeightMeters,
+              correct: correctCount,
+              wrong: wrongCount
+            });
+          }
+        }
+
+        drawSkyBackground(ctx, W, H, cameraY);
+
+        platforms.forEach(p => {
+          const dy = p.y - cameraY;
+          if (dy + p.h < -50 || dy > H + 50) return;
+          drawCutePlatform(ctx, p, dy);
+        });
+
+        boosters.forEach(b => {
+          const dy = b.y - cameraY;
+          if (dy < -40 || dy > H + 40) return;
+          ctx.fillStyle = '#10b981';
+          ctx.beginPath();
+          ctx.roundRect(b.x, dy, b.w, b.h, 4);
+          ctx.fill();
+          ctx.fillStyle = '#34d399';
+          ctx.fillRect(b.x + 4, dy + 2, b.w - 8, 2);
+        });
+
+        traps.forEach(t => {
+          const dy = t.y - cameraY;
+          if (dy < -40 || dy > H + 40) return;
+          ctx.fillStyle = '#ef4444';
+          ctx.beginPath();
+          ctx.roundRect(t.x, dy, t.w, t.h, 3);
+          ctx.fill();
+        });
+
+        Object.entries(allPlayersData).forEach(([pid, other]) => {
+          if (pid === myPlayerId || other.x === undefined || other.y === undefined) return;
+          const ox = other.x + 17;
+          const oy = other.y + 18 - cameraY;
+          const otherColor = SWEET_PALETTES[other.styleIndex || 0];
+          drawCuteCharacter(ctx, ox, oy, 20, false, otherColor, other.facing || 'right', false, other.name || 'Agent', false);
+        });
+
+        const drawX = player.x + player.w / 2;
+        const drawY = player.y + 18 - cameraY;
+        const myColor = SWEET_PALETTES[myStyleIndex];
+        drawCuteCharacter(ctx, drawX, drawY, 20, isMoving, myColor, facing, isBlinking, playerName, isTrapped);
+
+        requestAnimationFrame(gameLoop);
+      }
+
+      gameLoop();
+    }
+
+    document.getElementById('btn-open-quiz').onclick = () => triggerQuizModal(false);
+    document.getElementById('btn-close-quiz').onclick = () => {
+      if (energy > 0 && !isTrapped) document.getElementById('quiz-modal').classList.add('hidden');
+    };
+  </script>
+</body>
+</html>
