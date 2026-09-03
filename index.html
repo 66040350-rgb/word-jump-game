@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Hunter Cyber Mission - Responsive Edition</title>
+  <title>Hunter Cyber Mission - Smooth Multiplayer Edition</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
     * {
@@ -73,7 +73,7 @@
     input, select {
       width: 100%;
       padding: 12px;
-      margin: 8px 0;
+      margin: 6px 0 10px 0;
       border-radius: 12px;
       border: 1.5px solid #ff758f;
       background: #fff5f7;
@@ -180,7 +180,7 @@
       white-space: nowrap;
     }
 
-    /* Bottom Controls - ลอยเหนือบาร์ Safari ชัดเจน */
+    /* Controls 3D Glassmorphism */
     .controls-bar {
       position: absolute;
       bottom: max(env(safe-area-inset-bottom), 18px);
@@ -192,63 +192,86 @@
       z-index: 80;
       pointer-events: none;
     }
-    .d-pad {
+    .touch-dpad-container {
+      background: rgba(255, 255, 255, 0.65);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 2.5px solid rgba(255, 255, 255, 0.95);
+      border-radius: 36px;
+      padding: 6px;
+      box-shadow: 0 12px 30px rgba(2, 132, 199, 0.2);
       display: flex;
-      gap: 12px;
+      gap: 10px;
       pointer-events: auto;
+    }
+    .touch-btn-arrow {
+      width: 66px;
+      height: 66px;
+      border-radius: 26px;
+      background: linear-gradient(180deg, #ffffff 0%, #f0f9ff 100%);
+      border: 2px solid #bae6fd;
+      color: #0284c7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      font-weight: 900;
+      box-shadow: 0 5px 0 #7dd3fc, 0 8px 16px rgba(2, 132, 199, 0.15);
+      transition: all 0.08s ease;
+      cursor: pointer;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: none;
+    }
+    .touch-btn-arrow.active {
+      transform: translateY(4px);
+      box-shadow: 0 1px 0 #7dd3fc;
+      background: #e0f2fe;
+      color: #0369a1;
     }
     .action-pad {
       pointer-events: auto;
     }
-    .ctrl-btn {
-      width: 68px;
-      height: 68px;
-      background: rgba(255, 255, 255, 0.94);
-      border: 2.5px solid #ff758f;
-      color: #e01e37;
-      font-size: 28px;
-      border-radius: 22px;
+    .touch-btn-jump {
+      width: 82px;
+      height: 82px;
+      border-radius: 50%;
+      background: linear-gradient(180deg, #34d399 0%, #10b981 100%);
+      border: 4px solid #ffffff;
+      color: #ffffff;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 6px 16px rgba(255, 117, 143, 0.35);
+      box-shadow: 0 8px 0 #047857, 0 14px 28px rgba(16, 185, 129, 0.4);
+      transition: all 0.08s ease;
       cursor: pointer;
+      user-select: none;
+      -webkit-user-select: none;
       touch-action: none;
+      font-size: 32px;
     }
-    .ctrl-btn:active {
-      background: #ffe4e6;
-      transform: scale(0.92);
-    }
-    .btn-jump-action {
-      background: #10b981;
-      border-color: #059669;
-      color: white;
-      width: 76px;
-      height: 76px;
-      font-size: 34px;
-      box-shadow: 0 6px 18px rgba(16, 185, 129, 0.4);
-    }
-    .btn-jump-action:active {
-      background: #047857;
-      transform: scale(0.92);
+    .touch-btn-jump.active {
+      transform: translateY(5px);
+      box-shadow: 0 3px 0 #047857;
+      background: #059669;
     }
 
-    /* แนวนอน (Landscape Mode) */
     @media (orientation: landscape) {
       .controls-bar {
         bottom: max(env(safe-area-inset-bottom), 10px);
         left: 24px;
         right: 24px;
       }
-      .ctrl-btn {
+      .touch-btn-arrow {
         width: 58px;
         height: 58px;
-        font-size: 24px;
-        border-radius: 18px;
+        font-size: 22px;
+        border-radius: 20px;
       }
-      .btn-jump-action {
-        width: 66px;
-        height: 66px;
+      .touch-btn-jump {
+        width: 70px;
+        height: 70px;
         font-size: 28px;
       }
     }
@@ -321,7 +344,6 @@
 </head>
 <body>
 
-  <!-- 1. หน้าแรก -->
   <div id="view-mode" class="container">
     <h1>HUNTER CYBER MISSION</h1>
     <p style="color: #64748b; font-size:14px; margin-bottom: 16px;">เกมตอบคำถามชิงความสูง (Word Master)</p>
@@ -329,7 +351,6 @@
     <button class="btn" id="btn-mode-join" style="background:#475569;" onclick="switchScreen('view-join')">🎮 ผู้เรียน (Join เข้าเล่น)</button>
   </div>
 
-  <!-- 2. โฮสต์สร้างห้อง -->
   <div id="view-host" class="container hidden">
     <h2>ห้องควบคุมโฮสต์</h2>
     <p style="margin-bottom:2px; font-size:13px; color:#64748b;">รหัสเข้าห้อง (Room PIN):</p>
@@ -342,20 +363,31 @@
     
     <button class="btn" id="btn-copy-link" style="padding:8px; font-size:12px; margin:4px 0 8px 0;">📋 คัดลอกลิงก์ส่งให้นักเรียน</button>
 
-    <label style="color:#64748b; font-size:12px;">ระยะเวลาแข่งขัน:</label>
-    <select id="select-duration">
-      <option value="1">1 นาที (ทดสอบ)</option>
-      <option value="3" selected>3 นาที</option>
-      <option value="5">5 นาที</option>
-      <option value="10">10 นาที</option>
-    </select>
+    <div style="text-align: left; margin-top: 6px;">
+      <label style="color:#64748b; font-size:13px; font-weight:bold;">⚡ ค่าพลังงานเริ่มต้น (Initial Energy):</label>
+      <select id="select-energy">
+        <option value="3">3 ⚡ (ท้าทายมาก)</option>
+        <option value="5" selected>5 ⚡ (มาตรฐาน)</option>
+        <option value="8">8 ⚡ (ปานกลาง)</option>
+        <option value="10">10 ⚡ (ง่าย)</option>
+        <option value="15">15 ⚡ (สบายๆ)</option>
+        <option value="20">20 ⚡ (กระโดดต่อเนื่อง)</option>
+      </select>
+
+      <label style="color:#64748b; font-size:13px; font-weight:bold;">⏱️ ระยะเวลาแข่งขัน:</label>
+      <select id="select-duration">
+        <option value="1">1 นาที (ทดสอบ)</option>
+        <option value="3" selected>3 นาที</option>
+        <option value="5">5 นาที</option>
+        <option value="10">10 นาที</option>
+      </select>
+    </div>
 
     <p style="margin: 8px 0 4px 0; font-size:13px; color:#64748b;">ผู้เล่นในห้อง (<span id="player-count">0</span> คน):</p>
     <div id="host-players" class="badge-list"></div>
     <button id="btn-start" class="btn" style="background: linear-gradient(135deg, #10b981, #059669);" disabled>🚀 เริ่มการแข่งขัน</button>
   </div>
 
-  <!-- 3. โฮสต์ดูสด -->
   <div id="view-host-live" class="container hidden">
     <h2>📡 การแข่งขันสด</h2>
     <div style="font-size:32px; font-weight:900; color:#ef4444; margin:8px 0;">
@@ -364,7 +396,6 @@
     <div id="live-ranking" style="text-align: left; margin-top:10px; max-height:220px; overflow-y:auto;"></div>
   </div>
 
-  <!-- 4. หน้าเข้าห้องผู้เรียน -->
   <div id="view-join" class="container hidden">
     <h2>เข้าสู่สมรภูมิขนมหวาน</h2>
     <input type="text" id="input-pin" placeholder="รหัสห้อง 6 หลัก" maxlength="6" inputmode="numeric">
@@ -373,7 +404,6 @@
     <button class="btn" style="background:#64748b; padding:10px;" onclick="switchScreen('view-mode')">ย้อนกลับ</button>
   </div>
 
-  <!-- 5. ผู้เรียนรอเริ่ม -->
   <div id="view-waiting" class="container hidden">
     <h2>ห้องเตรียมพร้อม</h2>
     <p>รหัสห้อง: <b id="wait-pin" style="color:#e01e37;"></b></p>
@@ -381,7 +411,6 @@
     <p style="color: #f59e0b; margin-top:18px; font-size:15px; font-weight:bold;">⏳ รอสัญญาณปล่อยตัวจากผู้สอน...</p>
   </div>
 
-  <!-- 6. หน้าจอเล่นเกม Canvas -->
   <div id="game-wrapper" class="hidden">
     <canvas id="gameCanvas"></canvas>
 
@@ -392,14 +421,13 @@
       <div class="stat-pill">🎯 <span id="ui-height" style="color:#0284c7;">0</span>m</div>
     </div>
 
-    <!-- แผงสัมผัสซ้าย-ขวา ปรับความสูงไม่จมขอบล่าง -->
     <div class="controls-bar">
-      <div class="d-pad">
-        <div class="ctrl-btn" id="btn-left">◀</div>
-        <div class="ctrl-btn" id="btn-right">▶</div>
+      <div class="touch-dpad-container">
+        <div class="touch-btn-arrow" id="btn-left">◀</div>
+        <div class="touch-btn-arrow" id="btn-right">▶</div>
       </div>
       <div class="action-pad">
-        <div class="ctrl-btn btn-jump-action" id="btn-jump">▲</div>
+        <div class="touch-btn-jump" id="btn-jump">▲</div>
       </div>
     </div>
 
@@ -413,7 +441,6 @@
     </div>
   </div>
 
-  <!-- 7. สรุปผล -->
   <div id="view-result" class="container hidden">
     <h2 style="color:#d97706; margin-bottom:4px;">🏁 หมดเวลาการแข่งขัน!</h2>
     <p style="color:#64748b; font-size:13px; margin:0 0 10px 0;">ตารางสรุปคะแนนและอันดับ</p>
@@ -430,7 +457,7 @@
       <tbody id="result-leaderboard-body"></tbody>
     </table>
 
-    <button class="btn btn-excel" id="btn-export-excel">📥 บันทึกคะแนนลงใน Excel (.csv)</button>
+    <button class="btn btn-excel hidden" id="btn-export-excel">📥 บันทึกคะแนนลงใน Excel (.csv)</button>
     <button class="btn" onclick="location.reload()" style="margin-top:6px; background:#475569;">🔄 เริ่มเกมใหม่</button>
   </div>
 
@@ -491,6 +518,7 @@
     let currentPin = null;
     let myPlayerId = null;
     let playerName = "Agent";
+    let isHost = false;
     let energy = 5;
     let maxHeightMeters = 0;
     let correctCount = 0;
@@ -503,6 +531,9 @@
     let trapImmunity = 0;
     let myStyleIndex = 0;
     let releaseFromTrapCallback = null;
+
+    // ตัวแปรเก็บตำแหน่งสมูทของเพื่อน (LERP Smoothing State)
+    const smoothPositions = {};
 
     let walkCycle = 0;
     let blinkTimer = 0;
@@ -523,6 +554,7 @@
     }
 
     window.onHostClick = function() {
+      isHost = true;
       switchScreen('view-host');
       currentPin = Math.floor(100000 + Math.random() * 900000).toString();
       document.getElementById('host-pin').innerText = currentPin;
@@ -568,11 +600,13 @@
 
     document.getElementById('btn-start').onclick = async () => {
       const minutes = parseInt(document.getElementById('select-duration').value) || 3;
+      const initialEnergy = parseInt(document.getElementById('select-energy').value) || 5;
       const endTime = Date.now() + (minutes * 60 * 1000);
 
       await update(ref(db, `rooms/${currentPin}`), {
         status: 'playing',
-        endTime: endTime
+        endTime: endTime,
+        initialEnergy: initialEnergy
       });
 
       switchScreen('view-host-live');
@@ -588,6 +622,7 @@
     };
 
     document.getElementById('btn-do-join').onclick = () => {
+      isHost = false;
       const pin = document.getElementById('input-pin').value.trim();
       const name = document.getElementById('input-name').value.trim();
       if (!pin || !name) return alert('กรุณากรอก PIN และชื่อ');
@@ -623,6 +658,9 @@
         }
 
         if (room.status === 'playing' && !isGameOver && document.getElementById('game-wrapper').classList.contains('hidden')) {
+          energy = room.initialEnergy !== undefined ? room.initialEnergy : 5;
+          document.getElementById('ui-energy').innerText = energy;
+
           switchScreen('game-wrapper');
           initSweetPlatformer();
           startPlayerTimer(room.endTime);
@@ -733,6 +771,13 @@
           </tr>
         `;
       });
+
+      const btnExcel = document.getElementById('btn-export-excel');
+      if (isHost) {
+        btnExcel.classList.remove('hidden');
+      } else {
+        btnExcel.classList.add('hidden');
+      }
 
       switchScreen('view-result');
     }
@@ -1106,6 +1151,7 @@
 
         const startAction = (e) => {
           if (e.cancelable) e.preventDefault();
+          el.classList.add('active');
           if (isTrapped) return;
           if (energy <= 0) {
             triggerQuizModal(false);
@@ -1117,6 +1163,7 @@
 
         const stopAction = (e) => {
           if (e.cancelable) e.preventDefault();
+          el.classList.remove('active');
           keys[keyName] = false;
         };
 
@@ -1131,12 +1178,20 @@
       setupButton('btn-right', 'right', 'right');
 
       const btnJump = document.getElementById('btn-jump');
-      const jumpAction = (e) => {
+      const jumpStart = (e) => {
         if (e.cancelable) e.preventDefault();
+        btnJump.classList.add('active');
         doJump();
       };
-      btnJump.addEventListener('touchstart', jumpAction, { passive: false });
-      btnJump.addEventListener('mousedown', jumpAction);
+      const jumpEnd = (e) => {
+        if (e.cancelable) e.preventDefault();
+        btnJump.classList.remove('active');
+      };
+      btnJump.addEventListener('touchstart', jumpStart, { passive: false });
+      btnJump.addEventListener('touchend', jumpEnd, { passive: false });
+      btnJump.addEventListener('mousedown', jumpStart);
+      btnJump.addEventListener('mouseup', jumpEnd);
+      btnJump.addEventListener('mouseleave', jumpEnd);
 
       window.addEventListener('keydown', (e) => {
         if (isGameOver || isTrapped) return;
@@ -1144,13 +1199,32 @@
           triggerQuizModal(false);
           return;
         }
-        if (e.code === 'ArrowLeft' || e.code === 'KeyA') { keys.left = true; facing = 'left'; }
-        if (e.code === 'ArrowRight' || e.code === 'KeyD') { keys.right = true; facing = 'right'; }
-        if (e.code === 'ArrowUp' || e.code === 'Space' || e.code === 'KeyW') doJump();
+        if (e.code === 'ArrowLeft' || e.code === 'KeyA') { 
+          keys.left = true; facing = 'left'; 
+          document.getElementById('btn-left').classList.add('active');
+        }
+        if (e.code === 'ArrowRight' || e.code === 'KeyD') { 
+          keys.right = true; facing = 'right'; 
+          document.getElementById('btn-right').classList.add('active');
+        }
+        if (e.code === 'ArrowUp' || e.code === 'Space' || e.code === 'KeyW') {
+          btnJump.classList.add('active');
+          doJump();
+        }
       });
+
       window.addEventListener('keyup', (e) => {
-        if (e.code === 'ArrowLeft' || e.code === 'KeyA') keys.left = false;
-        if (e.code === 'ArrowRight' || e.code === 'KeyD') keys.right = false;
+        if (e.code === 'ArrowLeft' || e.code === 'KeyA') { 
+          keys.left = false; 
+          document.getElementById('btn-left').classList.remove('active');
+        }
+        if (e.code === 'ArrowRight' || e.code === 'KeyD') { 
+          keys.right = false; 
+          document.getElementById('btn-right').classList.remove('active');
+        }
+        if (e.code === 'ArrowUp' || e.code === 'Space' || e.code === 'KeyW') {
+          btnJump.classList.remove('active');
+        }
       });
 
       function doJump(isBoost = false) {
@@ -1281,8 +1355,9 @@
           document.getElementById('ui-height').innerText = maxHeightMeters;
         }
 
+        // ปรับการส่งพิกัดให้อยู่ที่ 110ms เพื่อไม่ให้เซิร์ฟเวอร์และเน็ตมือถือหน่วง
         const now = Date.now();
-        if (now - lastNetworkSync > 60) {
+        if (now - lastNetworkSync > 110) {
           lastNetworkSync = now;
           if (currentPin && myPlayerId) {
             update(ref(db, `rooms/${currentPin}/players/${myPlayerId}`), {
@@ -1325,12 +1400,29 @@
           ctx.fill();
         });
 
+        // ====================================================
+        // ระบบ LERP (Linear Interpolation) ทำให้เห็นเพื่อนเดินลื่นไหล 60 FPS
+        // ====================================================
         Object.entries(allPlayersData).forEach(([pid, other]) => {
           if (pid === myPlayerId || other.x === undefined || other.y === undefined) return;
-          const ox = other.x + 17;
-          const oy = other.y + 18 - cameraY;
-          const otherColor = SWEET_PALETTES[other.styleIndex || 0];
-          drawCuteCharacter(ctx, ox, oy, 20, false, otherColor, other.facing || 'right', false, other.name || 'Agent', false);
+
+          // สร้าง State ตำแหน่งสมูทเริ่มต้นถ้ายังไม่มี
+          if (!smoothPositions[pid]) {
+            smoothPositions[pid] = { x: other.x, y: other.y };
+          }
+
+          // ค่อยๆ ปรับพิกัดเข้าหาตำแหน่งจริงจากเซิร์ฟเวอร์แบบนุ่มนวล (อัตราส่วน 0.22)
+          smoothPositions[pid].x += (other.x - smoothPositions[pid].x) * 0.22;
+          smoothPositions[pid].y += (other.y - smoothPositions[pid].y) * 0.22;
+
+          const ox = smoothPositions[pid].x + 17;
+          const oy = smoothPositions[pid].y + 18 - cameraY;
+
+          // Viewport Culling: วาดเฉพาะเพื่อนที่ปรากฏอยู่ในกรอบหน้าจอเท่านั้น
+          if (oy > -60 && oy < H + 60) {
+            const otherColor = SWEET_PALETTES[other.styleIndex || 0];
+            drawCuteCharacter(ctx, ox, oy, 20, false, otherColor, other.facing || 'right', false, other.name || 'Agent', false);
+          }
         });
 
         const drawX = player.x + player.w / 2;
