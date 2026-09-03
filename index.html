@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Hunter Cyber Mission - Pro Host Edition</title>
+  <title>Hunter Cyber Mission - Premium Sweet Edition</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
     * {
@@ -32,14 +32,14 @@
     }
     .container {
       background: rgba(255, 255, 255, 0.98);
-      border: 2px solid #ff758f;
-      border-radius: 24px;
-      padding: 20px;
+      border: 2.5px solid #ff758f;
+      border-radius: 28px;
+      padding: 24px;
       max-width: 480px;
       width: 90%;
       text-align: center;
-      box-shadow: 0 12px 35px rgba(255, 117, 143, 0.2);
-      backdrop-filter: blur(12px);
+      box-shadow: 0 20px 45px rgba(255, 117, 143, 0.25);
+      backdrop-filter: blur(16px);
       max-height: 90dvh;
       overflow-y: auto;
       z-index: 100;
@@ -49,41 +49,47 @@
     h1 {
       color: #e01e37;
       margin: 0 0 8px 0;
-      font-size: 24px;
+      font-size: 26px;
       letter-spacing: 0.5px;
+      font-weight: 900;
+    }
+    h2 {
+      color: #e01e37;
+      font-weight: 800;
     }
     .btn {
       background: linear-gradient(135deg, #ff758f, #ff4d6d);
       color: white;
       border: none;
-      padding: 13px;
-      border-radius: 14px;
+      padding: 14px;
+      border-radius: 16px;
       font-size: 15px;
       font-weight: 800;
       cursor: pointer;
       width: 100%;
       margin: 8px 0;
-      box-shadow: 0 4px 14px rgba(255, 77, 109, 0.3);
+      box-shadow: 0 6px 18px rgba(255, 77, 109, 0.35);
       display: block;
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
     }
-    .btn:active { transform: scale(0.98); }
+    .btn:active { transform: scale(0.97); }
     .btn-sweet-green {
-      background: linear-gradient(135deg, #10b981, #047857);
+      background: linear-gradient(135deg, #34d399, #059669);
       color: white;
       border: none;
-      padding: 12px;
-      border-radius: 14px;
+      padding: 13px;
+      border-radius: 16px;
       font-weight: 800;
       cursor: pointer;
       width: 100%;
-      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
+      box-shadow: 0 6px 18px rgba(16, 185, 129, 0.35);
     }
     input, select {
       width: 100%;
-      padding: 12px;
-      margin: 6px 0 10px 0;
-      border-radius: 12px;
-      border: 1.5px solid #ff758f;
+      padding: 13px;
+      margin: 6px 0 12px 0;
+      border-radius: 14px;
+      border: 1.5px solid #ffb3c6;
       background: #fff5f7;
       color: #e01e37;
       text-align: center;
@@ -93,15 +99,19 @@
       user-select: auto;
       -webkit-user-select: auto;
     }
+    input:focus, select:focus {
+      border-color: #ff4d6d;
+      box-shadow: 0 0 0 3px rgba(255, 77, 109, 0.15);
+    }
     .pin-display {
-      font-size: 38px;
-      letter-spacing: 6px;
+      font-size: 40px;
+      letter-spacing: 8px;
       font-weight: 900;
       color: #e01e37;
       background: #ffe4e6;
-      padding: 6px;
-      border-radius: 14px;
-      margin: 8px 0;
+      padding: 8px;
+      border-radius: 16px;
+      margin: 10px 0;
       border: 2px dashed #ff758f;
     }
     .qr-container {
@@ -109,11 +119,12 @@
       flex-direction: column;
       align-items: center;
       background: #fff;
-      padding: 10px;
-      border-radius: 14px;
+      padding: 12px;
+      border-radius: 18px;
       width: fit-content;
-      margin: 8px auto;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+      margin: 10px auto;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      border: 1px solid #ffe4e6;
     }
     .badge-list {
       display: flex;
@@ -121,11 +132,13 @@
       gap: 6px;
       justify-content: center;
       margin: 10px 0;
+      max-height: 100px;
+      overflow-y: auto;
     }
     .badge {
       background: #ffe4e6;
       border: 1px solid #ff758f;
-      padding: 4px 12px;
+      padding: 5px 14px;
       border-radius: 20px;
       font-size: 13px;
       color: #e01e37;
@@ -151,9 +164,9 @@
 
     .game-top-bar {
       position: absolute;
-      top: env(safe-area-inset-top, 10px);
-      left: 10px;
-      right: 10px;
+      top: env(safe-area-inset-top, 12px);
+      left: 12px;
+      right: 12px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -162,38 +175,39 @@
       pointer-events: none;
     }
     .stat-pill {
-      background: rgba(255, 255, 255, 0.94);
+      background: rgba(255, 255, 255, 0.95);
       border: 1.5px solid rgba(255, 117, 143, 0.4);
       backdrop-filter: blur(8px);
-      padding: 6px 10px;
-      border-radius: 18px;
+      padding: 6px 12px;
+      border-radius: 20px;
       font-weight: 800;
-      font-size: 12px;
+      font-size: 13px;
       color: #0f172a;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      box-shadow: 0 3px 10px rgba(0,0,0,0.08);
       white-space: nowrap;
     }
     .btn-top-quiz {
       background: linear-gradient(135deg, #ff758f, #ff4d6d);
       border: 1.5px solid #ffffff;
       color: white;
-      padding: 6px 12px;
-      border-radius: 18px;
+      padding: 7px 14px;
+      border-radius: 20px;
       font-weight: 900;
-      font-size: 12px;
+      font-size: 13px;
       cursor: pointer;
-      box-shadow: 0 3px 10px rgba(255, 77, 109, 0.35);
+      box-shadow: 0 4px 14px rgba(255, 77, 109, 0.4);
       pointer-events: auto;
       white-space: nowrap;
     }
     .btn-music-toggle {
-      background: rgba(255, 255, 255, 0.94);
+      background: rgba(255, 255, 255, 0.95);
       border: 1.5px solid #bae6fd;
-      border-radius: 18px;
-      padding: 6px 10px;
-      font-size: 13px;
+      border-radius: 20px;
+      padding: 6px 12px;
+      font-size: 14px;
       cursor: pointer;
       pointer-events: auto;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.08);
     }
 
     .controls-bar {
@@ -208,12 +222,12 @@
       pointer-events: none;
     }
     .touch-dpad-container {
-      background: rgba(255, 255, 255, 0.65);
+      background: rgba(255, 255, 255, 0.7);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border: 2.5px solid rgba(255, 255, 255, 0.95);
       border-radius: 36px;
-      padding: 6px;
+      padding: 8px;
       box-shadow: 0 12px 30px rgba(2, 132, 199, 0.2);
       display: flex;
       gap: 10px;
@@ -234,8 +248,6 @@
       box-shadow: 0 5px 0 #7dd3fc, 0 8px 16px rgba(2, 132, 199, 0.15);
       transition: all 0.08s ease;
       cursor: pointer;
-      user-select: none;
-      -webkit-user-select: none;
       touch-action: none;
     }
     .touch-btn-arrow.active {
@@ -255,16 +267,13 @@
       border: 4px solid #ffffff;
       color: #ffffff;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
       box-shadow: 0 8px 0 #047857, 0 14px 28px rgba(16, 185, 129, 0.4);
       transition: all 0.08s ease;
       cursor: pointer;
-      user-select: none;
-      -webkit-user-select: none;
       touch-action: none;
-      font-size: 32px;
+      font-size: 34px;
     }
     .touch-btn-jump.active {
       transform: translateY(5px);
@@ -274,12 +283,12 @@
 
     #toast-msg {
       position: absolute;
-      top: 60px;
+      top: 65px;
       left: 50%;
       transform: translateX(-50%);
-      background: rgba(15, 23, 42, 0.88);
+      background: rgba(15, 23, 42, 0.92);
       color: white;
-      padding: 10px 20px;
+      padding: 10px 22px;
       border-radius: 20px;
       font-size: 14px;
       font-weight: bold;
@@ -287,6 +296,7 @@
       opacity: 0;
       transition: opacity 0.25s, transform 0.25s;
       pointer-events: none;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
     }
     #toast-msg.show {
       opacity: 1;
@@ -303,6 +313,7 @@
       line-height: 1.5;
       color: #9f1239;
       font-weight: bold;
+      box-shadow: inset 0 2px 6px rgba(255, 117, 143, 0.1);
     }
 
     @media (orientation: landscape) {
@@ -327,7 +338,7 @@
     #quiz-modal {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(15, 23, 42, 0.65);
+      background: rgba(15, 23, 42, 0.7);
       backdrop-filter: blur(8px);
       display: flex;
       align-items: center;
@@ -337,13 +348,13 @@
     }
     .quiz-card {
       background: #ffffff;
-      padding: 20px;
-      border-radius: 22px;
+      padding: 24px;
+      border-radius: 24px;
       width: 100%;
       max-width: 440px;
-      border: 2px solid #ff758f;
+      border: 2.5px solid #ff758f;
       text-align: center;
-      box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
       max-height: 88dvh;
       overflow-y: auto;
     }
@@ -351,20 +362,39 @@
       background: #fff5f7;
       border: 1.5px solid #ffccd5;
       color: #e01e37;
-      padding: 11px 13px;
+      padding: 12px 15px;
       border-radius: 14px;
       width: 100%;
-      margin: 7px 0;
+      margin: 8px 0;
       cursor: pointer;
       text-align: left;
       font-size: 14px;
       font-weight: 600;
+      transition: background 0.15s, border-color 0.15s;
     }
     .quiz-option:active { background: #ff758f; color: white; border-color: #ff758f; }
 
+    .leaderboard-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      text-align: left;
+      font-size: 14px;
+    }
+    .leaderboard-table th {
+      color: #64748b;
+      padding: 10px 6px;
+      border-bottom: 2px solid #e2e8f0;
+    }
+    .leaderboard-table td {
+      padding: 10px 6px;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
     .bento-card {
       background: rgba(30, 41, 59, 0.95);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(12px);
     }
   </style>
   <script>
@@ -385,7 +415,7 @@
   <!-- 1. หน้าแรก -->
   <div id="view-mode" class="container">
     <h1>HUNTER CYBER MISSION</h1>
-    <p style="color: #64748b; font-size:14px; margin-bottom: 16px;">เกมตอบคำถามชิงความสูง (Word Master)</p>
+    <p style="color: #64748b; font-size:14px; margin-bottom: 18px;">เกมตอบคำถามชิงความสูง (Word Master)</p>
     <button class="btn" id="btn-mode-host" onclick="window.onHostClick ? window.onHostClick() : switchScreen('view-host')">👑 ผู้สอน (Host สร้างห้อง)</button>
     <button class="btn" id="btn-mode-join" style="background:#475569;" onclick="switchScreen('view-join')">🎮 ผู้เรียน (Join เข้าเล่น)</button>
   </div>
@@ -401,7 +431,7 @@
       <span style="color:#e01e37; font-size:11px; font-weight:bold; margin-top:4px;">สแกนเพื่อเข้าห้อง</span>
     </div>
     
-    <button class="btn" id="btn-copy-link" style="padding:8px; font-size:12px; margin:4px 0 8px 0;">📋 คัดลอกลิงก์ส่งให้นักเรียน</button>
+    <button class="btn" id="btn-copy-link" style="padding:9px; font-size:12px; margin:4px 0 10px 0;">📋 คัดลอกลิงก์ส่งให้นักเรียน</button>
 
     <div style="text-align: left; margin-top: 6px;">
       <label style="color:#64748b; font-size:13px; font-weight:bold;">⚡ ค่าพลังงานเริ่มต้น:</label>
@@ -423,9 +453,9 @@
       </select>
     </div>
 
-    <p style="margin: 8px 0 4px 0; font-size:13px; color:#64748b;">ผู้เล่นในห้อง (<span id="player-count">0</span> คน):</p>
+    <p style="margin: 10px 0 4px 0; font-size:13px; color:#64748b;">ผู้เล่นในห้อง (<span id="player-count">0</span> คน):</p>
     <div id="host-players" class="badge-list"></div>
-    <button id="btn-start" class="btn" style="background: linear-gradient(135deg, #10b981, #059669);" disabled>🚀 เริ่มการแข่งขัน</button>
+    <button id="btn-start" class="btn btn-sweet-green" disabled>🚀 เริ่มการแข่งขัน</button>
   </div>
 
   <!-- 3. หน้าจอหลักของ Host / Admin (Live Monitor) -->
@@ -448,14 +478,14 @@
         <div class="bg-black/50 border border-white/20 px-4 py-1.5 rounded-2xl font-mono text-xl text-yellow-300 font-black">
           ⏱️ <span id="host-timer-text">03:00</span>
         </div>
-        <button onclick="exportDataCSV()" class="btn-sweet-green !w-auto !py-2 !px-4 !my-0 text-xs font-black">
+        <button onclick="exportDataCSV()" class="btn-sweet-green !w-auto !py-2 !px-4 !my-0 text-xs font-black shadow-md">
           📥 Export รายงาน Excel
         </button>
       </div>
     </div>
 
     <!-- แถบไฮไลต์คนนำอันดับ 1 แบบสดๆ -->
-    <div class="mt-3 bg-gradient-to-r from-amber-500/20 via-yellow-500/10 to-transparent border border-amber-500/40 p-3 rounded-2xl flex items-center justify-between shadow-sm">
+    <div class="mt-3 bg-gradient-to-r from-amber-500/20 via-yellow-500/10 to-transparent border border-amber-500/40 p-3.5 rounded-2xl flex items-center justify-between shadow-sm">
       <div class="flex items-center gap-2.5">
         <span class="text-2xl animate-bounce">👑</span>
         <div>
@@ -470,7 +500,7 @@
     </div>
 
     <!-- ตารางสรุปคะแนนผู้เล่นทุกคนแบบ Real-time -->
-    <div class="mt-3 flex-1 overflow-auto bg-slate-800/80 border border-slate-700 rounded-3xl p-3 sm:p-4">
+    <div class="mt-3 flex-1 overflow-auto bg-slate-800/80 border border-slate-700 rounded-3xl p-3 sm:p-4 shadow-inner">
       <table class="w-full text-left border-collapse text-xs sm:text-sm">
         <thead>
           <tr class="border-b border-slate-700 text-slate-400">
@@ -488,51 +518,54 @@
     </div>
   </div>
 
-  <!-- 4. Modal ป๊อปอัป: จัดการคลังคำถาม + ฟอร์มพิมพ์เพิ่มข้อใหม่ -->
-  <div id="questionBankModal" class="hidden fixed inset-0 bg-black/75 backdrop-blur-md flex items-center justify-center z-50 p-4">
-    <div class="container max-w-2xl w-full p-6 text-slate-800 max-h-[90vh] flex flex-col shadow-2xl">
-      <div class="flex justify-between items-center border-b pb-3 mb-3">
+  <!-- 4. Modal ป๊อปอัป: จัดการคลังคำถาม (ปรับดีไซน์ให้ไม่ล้นจอและเลื่อนดูได้สมบูรณ์) -->
+  <div id="questionBankModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4">
+    <div class="container max-w-2xl w-full p-6 text-slate-800 max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
+      <div class="flex justify-between items-center border-b pb-3 mb-3 shrink-0">
         <div>
-          <h2 class="text-lg font-black text-rose-600 flex items-center gap-2">
+          <h2 class="text-lg font-black text-rose-600 flex items-center gap-2 m-0">
             <span>📝</span> คลังข้อสอบ & เพิ่มคำถามใหม่
           </h2>
-          <p class="text-xs text-slate-500">คุณครูสามารถตรวจสอบคำถาม หรือพิมพ์เพิ่มข้อใหม่ได้ทันที</p>
+          <p class="text-xs text-slate-500 m-0">คุณครสามารถตรวจสอบคำถาม หรือพิมพ์เพิ่มข้อใหม่ได้ทันที</p>
         </div>
-        <button onclick="closeQuestionBankModal()" class="px-3.5 py-1.5 bg-slate-200 hover:bg-slate-300 rounded-xl text-xs font-bold transition-all">✕ ปิด</button>
+        <button onclick="closeQuestionBankModal()" class="px-3.5 py-1.5 bg-slate-200 hover:bg-slate-300 rounded-xl text-xs font-bold transition-all cursor-pointer">✕ ปิด</button>
       </div>
 
-      <!-- ฟอร์มพิมพ์คำถามใหม่ -->
-      <div class="bg-pink-50/90 border-2 border-pink-200 p-3.5 rounded-2xl mb-4 text-xs text-left">
-        <div class="font-bold text-rose-600 mb-2 flex items-center gap-1.5">
-          <span>➕</span> เพิ่มคำถามใหม่เข้าไปในเกม:
-        </div>
-        <div class="space-y-2">
-          <input id="new-q-text" type="text" placeholder="พิมพ์โจทย์คำถาม..." class="w-full p-2 rounded-xl border border-pink-300 bg-white font-semibold text-slate-800 outline-none">
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-            <input id="new-q-a1" type="text" placeholder="ตัวเลือก 1" class="p-2 rounded-xl border border-pink-200 bg-white outline-none">
-            <input id="new-q-a2" type="text" placeholder="ตัวเลือก 2" class="p-2 rounded-xl border border-pink-200 bg-white outline-none">
-            <input id="new-q-a3" type="text" placeholder="ตัวเลือก 3" class="p-2 rounded-xl border border-pink-200 bg-white outline-none">
-            <input id="new-q-a4" type="text" placeholder="ตัวเลือก 4" class="p-2 rounded-xl border border-pink-200 bg-white outline-none">
+      <!-- ส่วนเนื้อหาที่สามารถเลื่อนได้ (Scrollable Area) -->
+      <div class="flex-1 overflow-y-auto pr-1 space-y-3">
+        <!-- ฟอร์มพิมพ์คำถามใหม่ -->
+        <div class="bg-pink-50/90 border-2 border-pink-200 p-3.5 rounded-2xl text-xs text-left">
+          <div class="font-bold text-rose-600 mb-2 flex items-center gap-1.5">
+            <span>➕</span> เพิ่มคำถามใหม่เข้าไปในเกม:
           </div>
-          <div class="flex items-center justify-between pt-1 gap-2">
-            <div class="flex items-center gap-1.5 font-bold text-slate-600">
-              <span>เฉลยข้อที่ถูก:</span>
-              <select id="new-q-correct" class="p-1.5 rounded-lg border border-pink-300 bg-white font-bold text-rose-600 !my-0 !w-auto">
-                <option value="0">ตัวเลือก 1</option>
-                <option value="1">ตัวเลือก 2</option>
-                <option value="2">ตัวเลือก 3</option>
-                <option value="3">ตัวเลือก 4</option>
-              </select>
+          <div class="space-y-2">
+            <input id="new-q-text" type="text" placeholder="พิมพ์โจทย์คำถาม..." class="w-full p-2.5 rounded-xl border border-pink-300 bg-white font-semibold text-slate-800 outline-none">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <input id="new-q-a1" type="text" placeholder="ตัวเลือก 1" class="p-2 rounded-xl border border-pink-200 bg-white outline-none">
+              <input id="new-q-a2" type="text" placeholder="ตัวเลือก 2" class="p-2 rounded-xl border border-pink-200 bg-white outline-none">
+              <input id="new-q-a3" type="text" placeholder="ตัวเลือก 3" class="p-2 rounded-xl border border-pink-200 bg-white outline-none">
+              <input id="new-q-a4" type="text" placeholder="ตัวเลือก 4" class="p-2 rounded-xl border border-pink-200 bg-white outline-none">
             </div>
-            <button onclick="addNewCustomQuestion()" class="btn-sweet-green !w-auto !py-2 !px-5 rounded-xl font-bold text-xs shadow-md">
-              บันทึกข้อสอบ ➕
-            </button>
+            <div class="flex items-center justify-between pt-1 gap-2 flex-wrap">
+              <div class="flex items-center gap-1.5 font-bold text-slate-600">
+                <span>เฉลยข้อที่ถูก:</span>
+                <select id="new-q-correct" class="p-1.5 rounded-lg border border-pink-300 bg-white font-bold text-rose-600 !my-0 !w-auto">
+                  <option value="0">ตัวเลือก 1</option>
+                  <option value="1">ตัวเลือก 2</option>
+                  <option value="2">ตัวเลือก 3</option>
+                  <option value="3">ตัวเลือก 4</option>
+                </select>
+              </div>
+              <button onclick="addNewCustomQuestion()" class="btn-sweet-green !w-auto !py-2 !px-5 rounded-xl font-bold text-xs shadow-md">
+                บันทึกข้อสอบ ➕
+              </button>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div class="font-bold text-slate-700 text-xs mb-1.5 text-left">รายการคำถามทั้งหมดในเกม (<span id="bank-q-count">0</span> ข้อ):</div>
-      <div id="questionBankList" class="flex-1 overflow-y-auto space-y-2.5 pr-1.5 text-xs text-left max-h-48"></div>
+        <div class="font-bold text-slate-700 text-xs mb-1 text-left">รายการคำถามทั้งหมดในเกม (<span id="bank-q-count">0</span> ข้อ):</div>
+        <div id="questionBankList" class="space-y-2 text-xs text-left"></div>
+      </div>
     </div>
   </div>
 
@@ -577,8 +610,8 @@
 
     <div id="quiz-modal" class="hidden">
       <div class="quiz-card">
-        <h3 id="quiz-title" style="margin:0 0 10px 0; font-size:16px; color:#e01e37;">⚡ ตอบคำถาม (+5 ⚡)</h3>
-        <p id="quiz-q-text" style="font-weight:bold; font-size:14px; margin:10px 0; color:#0f172a; line-height:1.4;"></p>
+        <h3 id="quiz-title" style="margin:0 0 10px 0; font-size:17px; color:#e01e37;">⚡ ตอบคำถาม (+5 ⚡)</h3>
+        <p id="quiz-q-text" style="font-weight:bold; font-size:14px; margin:12px 0; color:#0f172a; line-height:1.5;"></p>
         <div id="quiz-options-list"></div>
         <button class="btn hidden" id="btn-close-quiz" style="background:#64748b; margin-top:10px; padding:10px;">ปิดหน้าต่าง</button>
       </div>
@@ -607,7 +640,7 @@
     </table>
 
     <button class="btn btn-excel hidden" id="btn-export-excel">📥 บันทึกคะแนนลงใน Excel (.csv)</button>
-    <button class="btn" onclick="location.reload()" style="margin-top:6px; background:#475569;">🔄 เริ่มเกมใหม่</button>
+    <button class="btn" onclick="location.reload()" style="margin-top:8px; background:#475569;">🔄 เริ่มเกมใหม่</button>
   </div>
 
   <script type="module">
@@ -770,7 +803,6 @@
       return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
     }
 
-    // --- ฟังก์ชันจัดการ Modal คลังข้อสอบ ---
     window.openQuestionBankModal = function() {
       renderQuestionBankList();
       document.getElementById('questionBankModal').classList.remove('hidden');
@@ -788,15 +820,15 @@
 
       quizData.forEach((item, index) => {
         const div = document.createElement('div');
-        div.className = "p-2.5 bg-slate-50 border border-slate-200 rounded-xl flex items-start justify-between gap-2";
+        div.className = "p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-start justify-between gap-2 shadow-sm";
         div.innerHTML = `
           <div>
             <div class="font-bold text-slate-800">ข้อที่ ${index + 1}: ${item.q}</div>
-            <div class="text-[11px] text-slate-500 mt-0.5">
+            <div class="text-[11px] text-slate-500 mt-1">
               ตัวเลือก: ${item.c.map((c, i) => `<span class="${i === item.a ? 'text-emerald-600 font-bold' : ''}">(${String.fromCharCode(65+i)}) ${c}</span>`).join(' | ')}
             </div>
           </div>
-          <button onclick="deleteQuestion(${item.id})" class="text-rose-500 hover:text-rose-700 font-bold px-2 py-1 bg-white border border-rose-200 rounded-lg shrink-0">ลบ</button>
+          <button onclick="deleteQuestion(${item.id})" class="text-rose-500 hover:text-rose-700 font-bold px-2.5 py-1 bg-white border border-rose-200 rounded-lg shrink-0 cursor-pointer">ลบ</button>
         `;
         listEl.appendChild(div);
       });
@@ -824,7 +856,6 @@
 
       myQuizAnswers[newId] = { correct: false, wrongAttempts: 0 };
 
-      // ล้างฟอร์ม
       document.getElementById('new-q-text').value = "";
       document.getElementById('new-q-a1').value = "";
       document.getElementById('new-q-a2').value = "";
@@ -843,53 +874,6 @@
       renderQuestionBankList();
       showToast('🗑️ ลบคำถามเรียบร้อย');
     }
-
-    window.exportDataCSV = function() {
-      const sorted = Object.values(allPlayersData)
-        .sort((a,b) => (b.height || 0) - (a.height || 0));
-
-      if (sorted.length === 0) return alert('ไม่มีข้อมูลคะแนน');
-
-      let csvContent = "\uFEFF";
-      let header = "อันดับ,ชื่อผู้เล่น,ความสูงสูงสุด (เมตร),ตอบถูกรวม (ข้อ),ตอบผิดรวม (ข้อ),ความแม่นยำ (%)";
-      quizData.forEach((q, idx) => {
-        header += `,ข้อ ${idx+1} (ผล/ผิดกี่ครั้ง)`;
-      });
-      csvContent += header + "\n";
-
-      sorted.forEach((p, idx) => {
-        const correct = p.correct || 0;
-        const wrong = p.wrong || 0;
-        const total = correct + wrong;
-        const accuracy = total > 0 ? ((correct / total) * 100).toFixed(1) : "0.0";
-        const safeName = `"${(p.name || 'Agent').replace(/"/g, '""')}"`;
-        
-        let row = `${idx + 1},${safeName},${p.height || 0},${correct},${wrong},${accuracy}%`;
-
-        const pStats = p.quizStats || {};
-        quizData.forEach(q => {
-          const qStat = pStats[q.id] || { correct: false, wrongAttempts: 0 };
-          let resText = "";
-          if (qStat.correct) {
-            resText = qStat.wrongAttempts > 0 ? `ผ่าน (ผิด ${qStat.wrongAttempts} ครั้ง)` : "ถูกครั้งแรก";
-          } else {
-            resText = qStat.wrongAttempts > 0 ? `ยังไม่ผ่าน (ผิด ${qStat.wrongAttempts} ครั้ง)` : "ยังไม่ได้ตอบ";
-          }
-          row += `,"${resText}"`;
-        });
-        csvContent += row + "\n";
-      });
-
-      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.setAttribute("href", url);
-      link.setAttribute("download", `คะแนนเกม_พร้อมสถิติรายข้อ_${currentPin || 'SweetWord'}.csv`);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-    };
 
     window.onHostClick = function() {
       isHost = true;
@@ -1020,6 +1004,55 @@
       });
     };
 
+    document.getElementById('btn-export-excel').onclick = exportDataCSV;
+
+    function exportDataCSV() {
+      const sorted = Object.values(allPlayersData)
+        .sort((a,b) => (b.height || 0) - (a.height || 0));
+
+      if (sorted.length === 0) return alert('ไม่มีข้อมูลคะแนน');
+
+      let csvContent = "\uFEFF";
+      let header = "อันดับ,ชื่อผู้เล่น,ความสูงสูงสุด (เมตร),ตอบถูกรวม (ข้อ),ตอบผิดรวม (ข้อ),ความแม่นยำ (%)";
+      quizData.forEach((q, idx) => {
+        header += `,ข้อ ${idx+1} (ผล/ผิดกี่ครั้ง)`;
+      });
+      csvContent += header + "\n";
+
+      sorted.forEach((p, idx) => {
+        const correct = p.correct || 0;
+        const wrong = p.wrong || 0;
+        const total = correct + wrong;
+        const accuracy = total > 0 ? ((correct / total) * 100).toFixed(1) : "0.0";
+        const safeName = `"${(p.name || 'Agent').replace(/"/g, '""')}"`;
+        
+        let row = `${idx + 1},${safeName},${p.height || 0},${correct},${wrong},${accuracy}%`;
+
+        const pStats = p.quizStats || {};
+        quizData.forEach(q => {
+          const qStat = pStats[q.id] || { correct: false, wrongAttempts: 0 };
+          let resText = "";
+          if (qStat.correct) {
+            resText = qStat.wrongAttempts > 0 ? `ผ่าน (ผิด ${qStat.wrongAttempts} ครั้ง)` : "ถูกครั้งแรก";
+          } else {
+            resText = qStat.wrongAttempts > 0 ? `ยังไม่ผ่าน (ผิด ${qStat.wrongAttempts} ครั้ง)` : "ยังไม่ได้ตอบ";
+          }
+          row += `,"${resText}"`;
+        });
+        csvContent += row + "\n";
+      });
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.setAttribute("href", url);
+      link.setAttribute("download", `คะแนนเกม_พร้อมสถิติรายข้อ_${currentPin || 'SweetWord'}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }
+
     document.getElementById('btn-open-quiz').onclick = () => triggerQuizModal(false);
     document.getElementById('btn-close-quiz').onclick = () => {
       if (energy > 0 && !isTrapped) document.getElementById('quiz-modal').classList.add('hidden');
@@ -1032,7 +1065,6 @@
       switchScreen('view-join');
     }
 
-    // แสดงตารางคะแนนโฮสต์แบบ Real-time พร้อมไฮไลต์ผู้นำ
     function renderHostLiveTable() {
       const tbody = document.getElementById('host-live-table');
       if (!tbody) return;
@@ -1125,6 +1157,13 @@
         cheerEl.innerHTML = "🎉 เก่งมากๆ! คุณติด Top 3 บนโพเดียม เก่งและมีความพยายามสูงมาก ภูมิใจในตัวเองได้เลย! 💖";
       } else {
         cheerEl.innerHTML = "🌟 ยอดเยี่ยมมาก! ทุกความสูงและทุกคำถามที่ตอบ คือก้าวสำคัญของการเรียนรู้ ฝึกฝนต่อไปเรื่อยๆ คุณทำได้ดียิ่งขึ้นแน่นอน สู้ๆ นะ! 💪✨";
+      }
+
+      const btnExcel = document.getElementById('btn-export-excel');
+      if (isHost) {
+        btnExcel.classList.remove('hidden');
+      } else {
+        btnExcel.classList.add('hidden');
       }
 
       switchScreen('view-result');
