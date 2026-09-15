@@ -140,14 +140,31 @@
       max-height: 110px;
       overflow-y: auto;
     }
-    .badge {
+    .badge-player {
       background: #ffe4e6;
       border: 1px solid #ff758f;
-      padding: 6px 14px;
+      padding: 5px 10px 5px 14px;
       border-radius: 20px;
       font-size: 13px;
       color: #e01e37;
       font-weight: bold;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .badge-kick-btn {
+      background: #ff4d6d;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      font-size: 10px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
     }
     .hidden { display: none !important; }
 
@@ -261,11 +278,12 @@
       box-shadow: 0 3px 10px rgba(0,0,0,0.08);
     }
 
+    /* แผงสัมผัสซ้าย-ขวา ปรับปรุงไอคอนปุ่มขวาสุดให้เต็มดวง ไม่ขาดขอบ */
     .controls-bar {
       position: absolute;
-      bottom: max(env(safe-area-inset-bottom), 18px);
-      left: 16px;
-      right: 16px;
+      bottom: max(env(safe-area-inset-bottom), 22px);
+      left: 18px;
+      right: 18px;
       display: flex;
       justify-content: space-between;
       align-items: flex-end;
@@ -273,7 +291,7 @@
       pointer-events: none;
     }
     .touch-dpad-container {
-      background: rgba(255, 255, 255, 0.7);
+      background: rgba(255, 255, 255, 0.75);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border: 2.5px solid rgba(255, 255, 255, 0.95);
@@ -309,12 +327,14 @@
     }
     .action-pad {
       pointer-events: auto;
+      padding-right: 4px;
+      padding-bottom: 4px;
     }
     .touch-btn-jump {
       width: 82px;
       height: 82px;
       border-radius: 50%;
-      background: linear-gradient(180deg, #34d399 0%, #10b981 100%);
+      background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
       border: 4px solid #ffffff;
       color: #ffffff;
       display: flex;
@@ -324,7 +344,8 @@
       transition: all 0.08s ease;
       cursor: pointer;
       touch-action: none;
-      font-size: 34px;
+      font-size: 36px;
+      line-height: 1;
     }
     .touch-btn-jump.active {
       transform: translateY(5px);
@@ -382,7 +403,7 @@
 
     @media (orientation: landscape) {
       .controls-bar {
-        bottom: max(env(safe-area-inset-bottom), 10px);
+        bottom: max(env(safe-area-inset-bottom), 12px);
         left: 24px;
         right: 24px;
       }
@@ -393,9 +414,9 @@
         border-radius: 20px;
       }
       .touch-btn-jump {
-        width: 70px;
-        height: 70px;
-        font-size: 28px;
+        width: 72px;
+        height: 72px;
+        font-size: 30px;
       }
     }
 
@@ -466,6 +487,98 @@
       padding: 10px 8px;
       border-bottom: 1px solid rgba(51, 65, 85, 0.4);
     }
+
+    .qb-modal-card {
+      background: #ffffff;
+      border: 2.5px solid #ff758f;
+      border-radius: 28px;
+      padding: 24px;
+      max-width: 680px;
+      width: 95%;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
+      max-height: 88dvh;
+      display: flex;
+      flex-direction: column;
+      text-align: left;
+      color: #0f172a;
+      overflow: hidden;
+    }
+    .qb-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 14px;
+      border-bottom: 1.5px solid #ffe4e6;
+      margin-bottom: 12px;
+      flex-shrink: 0;
+    }
+    .qb-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+      flex-shrink: 0;
+    }
+    .qb-tab-btn {
+      flex: 1;
+      padding: 9px 12px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: bold;
+      border: 1.5px solid #ffccd5;
+      background: #fff5f7;
+      color: #e01e37;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .qb-tab-btn.active {
+      background: #ff4d6d;
+      color: white;
+      border-color: #ff4d6d;
+      box-shadow: 0 3px 10px rgba(255, 77, 109, 0.3);
+    }
+    .qb-body-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+    .qb-question-card {
+      background: #ffffff;
+      border: 1.5px solid #fecdd3;
+      border-radius: 16px;
+      padding: 14px;
+      margin-bottom: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .qb-btn-delete {
+      background: #fff1f2;
+      border: 1px solid #fda4af;
+      color: #e11d48;
+      padding: 5px 12px;
+      border-radius: 10px;
+      font-weight: bold;
+      font-size: 12px;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: all 0.1s;
+    }
+    .qb-btn-delete:hover {
+      background: #e11d48;
+      color: white;
+    }
+    .qb-form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    @media (max-width: 520px) {
+      .qb-form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
   <script>
     function switchScreen(id) {
@@ -531,109 +644,113 @@
   <!-- 3. หน้าจอหลักของ Host / Admin (Live Monitor) -->
   <div id="view-host-live" class="hidden">
     <div class="host-header-card">
-      <div class="flex items-center gap-3">
-        <button onclick="location.reload()" class="px-3.5 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-2xl font-bold text-xs transition-all cursor-pointer">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <button onclick="location.reload()" style="padding: 8px 14px; background: #334155; color: white; border: none; border-radius: 14px; font-weight: bold; font-size: 12px; cursor: pointer;">
           🔙 ออกจากห้อง
         </button>
-        <div class="text-left">
-          <h2 class="text-base sm:text-lg font-black text-rose-400 m-0">👑 HOST MONITOR</h2>
-          <p class="text-xs text-slate-400 m-0">ห้อง: <span id="live-room-pin" class="font-bold text-rose-300">------</span> | ออนไลน์: <span id="live-player-count" class="font-bold text-emerald-400">0</span> คน</p>
+        <div style="text-align: left;">
+          <h2 style="font-size: 18px; font-weight: 900; color: #fb7185; margin: 0;">👑 HOST MONITOR</h2>
+          <p style="font-size: 12px; color: #94a3b8; margin: 0;">ห้อง: <span id="live-room-pin" style="font-weight: bold; color: #fda4af;">------</span> | ออนไลน์: <span id="live-player-count" style="font-weight: bold; color: #34d399;">0</span> คน</p>
         </div>
       </div>
       
-      <div class="flex items-center gap-2 flex-wrap">
-        <button onclick="openQuestionBankModal()" class="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-2xl font-bold text-xs transition-all cursor-pointer flex items-center gap-1.5 shadow-md">
-          <span>📝</span> จัดการคำถาม (<span id="total-q-count">20</span> ข้อ)
+      <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+        <button onclick="openQuestionBankModal()" style="padding: 8px 14px; background: #4f46e5; color: white; border: none; border-radius: 14px; font-weight: bold; font-size: 12px; cursor: pointer; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.35);">
+          📝 จัดการคำถาม (<span id="total-q-count">20</span> ข้อ)
         </button>
-        <div class="bg-black/50 border border-white/20 px-4 py-1.5 rounded-2xl font-mono text-xl text-yellow-300 font-black">
+        <div style="background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); padding: 6px 16px; border-radius: 14px; font-family: monospace; font-size: 20px; color: #fde047; font-weight: 900;">
           ⏱️ <span id="host-timer-text">03:00</span>
         </div>
-        <button onclick="exportDataCSV()" class="btn-sweet-green !w-auto !py-2 !px-4 !my-0 text-xs font-black shadow-md">
+        <button onclick="exportDataCSV()" class="btn-sweet-green" style="width: auto; padding: 8px 16px; margin: 0; font-size: 12px;">
           📥 Export รายงาน Excel
         </button>
       </div>
     </div>
 
-    <!-- แถบไฮไลต์คนนำอันดับ 1 -->
     <div class="host-leader-bar">
-      <div class="flex items-center gap-3">
-        <span class="text-3xl animate-bounce">👑</span>
-        <div class="text-left">
-          <div class="text-[11px] text-amber-300 font-extrabold uppercase tracking-wider">ผู้นำอันดับ 1 ตอนนี้</div>
-          <div id="leader-name" class="text-base sm:text-lg font-black text-white">รอเริ่มกระโดด...</div>
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <span style="font-size: 32px;">👑</span>
+        <div style="text-align: left;">
+          <div style="font-size: 11px; color: #fcd34d; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">ผู้นำอันดับ 1 ตอนนี้</div>
+          <div id="leader-name" style="font-size: 18px; font-weight: 900; color: white;">รอเริ่มกระโดด...</div>
         </div>
       </div>
-      <div class="text-right">
-        <div class="text-[11px] text-amber-300 font-extrabold uppercase tracking-wider">ระยะทางนำ</div>
-        <div id="leader-meters" class="text-xl sm:text-2xl font-black text-yellow-400 font-mono">0 m</div>
+      <div style="text-align: right;">
+        <div style="font-size: 11px; color: #fcd34d; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">ระยะทางนำ</div>
+        <div id="leader-meters" style="font-size: 24px; font-weight: 900; color: #facc15; font-family: monospace;">0 m</div>
       </div>
     </div>
 
-    <!-- ตารางสรุปคะแนน Real-time -->
     <div class="host-table-wrapper">
-      <table class="host-table w-full text-left border-collapse text-xs sm:text-sm">
+      <table class="host-table">
         <thead>
           <tr>
-            <th class="p-2.5">อันดับ</th>
-            <th class="p-2.5">ชื่อผู้เรียน</th>
-            <th class="p-2.5 text-center">ความสูง (m)</th>
-            <th class="p-2.5 text-center">ตอบถูก</th>
-            <th class="p-2.5 text-center">ตอบผิด</th>
-            <th class="p-2.5 text-center">ความแม่นยำ</th>
-            <th class="p-2.5 text-center">พลังงาน</th>
+            <th>อันดับ</th>
+            <th>ชื่อผู้เรียน</th>
+            <th style="text-align: center;">ความสูง (m)</th>
+            <th style="text-align: center;">ตอบถูก</th>
+            <th style="text-align: center;">ตอบผิด</th>
+            <th style="text-align: center;">ความแม่นยำ</th>
+            <th style="text-align: center;">พลังงาน</th>
           </tr>
         </thead>
-        <tbody id="host-live-table" class="divide-y divide-slate-700/50"></tbody>
+        <tbody id="host-live-table"></tbody>
       </table>
     </div>
   </div>
 
-  <!-- 4. Modal คลังข้อสอบ พรีเมียม (จัดดีไซน์ใหม่ให้ไม่ล้นจอ อ่านง่าย และสวยงาม) -->
+  <!-- 4. Modal คลังข้อสอบ -->
   <div id="questionBankModal" class="hidden">
-    <div class="container max-w-2xl w-full p-6 text-slate-800 max-h-[85vh] flex flex-col shadow-2xl overflow-hidden !border-indigo-200" style="text-align: left;">
-      <div class="flex justify-between items-center border-b pb-3 mb-4 shrink-0">
+    <div class="qb-modal-card">
+      <div class="qb-header">
         <div>
-          <h2 class="text-base sm:text-lg font-black text-indigo-600 flex items-center gap-2 m-0">
-            <span>📝</span> คลังข้อสอบทั้งหมด (<span id="bank-q-count">20</span> ข้อ)
+          <h2 style="font-size: 18px; font-weight: 900; color: #e01e37; margin: 0;">
+            📝 คลังข้อสอบ & จัดการคำถาม
           </h2>
-          <p class="text-xs text-slate-500 m-0">ตรวจสอบโจทย์ รายละเอียดข้อสอบ และเพิ่มคำถามใหม่ได้ที่นี่</p>
+          <p style="font-size: 12px; color: #64748b; margin: 2px 0 0 0;">มีข้อสอบในระบบทั้งหมด <b id="bank-q-count" style="color: #e01e37;">20</b> ข้อ</p>
         </div>
-        <button onclick="closeQuestionBankModal()" class="px-3.5 py-1.5 bg-slate-200 hover:bg-slate-300 rounded-xl text-xs font-bold transition-all cursor-pointer">✕ ปิด</button>
+        <button onclick="closeQuestionBankModal()" style="padding: 6px 14px; background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 12px; font-weight: bold; font-size: 12px; cursor: pointer;">✕ ปิด</button>
       </div>
 
-      <div class="flex-1 overflow-y-auto pr-1 space-y-4">
-        <!-- ฟอร์มเพิ่มคำถาม -->
-        <div class="bg-indigo-50/80 border-2 border-indigo-200 p-4 rounded-2xl text-xs shadow-sm">
-          <div class="font-bold text-indigo-600 mb-2.5 flex items-center gap-1.5 text-sm">
-            <span>➕</span> เพิ่มคำถามใหม่เข้าไปในเกม:
-          </div>
-          <div class="space-y-2.5">
-            <input id="new-q-text" type="text" placeholder="พิมพ์โจทย์คำถาม..." class="w-full p-3 rounded-xl border border-indigo-300 bg-white font-semibold text-slate-800 outline-none">
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              <input id="new-q-a1" type="text" placeholder="ตัวเลือก 1" class="p-2.5 rounded-xl border border-indigo-200 bg-white outline-none">
-              <input id="new-q-a2" type="text" placeholder="ตัวเลือก 2" class="p-2.5 rounded-xl border border-indigo-200 bg-white outline-none">
-              <input id="new-q-a3" type="text" placeholder="ตัวเลือก 3" class="p-2.5 rounded-xl border border-indigo-200 bg-white outline-none">
-              <input id="new-q-a4" type="text" placeholder="ตัวเลือก 4" class="p-2.5 rounded-xl border border-indigo-200 bg-white outline-none">
+      <div class="qb-tabs">
+        <button id="qb-tab-view" class="qb-tab-btn active" onclick="switchQbTab('view')">📋 รายการข้อสอบทั้งหมด</button>
+        <button id="qb-tab-add" class="qb-tab-btn" onclick="switchQbTab('add')">➕ เพิ่มคำถามข้อใหม่</button>
+      </div>
+
+      <div class="qb-body-scroll">
+        <div id="qb-panel-view">
+          <div id="questionBankList"></div>
+        </div>
+
+        <div id="qb-panel-add" class="hidden">
+          <div style="background: #fff5f7; border: 1.5px solid #ffccd5; border-radius: 20px; padding: 18px;">
+            <label style="font-size: 13px; font-weight: bold; color: #e01e37; display: block; margin-bottom: 4px;">โจทย์คำถาม:</label>
+            <input id="new-q-text" type="text" placeholder="พิมพ์โจทย์คำถามตรงนี้..." style="margin-bottom: 12px; text-align: left; padding: 12px;">
+            
+            <label style="font-size: 13px; font-weight: bold; color: #475569; display: block; margin-bottom: 4px;">ตัวเลือก 4 ข้อ:</label>
+            <div class="qb-form-grid">
+              <input id="new-q-a1" type="text" placeholder="ตัวเลือก A" style="text-align: left; padding: 10px; margin-bottom: 8px;">
+              <input id="new-q-a2" type="text" placeholder="ตัวเลือก B" style="text-align: left; padding: 10px; margin-bottom: 8px;">
+              <input id="new-q-a3" type="text" placeholder="ตัวเลือก C" style="text-align: left; padding: 10px; margin-bottom: 8px;">
+              <input id="new-q-a4" type="text" placeholder="ตัวเลือก D" style="text-align: left; padding: 10px; margin-bottom: 8px;">
             </div>
-            <div class="flex items-center justify-between pt-1 gap-2 flex-wrap">
-              <div class="flex items-center gap-1.5 font-bold text-slate-600">
-                <span>เฉลยข้อที่ถูก:</span>
-                <select id="new-q-correct" class="p-2 rounded-lg border border-indigo-300 bg-white font-bold text-indigo-600 !my-0 !w-auto">
-                  <option value="0">ตัวเลือก 1</option>
-                  <option value="1">ตัวเลือก 2</option>
-                  <option value="2">ตัวเลือก 3</option>
-                  <option value="3">ตัวเลือก 4</option>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px; flex-wrap: wrap; gap: 10px;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 13px; font-weight: bold; color: #0f172a;">เฉลยข้อที่ถูก:</span>
+                <select id="new-q-correct" style="width: auto; margin: 0; padding: 8px 12px; font-size: 14px;">
+                  <option value="0">ตัวเลือก A</option>
+                  <option value="1">ตัวเลือก B</option>
+                  <option value="2">ตัวเลือก C</option>
+                  <option value="3">ตัวเลือก D</option>
                 </select>
               </div>
-              <button onclick="addNewCustomQuestion()" class="btn-sweet-green !w-auto !py-2.5 !px-5 rounded-xl font-bold text-xs shadow-md">
+              <button onclick="addNewCustomQuestion()" class="btn-sweet-green" style="width: auto; padding: 10px 22px; margin: 0; font-size: 13px;">
                 บันทึกข้อสอบ ➕
               </button>
             </div>
           </div>
         </div>
-
-        <div class="font-bold text-slate-700 text-xs">รายการโจทย์ทั้งหมดในระบบ:</div>
-        <div id="questionBankList" class="space-y-2.5 text-xs"></div>
       </div>
     </div>
   </div>
@@ -680,7 +797,7 @@
     <div id="quiz-modal" class="hidden">
       <div class="quiz-card">
         <h3 id="quiz-title" style="margin:0 0 10px 0; font-size:17px; color:#e01e37;">⚡ ตอบคำถาม (+5 ⚡)</h3>
-        <p id="quiz-q-text" style="font-weight:bold; font-size:14px; margin:12px 0; color:#0f172a; line-height:1.5;"></p>
+        <p id="quiz-q-text" style="font-weight:bold; font-size:14px; margin:12px 0; color:#0f172a; line-height:1.5; text-align: left;"></p>
         <div id="quiz-options-list"></div>
         <button class="btn hidden" id="btn-close-quiz" style="background:#64748b; margin-top:10px; padding:10px;">ปิดหน้าต่าง</button>
       </div>
@@ -714,12 +831,12 @@
     </table>
 
     <button class="btn btn-excel hidden" id="btn-export-excel">📥 บันทึกคะแนนลงใน Excel (.csv)</button>
-    <button class="btn" onclick="location.reload()" style="margin-top:8px; background:#475569;">🔄 เริ่มเกมใหม่</button>
+    <button class="btn" id="btn-play-again" style="margin-top:8px; background:#475569;">🔄 เริ่มเกมใหม่</button>
   </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
-    import { getDatabase, ref, set, update, onValue, push } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
+    import { getDatabase, ref, set, update, onValue, push, remove, get } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyA9RMnSd0hFU1g3dySplJI1wEkKZxERsc0",
@@ -776,7 +893,7 @@
     let playerName = "Agent";
     let isHost = false;
     let energy = 5;
-    let maxHeightMeters = 0;
+    let currentMeters = 0;
     let correctCount = 0;
     let wrongCount = 0;
     let currentQ = 0;
@@ -878,12 +995,32 @@
     }
 
     window.openQuestionBankModal = function() {
+      switchQbTab('view');
       renderQuestionBankList();
       document.getElementById('questionBankModal').classList.remove('hidden');
     }
 
     window.closeQuestionBankModal = function() {
       document.getElementById('questionBankModal').classList.add('hidden');
+    }
+
+    window.switchQbTab = function(tab) {
+      const tabView = document.getElementById('qb-tab-view');
+      const tabAdd = document.getElementById('qb-tab-add');
+      const panelView = document.getElementById('qb-panel-view');
+      const panelAdd = document.getElementById('qb-panel-add');
+
+      if (tab === 'view') {
+        tabView.classList.add('active');
+        tabAdd.classList.remove('active');
+        panelView.classList.remove('hidden');
+        panelAdd.classList.add('hidden');
+      } else {
+        tabAdd.classList.add('active');
+        tabView.classList.remove('active');
+        panelAdd.classList.remove('hidden');
+        panelView.classList.add('hidden');
+      }
     }
 
     window.renderQuestionBankList = function() {
@@ -894,15 +1031,23 @@
 
       quizData.forEach((item, index) => {
         const div = document.createElement('div');
-        div.className = "p-3 bg-white border border-slate-200 rounded-xl flex items-start justify-between gap-2 shadow-sm";
+        div.className = "qb-question-card";
         div.innerHTML = `
           <div>
-            <div class="font-bold text-slate-800">ข้อที่ ${index + 1}: ${item.q}</div>
-            <div class="text-[11px] text-slate-500 mt-1">
-              ตัวเลือก: ${item.c.map((c, i) => `<span class="${i === item.a ? 'text-emerald-600 font-bold' : ''}">(${String.fromCharCode(65+i)}) ${c}</span>`).join(' | ')}
+            <div style="font-weight: 800; font-size: 13px; color: #0f172a; line-height: 1.4;">
+              ${index + 1}. ${item.q}
+            </div>
+            <div style="font-size: 12px; color: #64748b; margin-top: 6px; line-height: 1.5;">
+              ${item.c.map((c, i) => `
+                <div style="margin-bottom: 2px;">
+                  <span style="${i === item.a ? 'color: #059669; font-weight: 800; background: #ecfdf5; padding: 1px 6px; border-radius: 6px;' : ''}">
+                    (${String.fromCharCode(65+i)}) ${c} ${i === item.a ? '✓' : ''}
+                  </span>
+                </div>
+              `).join('')}
             </div>
           </div>
-          <button onclick="deleteQuestion(${item.id})" class="text-rose-500 hover:text-rose-700 font-bold px-2.5 py-1 bg-white border border-rose-200 rounded-lg shrink-0 cursor-pointer">ลบ</button>
+          <button onclick="deleteQuestion(${item.id})" class="qb-btn-delete">ลบ</button>
         `;
         listEl.appendChild(div);
       });
@@ -937,7 +1082,8 @@
       document.getElementById('new-q-a4').value = "";
 
       renderQuestionBankList();
-      showToast('➕ เพิ่มคำถามสำเร็จ!');
+      switchQbTab('view');
+      showToast('➕ บันทึกข้อสอบใหม่สำเร็จ!');
     }
 
     window.deleteQuestion = function(id) {
@@ -948,6 +1094,13 @@
       renderQuestionBankList();
       showToast('🗑️ ลบคำถามเรียบร้อย');
     }
+
+    // ฟังก์ชันให้ครูลบผู้เล่นออกจากห้องก่อนเริ่มเกม
+    window.kickPlayer = function(pid) {
+      if (!currentPin || !isHost) return;
+      remove(ref(db, `rooms/${currentPin}/players/${pid}`));
+      showToast('เตะผู้เล่นออกจากห้องแล้ว');
+    };
 
     window.onHostClick = function() {
       isHost = true;
@@ -980,8 +1133,8 @@
         list.innerHTML = "";
         keys.forEach(k => {
           const b = document.createElement('div');
-          b.className = 'badge';
-          b.innerText = allPlayersData[k].name;
+          b.className = 'badge-player';
+          b.innerHTML = `<span>${allPlayersData[k].name}</span><button class="badge-kick-btn" onclick="kickPlayer('${k}')">✕</button>`;
           list.appendChild(b);
         });
         document.getElementById('btn-start').disabled = keys.length === 0;
@@ -989,8 +1142,16 @@
       });
 
       onValue(ref(db, `rooms/${currentPin}/status`), (snap) => {
-        if (snap.val() === 'ended') {
+        const currentStatus = snap.val();
+        if (currentStatus === 'ended') {
           showFinalLeaderboard();
+        } else if (currentStatus === 'waiting' && !isHost) {
+          // หากครูกดเริ่มเกมใหม่ ให้พานักเรียนกลับมาหน้ารอ
+          isGameOver = false;
+          currentMeters = 0;
+          correctCount = 0;
+          wrongCount = 0;
+          switchScreen('view-waiting');
         }
       });
     };
@@ -1000,16 +1161,26 @@
       const initialEnergy = parseInt(document.getElementById('select-energy').value) || 5;
       const endTime = Date.now() + (minutes * 60 * 1000);
 
+      // รีเซ็ตค่าผู้เล่นทุกคนก่อนเริ่มรอบใหม่
+      const playerUpdates = {};
+      Object.keys(allPlayersData).forEach(pid => {
+        playerUpdates[`players/${pid}/height`] = 0;
+        playerUpdates[`players/${pid}/correct`] = 0;
+        playerUpdates[`players/${pid}/wrong`] = 0;
+      });
+
       await update(ref(db, `rooms/${currentPin}`), {
         status: 'playing',
         endTime: endTime,
-        initialEnergy: initialEnergy
+        initialEnergy: initialEnergy,
+        ...playerUpdates
       });
 
       document.getElementById('live-room-pin').innerText = currentPin;
       switchScreen('view-host-live');
 
-      const timerInt = setInterval(() => {
+      if (timerInterval) clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
         const remainSec = Math.max(0, Math.floor((endTime - Date.now()) / 1000));
         const formatted = formatTime(remainSec);
         document.getElementById('host-timer-text').innerText = formatted;
@@ -1019,24 +1190,48 @@
         }
 
         if (remainSec <= 0) {
-          clearInterval(timerInt);
+          clearInterval(timerInterval);
           update(ref(db, `rooms/${currentPin}`), { status: 'ended' });
         }
       }, 500);
     };
 
-    document.getElementById('btn-do-join').onclick = () => {
+    document.getElementById('btn-do-join').onclick = async () => {
       isHost = false;
       const pin = document.getElementById('input-pin').value.trim();
       const name = document.getElementById('input-name').value.trim();
       if (!pin || !name) return alert('กรุณากรอก PIN และชื่อ');
 
+      // ตรวจสอบห้องและสถานะ
+      const roomSnap = await get(ref(db, `rooms/${pin}`));
+      const room = roomSnap.val();
+      if (!room) return alert('ไม่พบห้องนี้');
+
+      // ตรวจสอบ: ไม่สามารถเข้าห้องได้ระหว่างเกมเริ่มแล้วหรือจบไปแล้ว
+      if (room.status !== 'waiting') {
+        return alert('⚠️ การแข่งขันเริ่มต้นไปแล้วหรือสิ้นสุดแล้ว ไม่สามารถเข้าร่วมได้ในขณะนี้');
+      }
+
+      // ตรวจสอบ: ชื่อผู้เล่นห้ามซ้ำกัน
+      const existingPlayers = room.players || {};
+      const isNameTaken = Object.values(existingPlayers).some(p => p.name.trim().toLowerCase() === name.toLowerCase());
+      if (isNameTaken) {
+        return alert('⚠️ ชื่อนี้มีผู้เล่นคนอื่นใช้ในห้องแล้ว กรุณาตั้งชื่อใหม่');
+      }
+
       playerName = name;
       myStyleIndex = Math.floor(Math.random() * SWEET_PALETTES.length);
 
       onValue(ref(db, `rooms/${pin}`), (snap) => {
-        const room = snap.val();
-        if (!room) return alert('ไม่พบห้องนี้');
+        const liveRoom = snap.val();
+        if (!liveRoom) return;
+
+        // หากถูกครูเตะออกจากห้อง
+        if (myPlayerId && liveRoom.players && !liveRoom.players[myPlayerId]) {
+          alert('คุณถูกผู้สอนนำออกจากห้อง');
+          location.reload();
+          return;
+        }
 
         if (!myPlayerId) {
           currentPin = pin;
@@ -1062,18 +1257,27 @@
           });
         }
 
-        if (room.status === 'playing' && !isGameOver && document.getElementById('game-wrapper').classList.contains('hidden')) {
-          energy = room.initialEnergy !== undefined ? room.initialEnergy : 5;
+        if (liveRoom.status === 'playing' && !isGameOver && document.getElementById('game-wrapper').classList.contains('hidden')) {
+          energy = liveRoom.initialEnergy !== undefined ? liveRoom.initialEnergy : 5;
           document.getElementById('ui-energy').innerText = energy;
 
           switchScreen('game-wrapper');
           initSweetPlatformer();
-          startPlayerTimer(room.endTime);
+          startPlayerTimer(liveRoom.endTime);
           startBackgroundMusic();
         }
 
-        if (room.status === 'ended' && !isGameOver) {
+        if (liveRoom.status === 'ended' && !isGameOver) {
           endGame();
+        }
+
+        if (liveRoom.status === 'waiting' && isGameOver) {
+          // รีเซ็ตเพื่อเตรียมเล่นรอบใหม่เมื่อครูกดเริ่มเกมใหม่
+          isGameOver = false;
+          currentMeters = 0;
+          correctCount = 0;
+          wrongCount = 0;
+          switchScreen('view-waiting');
         }
       });
     };
@@ -1132,6 +1336,19 @@
       if (energy > 0 && !isTrapped) document.getElementById('quiz-modal').classList.add('hidden');
     };
 
+    // ปุ่มเริ่มเกมใหม่: ครูจะกลับไปหน้าห้องควบคุม / เด็กจะกลับไปหน้ารอ
+    document.getElementById('btn-play-again').onclick = async () => {
+      if (isHost && currentPin) {
+        // รีเซ็ตสถานะห้องกลับเป็น waiting
+        await update(ref(db, `rooms/${currentPin}`), {
+          status: 'waiting'
+        });
+        switchScreen('view-host');
+      } else {
+        switchScreen('view-waiting');
+      }
+    };
+
     const urlParams = new URLSearchParams(window.location.search);
     const pinParam = urlParams.get('pin');
     if (pinParam) {
@@ -1158,20 +1375,20 @@
         const total = correct + wrong;
         const accuracy = total > 0 ? ((correct / total) * 100).toFixed(0) + "%" : "0%";
 
-        let badgeColor = "text-slate-300";
-        if (idx === 0) badgeColor = "text-amber-400 font-black";
-        else if (idx === 1) badgeColor = "text-slate-200 font-bold";
-        else if (idx === 2) badgeColor = "text-amber-600 font-bold";
+        let badgeColor = "color: #94a3b8;";
+        if (idx === 0) badgeColor = "color: #facc15; font-weight: 900;";
+        else if (idx === 1) badgeColor = "color: #e2e8f0; font-weight: bold;";
+        else if (idx === 2) badgeColor = "color: #d97706; font-weight: bold;";
 
         tbody.innerHTML += `
-          <tr class="hover:bg-slate-700/40 transition-all">
-            <td class="p-2.5 ${badgeColor}">#${idx + 1}</td>
-            <td class="p-2.5 font-bold text-white">${p.name}</td>
-            <td class="p-2.5 text-center font-mono font-bold text-cyan-400">${p.height || 0} m</td>
-            <td class="p-2.5 text-center font-bold text-emerald-400">${correct}</td>
-            <td class="p-2.5 text-center font-bold text-rose-400">${wrong}</td>
-            <td class="p-2.5 text-center text-slate-300">${accuracy}</td>
-            <td class="p-2.5 text-center font-bold text-amber-300">⚡ ${energy}</td>
+          <tr style="transition: background 0.15s;">
+            <td style="padding: 10px 8px; ${badgeColor}">#${idx + 1}</td>
+            <td style="padding: 10px 8px; font-weight: bold; color: white;">${p.name}</td>
+            <td style="padding: 10px 8px; text-align: center; font-family: monospace; font-weight: bold; color: #38bdf8;">${p.height || 0} m</td>
+            <td style="padding: 10px 8px; text-align: center; font-weight: bold; color: #34d399;">${correct}</td>
+            <td style="padding: 10px 8px; text-align: center; font-weight: bold; color: #fb7185;">${wrong}</td>
+            <td style="padding: 10px 8px; text-align: center; color: #cbd5e1;">${accuracy}</td>
+            <td style="padding: 10px 8px; text-align: center; font-weight: bold; color: #fde047;">⚡ ${energy}</td>
           </tr>
         `;
       });
@@ -1233,7 +1450,7 @@
           wrongItemsCount++;
           const div = document.createElement('div');
           div.className = "mb-1.5 pb-1.5 border-b border-slate-200";
-          div.innerHTML = `❌ <b>โจทย์:</b> ${q.q} <br><span class="text-rose-600 font-semibold">ตอบผิดไป ${stat.wrongAttempts} ครั้ง</span>`;
+          div.innerHTML = `❌ <b>โจทย์:</b> ${q.q} <br><span style="color: #e11d48; font-weight: 600;">ตอบผิดไป ${stat.wrongAttempts} ครั้ง</span>`;
           reviewBox.appendChild(div);
         }
       });
@@ -1909,11 +2126,9 @@
         const targetCamY = player.y - (H * 0.6);
         cameraY += (targetCamY - cameraY) * 0.12;
 
-        const currentMeters = Math.max(0, Math.floor(((canvas.height - 60) - (player.y + player.h)) / 6.5));
-        if (currentMeters > maxHeightMeters) {
-          maxHeightMeters = currentMeters;
-          document.getElementById('ui-height').innerText = maxHeightMeters;
-        }
+        // คำนวณความสูงตามพิกัดจริง (ถ้าตกลงมา ความสูงจะลดลงตามตัวละคร)
+        currentMeters = Math.max(0, Math.floor(((canvas.height - 60) - (player.y + player.h)) / 6.5));
+        document.getElementById('ui-height').innerText = currentMeters;
 
         const now = Date.now();
         if (now - lastNetworkSync > 110) {
@@ -1924,7 +2139,7 @@
               y: Math.round(player.y),
               facing: facing,
               styleIndex: myStyleIndex,
-              height: maxHeightMeters,
+              height: currentMeters, // ซิงค์ความสูงจริงตามที่ตกลงมา
               correct: correctCount,
               wrong: wrongCount,
               quizStats: myQuizAnswers
