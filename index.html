@@ -230,55 +230,59 @@
       height: 100%;
     }
 
+    /* ปรับแต่ง Top Bar ไม่ให้ไอคอนระยะทางขวาบนหลุดนอกขอบจอ */
     .game-top-bar {
       position: absolute;
-      top: env(safe-area-inset-top, 12px);
-      left: 12px;
-      right: 12px;
+      top: max(env(safe-area-inset-top), 10px);
+      left: max(env(safe-area-inset-left), 8px);
+      right: max(env(safe-area-inset-right), 8px);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 6px;
+      gap: 4px;
       z-index: 70;
       pointer-events: none;
+      max-width: calc(100vw - 16px);
     }
     .stat-pill {
       background: rgba(255, 255, 255, 0.95);
       border: 1.5px solid rgba(255, 117, 143, 0.4);
       backdrop-filter: blur(8px);
-      padding: 6px 12px;
-      border-radius: 20px;
+      padding: 5px 9px;
+      border-radius: 18px;
       font-weight: 800;
-      font-size: 13px;
+      font-size: 12px;
       color: #0f172a;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
       white-space: nowrap;
+      flex-shrink: 0;
     }
     .btn-top-quiz {
       background: linear-gradient(135deg, #ff758f, #ff4d6d);
       border: 1.5px solid #ffffff;
       color: white;
-      padding: 7px 14px;
-      border-radius: 20px;
+      padding: 6px 10px;
+      border-radius: 18px;
       font-weight: 900;
-      font-size: 13px;
+      font-size: 11px;
       cursor: pointer;
-      box-shadow: 0 4px 14px rgba(255, 77, 109, 0.4);
+      box-shadow: 0 3px 10px rgba(255, 77, 109, 0.4);
       pointer-events: auto;
       white-space: nowrap;
+      flex-shrink: 1;
     }
     .btn-music-toggle {
       background: rgba(255, 255, 255, 0.95);
       border: 1.5px solid #bae6fd;
-      border-radius: 20px;
-      padding: 6px 12px;
-      font-size: 14px;
+      border-radius: 18px;
+      padding: 5px 8px;
+      font-size: 13px;
       cursor: pointer;
       pointer-events: auto;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      flex-shrink: 0;
     }
 
-    /* แผงสัมผัสซ้าย-ขวา ปรับปรุงไอคอนปุ่มขวาสุดให้เต็มดวง ไม่ขาดขอบ */
     .controls-bar {
       position: absolute;
       bottom: max(env(safe-area-inset-bottom), 22px);
@@ -334,7 +338,7 @@
       width: 82px;
       height: 82px;
       border-radius: 50%;
-      background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+      background: linear-gradient(180deg, #34d399 0%, #10b981 100%);
       border: 4px solid #ffffff;
       color: #ffffff;
       display: flex;
@@ -813,7 +817,7 @@
       🌟 ยอดเยี่ยมมากทุกคน! ไม่ว่าจะอยู่อันดับไหน ความพยายามในการเรียนรู้และฝึกฝนในวันนี้คือพัฒนาการที่ดีเยี่ยม ก้าวต่อไปนะ! 💖
     </div>
 
-    <div style="font-weight: bold; font-size: 13px; color: #1e293b; text-align: left; margin-top: 10px;">📝 รายการข้อสอบที่ควรทบทวน (ตอบผิดซ้ำ):</div>
+    <div style="font-weight: bold; font-size: 13px; color: #1e293b; text-align: left; margin-top: 10px;">📝 รายการข้อสอบที่ควรทบทวน (รอบที่ 1):</div>
     <div id="student-error-review" class="error-review-box">
       กำลังประมวลผลสถิติ...
     </div>
@@ -896,7 +900,6 @@
     let currentMeters = 0;
     let correctCount = 0;
     let wrongCount = 0;
-    let currentQ = 0;
     let isGameOver = false;
     let timerInterval = null;
     let allPlayersData = {};
@@ -905,10 +908,26 @@
     let myStyleIndex = 0;
     let releaseFromTrapCallback = null;
 
-    let myQuizAnswers = {};
-    quizData.forEach(q => {
-      myQuizAnswers[q.id] = { correct: false, wrongAttempts: 0 };
-    });
+    let activeQuizQueue = [];
+    let currentQueueIdx = 0;
+    let currentQuizCycle = 1;
+
+    let myQuizAnswers = {
+      round1: {},
+      round2: {}
+    };
+
+    function initQuizCycleSystem() {
+      activeQuizQueue = [...quizData].sort(() => Math.random() - 0.5);
+      currentQueueIdx = 0;
+      currentQuizCycle = 1;
+      myQuizAnswers = { round1: {}, round2: {} };
+      quizData.forEach(q => {
+        myQuizAnswers.round1[q.id] = { correct: false, wrongAttempts: 0 };
+        myQuizAnswers.round2[q.id] = { correct: false, wrongAttempts: 0 };
+      });
+    }
+    initQuizCycleSystem();
 
     const smoothPositions = {};
 
@@ -1066,14 +1085,18 @@
       }
 
       const newId = quizData.length > 0 ? Math.max(...quizData.map(q => q.id)) + 1 : 1;
-      quizData.push({
+      const newQuestion = {
         id: newId,
         q: qText,
         c: [a1, a2, a3, a4],
         a: correctIdx
-      });
+      };
 
-      myQuizAnswers[newId] = { correct: false, wrongAttempts: 0 };
+      quizData.push(newQuestion);
+      activeQuizQueue.push(newQuestion);
+
+      if (!myQuizAnswers.round1[newId]) myQuizAnswers.round1[newId] = { correct: false, wrongAttempts: 0 };
+      if (!myQuizAnswers.round2[newId]) myQuizAnswers.round2[newId] = { correct: false, wrongAttempts: 0 };
 
       document.getElementById('new-q-text').value = "";
       document.getElementById('new-q-a1').value = "";
@@ -1091,11 +1114,11 @@
         return alert('ต้องมีข้อสอบอย่างน้อย 3 ข้อครับ');
       }
       quizData = quizData.filter(q => q.id !== id);
+      activeQuizQueue = activeQuizQueue.filter(q => q.id !== id);
       renderQuestionBankList();
       showToast('🗑️ ลบคำถามเรียบร้อย');
     }
 
-    // ฟังก์ชันให้ครูลบผู้เล่นออกจากห้องก่อนเริ่มเกม
     window.kickPlayer = function(pid) {
       if (!currentPin || !isHost) return;
       remove(ref(db, `rooms/${currentPin}/players/${pid}`));
@@ -1146,11 +1169,11 @@
         if (currentStatus === 'ended') {
           showFinalLeaderboard();
         } else if (currentStatus === 'waiting' && !isHost) {
-          // หากครูกดเริ่มเกมใหม่ ให้พานักเรียนกลับมาหน้ารอ
           isGameOver = false;
           currentMeters = 0;
           correctCount = 0;
           wrongCount = 0;
+          initQuizCycleSystem();
           switchScreen('view-waiting');
         }
       });
@@ -1161,7 +1184,6 @@
       const initialEnergy = parseInt(document.getElementById('select-energy').value) || 5;
       const endTime = Date.now() + (minutes * 60 * 1000);
 
-      // รีเซ็ตค่าผู้เล่นทุกคนก่อนเริ่มรอบใหม่
       const playerUpdates = {};
       Object.keys(allPlayersData).forEach(pid => {
         playerUpdates[`players/${pid}/height`] = 0;
@@ -1202,17 +1224,14 @@
       const name = document.getElementById('input-name').value.trim();
       if (!pin || !name) return alert('กรุณากรอก PIN และชื่อ');
 
-      // ตรวจสอบห้องและสถานะ
       const roomSnap = await get(ref(db, `rooms/${pin}`));
       const room = roomSnap.val();
       if (!room) return alert('ไม่พบห้องนี้');
 
-      // ตรวจสอบ: ไม่สามารถเข้าห้องได้ระหว่างเกมเริ่มแล้วหรือจบไปแล้ว
       if (room.status !== 'waiting') {
         return alert('⚠️ การแข่งขันเริ่มต้นไปแล้วหรือสิ้นสุดแล้ว ไม่สามารถเข้าร่วมได้ในขณะนี้');
       }
 
-      // ตรวจสอบ: ชื่อผู้เล่นห้ามซ้ำกัน
       const existingPlayers = room.players || {};
       const isNameTaken = Object.values(existingPlayers).some(p => p.name.trim().toLowerCase() === name.toLowerCase());
       if (isNameTaken) {
@@ -1226,7 +1245,6 @@
         const liveRoom = snap.val();
         if (!liveRoom) return;
 
-        // หากถูกครูเตะออกจากห้อง
         if (myPlayerId && liveRoom.players && !liveRoom.players[myPlayerId]) {
           alert('คุณถูกผู้สอนนำออกจากห้อง');
           location.reload();
@@ -1272,11 +1290,11 @@
         }
 
         if (liveRoom.status === 'waiting' && isGameOver) {
-          // รีเซ็ตเพื่อเตรียมเล่นรอบใหม่เมื่อครูกดเริ่มเกมใหม่
           isGameOver = false;
           currentMeters = 0;
           correctCount = 0;
           wrongCount = 0;
+          initQuizCycleSystem();
           switchScreen('view-waiting');
         }
       });
@@ -1291,9 +1309,13 @@
       if (sorted.length === 0) return alert('ไม่มีข้อมูลคะแนน');
 
       let csvContent = "\uFEFF";
-      let header = "อันดับ,ชื่อผู้เล่น,ความสูงสูงสุด (เมตร),ตอบถูกรวม (ข้อ),ตอบผิดรวม (ข้อ),ความแม่นยำ (%)";
+      let header = "อันดับ,ชื่อผู้เล่น,ความสูงสูงสุด (เมตร),ตอบถูกรวมในเกม,ตอบผิดรวมในเกม,ความแม่นยำรวม (%)";
+      
       quizData.forEach((q, idx) => {
-        header += `,ข้อ ${idx+1} (ผล/ผิดกี่ครั้ง)`;
+        header += `,ข้อ ${idx+1} [รอบที่ 1-สอบจริง]`;
+      });
+      quizData.forEach((q, idx) => {
+        header += `,ข้อ ${idx+1} [รอบที่ 2-วนซ้ำ]`;
       });
       csvContent += header + "\n";
 
@@ -1306,17 +1328,32 @@
         
         let row = `${idx + 1},${safeName},${p.height || 0},${correct},${wrong},${accuracy}%`;
 
-        const pStats = p.quizStats || {};
+        const pStats = p.quizStats || { round1: {}, round2: {} };
+        const r1 = pStats.round1 || {};
+        const r2 = pStats.round2 || {};
+
         quizData.forEach(q => {
-          const qStat = pStats[q.id] || { correct: false, wrongAttempts: 0 };
+          const qStat = r1[q.id] || { correct: false, wrongAttempts: 0 };
           let resText = "";
           if (qStat.correct) {
             resText = qStat.wrongAttempts > 0 ? `ผ่าน (ผิด ${qStat.wrongAttempts} ครั้ง)` : "ถูกครั้งแรก";
           } else {
-            resText = qStat.wrongAttempts > 0 ? `ยังไม่ผ่าน (ผิด ${qStat.wrongAttempts} ครั้ง)` : "ยังไม่ได้ตอบ";
+            resText = qStat.wrongAttempts > 0 ? `ยังไม่ผ่าน (ผิด ${qStat.wrongAttempts} ครั้ง)` : "ยังไม่ได้ทำ";
           }
           row += `,"${resText}"`;
         });
+
+        quizData.forEach(q => {
+          const qStat = r2[q.id] || { correct: false, wrongAttempts: 0 };
+          let resText = "";
+          if (qStat.correct) {
+            resText = qStat.wrongAttempts > 0 ? `ผ่าน (ผิด ${qStat.wrongAttempts} ครั้ง)` : "ถูกครั้งแรก";
+          } else {
+            resText = qStat.wrongAttempts > 0 ? `ยังไม่ผ่าน (ผิด ${qStat.wrongAttempts} ครั้ง)` : "ไม่มีการวนถึง";
+          }
+          row += `,"${resText}"`;
+        });
+
         csvContent += row + "\n";
       });
 
@@ -1324,7 +1361,7 @@
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.setAttribute("href", url);
-      link.setAttribute("download", `คะแนนเกม_พร้อมสถิติรายข้อ_${currentPin || 'SweetWord'}.csv`);
+      link.setAttribute("download", `รายงานผลคะแนน_แยกสอบรอบ1และ2_${currentPin || 'SweetWord'}.csv`);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -1336,10 +1373,8 @@
       if (energy > 0 && !isTrapped) document.getElementById('quiz-modal').classList.add('hidden');
     };
 
-    // ปุ่มเริ่มเกมใหม่: ครูจะกลับไปหน้าห้องควบคุม / เด็กจะกลับไปหน้ารอ
     document.getElementById('btn-play-again').onclick = async () => {
       if (isHost && currentPin) {
-        // รีเซ็ตสถานะห้องกลับเป็น waiting
         await update(ref(db, `rooms/${currentPin}`), {
           status: 'waiting'
         });
@@ -1445,18 +1480,18 @@
       let wrongItemsCount = 0;
 
       quizData.forEach((q) => {
-        const stat = myQuizAnswers[q.id] || { correct: false, wrongAttempts: 0 };
+        const stat = (myQuizAnswers.round1 && myQuizAnswers.round1[q.id]) || { correct: false, wrongAttempts: 0 };
         if (stat.wrongAttempts > 0) {
           wrongItemsCount++;
           const div = document.createElement('div');
           div.className = "mb-1.5 pb-1.5 border-b border-slate-200";
-          div.innerHTML = `❌ <b>โจทย์:</b> ${q.q} <br><span style="color: #e11d48; font-weight: 600;">ตอบผิดไป ${stat.wrongAttempts} ครั้ง</span>`;
+          div.innerHTML = `❌ <b>โจทย์:</b> ${q.q} <br><span style="color: #e11d48; font-weight: 600;">(รอบทดสอบจริงตอบผิดไป ${stat.wrongAttempts} ครั้ง)</span>`;
           reviewBox.appendChild(div);
         }
       });
 
       if (wrongItemsCount === 0) {
-        reviewBox.innerHTML = "🎉 สุดยอดมาก! คุณตอบคำถามถูกต้องหมดทุกข้อโดยไม่มีข้อผิดพลาดเลย!";
+        reviewBox.innerHTML = "🎉 สุดยอดมาก! คุณตอบคำถามรอบที่ 1 ถูกต้องหมดทุกข้อโดยไม่มีข้อผิดพลาดเลย!";
       }
 
       const myRank = sorted.findIndex(p => p.name === playerName);
@@ -1482,8 +1517,8 @@
     function triggerQuizModal(fromTrap = false) {
       if (isGameOver) return;
       
-      const q = quizData[currentQ % quizData.length];
-      document.getElementById('quiz-q-text').innerText = q.q;
+      const q = activeQuizQueue[currentQueueIdx];
+      document.getElementById('quiz-q-text').innerText = `${q.q} (ข้อ ${currentQueueIdx + 1}/${activeQuizQueue.length})`;
       const list = document.getElementById('quiz-options-list');
       list.innerHTML = "";
 
@@ -1505,6 +1540,8 @@
         b.className = 'quiz-option';
         b.innerText = `${String.fromCharCode(65 + idx)}. ${choice}`;
         b.onclick = () => {
+          const currentTargetKey = currentQuizCycle === 1 ? 'round1' : 'round2';
+
           if (idx === q.a) {
             document.getElementById('quiz-modal').classList.add('hidden');
             if (fromTrap) {
@@ -1518,11 +1555,18 @@
               document.getElementById('ui-energy').innerText = energy;
               showToast('🎉 ถูกต้อง! +5 ⚡');
               
-              if (myQuizAnswers[q.id]) {
-                myQuizAnswers[q.id].correct = true;
+              if (myQuizAnswers[currentTargetKey] && myQuizAnswers[currentTargetKey][q.id]) {
+                myQuizAnswers[currentTargetKey][q.id].correct = true;
               }
             }
-            currentQ++;
+
+            currentQueueIdx++;
+            if (currentQueueIdx >= activeQuizQueue.length) {
+              currentQueueIdx = 0;
+              currentQuizCycle++;
+              activeQuizQueue = [...quizData].sort(() => Math.random() - 0.5);
+              showToast('✨ คุณทำข้อสอบรอบแรกครบทุกข้อแล้ว! เริ่มต้นรอบฝึกฝนต่อเนื่อง');
+            }
 
             if (currentPin && myPlayerId && !fromTrap) {
               update(ref(db, `rooms/${currentPin}/players/${myPlayerId}`), {
@@ -1532,11 +1576,11 @@
               });
             }
           } else {
-            showToast('❌ ผิด! เปลี่ยนคำถามใหม่ ลองตอบข้อนี้ดู');
+            showToast('❌ ผิด! สลับไปข้อใหม่ ลองตอบข้อนี้ดู');
             if (!fromTrap) {
               wrongCount += 1;
-              if (myQuizAnswers[q.id]) {
-                myQuizAnswers[q.id].wrongAttempts += 1;
+              if (myQuizAnswers[currentTargetKey] && myQuizAnswers[currentTargetKey][q.id]) {
+                myQuizAnswers[currentTargetKey][q.id].wrongAttempts += 1;
               }
               if (currentPin && myPlayerId) {
                 update(ref(db, `rooms/${currentPin}/players/${myPlayerId}`), {
@@ -1545,7 +1589,13 @@
                 });
               }
             }
-            currentQ++;
+
+            currentQueueIdx++;
+            if (currentQueueIdx >= activeQuizQueue.length) {
+              currentQueueIdx = 0;
+              currentQuizCycle++;
+              activeQuizQueue = [...quizData].sort(() => Math.random() - 0.5);
+            }
             triggerQuizModal(fromTrap);
           }
         };
@@ -2126,7 +2176,6 @@
         const targetCamY = player.y - (H * 0.6);
         cameraY += (targetCamY - cameraY) * 0.12;
 
-        // คำนวณความสูงตามพิกัดจริง (ถ้าตกลงมา ความสูงจะลดลงตามตัวละคร)
         currentMeters = Math.max(0, Math.floor(((canvas.height - 60) - (player.y + player.h)) / 6.5));
         document.getElementById('ui-height').innerText = currentMeters;
 
@@ -2139,7 +2188,7 @@
               y: Math.round(player.y),
               facing: facing,
               styleIndex: myStyleIndex,
-              height: currentMeters, // ซิงค์ความสูงจริงตามที่ตกลงมา
+              height: currentMeters,
               correct: correctCount,
               wrong: wrongCount,
               quizStats: myQuizAnswers
