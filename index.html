@@ -244,65 +244,73 @@
       height: 100%;
     }
 
-    /* แถบสถานะด้านบนเกม (Top Bar) */
+    /* แถบด้านบนของเกม ป้องกันการหลุดขอบบนมือถือ */
     .game-top-bar {
       position: absolute;
-      top: max(env(safe-area-inset-top, 8px), 8px);
-      left: max(env(safe-area-inset-left, 10px), 10px);
-      right: max(env(safe-area-inset-right, 10px), 10px);
+      top: max(env(safe-area-inset-top, 6px), 6px);
+      left: max(env(safe-area-inset-left, 6px), 6px);
+      right: max(env(safe-area-inset-right, 6px), 6px);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 8px;
+      gap: 4px;
       z-index: 70;
       pointer-events: none;
-      transition: all 0.3s ease;
+      width: calc(100% - max(env(safe-area-inset-left, 6px), 6px) - max(env(safe-area-inset-right, 6px), 6px));
+      box-sizing: border-box;
     }
     .stat-pill {
       background: rgba(255, 255, 255, 0.95);
       border: 1.5px solid rgba(255, 117, 143, 0.4);
       backdrop-filter: blur(8px);
-      padding: 6px 12px;
-      border-radius: 20px;
+      padding: 5px 8px;
+      border-radius: 16px;
       font-weight: 800;
-      font-size: 13px;
+      font-size: clamp(11px, 2.8vw, 13px);
       color: #0f172a;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+      box-shadow: 0 3px 8px rgba(0,0,0,0.06);
       white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      flex-shrink: 0;
     }
     .btn-top-quiz {
       background: linear-gradient(135deg, #ff758f, #ff4d6d);
       border: 1.5px solid #ffffff;
       color: white;
-      padding: 6px 14px;
-      border-radius: 20px;
+      padding: 5px 10px;
+      border-radius: 16px;
       font-weight: 900;
-      font-size: 13px;
+      font-size: clamp(11px, 2.8vw, 13px);
       cursor: pointer;
-      box-shadow: 0 4px 14px rgba(255, 77, 109, 0.4);
+      box-shadow: 0 4px 12px rgba(255, 77, 109, 0.4);
       pointer-events: auto;
       white-space: nowrap;
+      flex-shrink: 0;
     }
     .btn-music-toggle {
       background: rgba(255, 255, 255, 0.95);
       border: 1.5px solid #bae6fd;
-      border-radius: 20px;
-      padding: 6px 12px;
-      font-size: 14px;
+      border-radius: 16px;
+      padding: 5px 8px;
+      font-size: clamp(11px, 2.8vw, 13px);
       cursor: pointer;
       pointer-events: auto;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+      box-shadow: 0 3px 8px rgba(0,0,0,0.06);
+      white-space: nowrap;
+      flex-shrink: 0;
     }
 
-    /* ปรับแต่งความสวยงามเฉพาะหน้าจอ iPad และ Computer */
+    /* บนหน้าจอกว้าง (iPad / คอมพิวเตอร์) ปรับให้จัดกึ่งกลางและมีขนาดพอดี */
     @media (min-width: 768px) {
       .game-top-bar {
         top: 20px;
         left: 50%;
-        transform: translateX(-50%);
         right: auto;
+        transform: translateX(-50%);
         width: auto;
-        min-width: 680px;
+        min-width: 650px;
         background: rgba(255, 255, 255, 0.88);
         padding: 8px 18px;
         border-radius: 28px;
@@ -327,7 +335,7 @@
       }
     }
 
-    /* ปุ่มควบคุม Touch Pad (ปรับขนาดให้ใหญ่ขึ้น แตะติดง่าย) */
+    /* ปุ่มควบคุมขนาดใหญ่ขึ้น */
     .controls-bar {
       position: absolute;
       bottom: max(env(safe-area-inset-bottom, 12px), 16px);
@@ -751,7 +759,7 @@
     </div>
   </div>
 
-  <!-- 4. Modal คลังข้อสอบ (แก้ไข/เพิ่ม/ลบ) -->
+  <!-- 4. Modal คลังข้อสอบ -->
   <div id="questionBankModal" class="hidden">
     <div class="qb-modal-card">
       <div class="qb-header">
@@ -829,11 +837,12 @@
   <div id="game-wrapper" class="hidden">
     <canvas id="gameCanvas"></canvas>
 
+    <!-- ปรับปรุง Top Bar ไม่ให้ไอคอนหายบนจอมือถือ -->
     <div class="game-top-bar">
-      <div class="stat-pill">⚡ พลังงาน: <span id="ui-energy" style="color:#d97706;">5</span></div>
+      <div class="stat-pill">⚡ <span id="ui-energy" style="color:#d97706;">5</span></div>
       <button class="btn-top-quiz" id="btn-open-quiz">⚡ คำถาม (+5)</button>
-      <div class="stat-pill">⏱️ เวลา: <span id="ui-timer">00:00</span></div>
-      <div class="stat-pill">🎯 ความสูง: <span id="ui-height" style="color:#0284c7;">0</span>m</div>
+      <div class="stat-pill">⏱️ <span id="ui-timer">00:00</span></div>
+      <div class="stat-pill">🎯 <span id="ui-height" style="color:#0284c7;">0</span>m</div>
       <button class="btn-music-toggle" id="btn-toggle-music">🔊</button>
     </div>
 
@@ -905,7 +914,6 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // รหัสผ่านสำหรับครู เพื่อป้องกันเด็กเข้ามากดแก้ไขข้อสอบ
     const TEACHER_PASSWORD = "1234";
 
     const SWEET_PALETTES = [
