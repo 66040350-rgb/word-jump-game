@@ -174,7 +174,6 @@
     .badge-kick-btn:active { transform: scale(0.9); }
     .hidden { display: none !important; }
 
-    /* หน้าต่างป้อนรหัสผ่านคุณครู */
     #teacher-auth-modal {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -199,7 +198,6 @@
       color: #0f172a;
     }
 
-    /* หน้า Monitor ของครู */
     #view-host-live {
       position: fixed;
       top: 0; left: 0;
@@ -269,7 +267,6 @@
       height: 100%;
     }
 
-    /* แถบด้านบนของเกม: ตกแต่งขอบแคปซูลทั้งมือถือและแท็บเล็ต */
     .game-top-bar {
       position: absolute;
       top: max(env(safe-area-inset-top, 8px), 8px);
@@ -334,7 +331,6 @@
       flex-shrink: 0;
     }
 
-    /* บนหน้าจอกว้าง (iPad / คอมพิวเตอร์) */
     @media (min-width: 768px) {
       .game-top-bar {
         top: 20px;
@@ -361,7 +357,6 @@
       }
     }
 
-    /* ปุ่มควบคุมขนาดใหญ่ขึ้น */
     .controls-bar {
       position: absolute;
       bottom: max(env(safe-area-inset-bottom, 12px), 16px);
@@ -681,7 +676,6 @@
 
   <div id="toast-msg">แจ้งเตือน</div>
 
-  <!-- หน้าต่างยืนยันรหัสผ่านคุณครู (แทนที่ Prompt ธรรมดา) -->
   <div id="teacher-auth-modal" class="hidden">
     <div class="teacher-auth-card">
       <div style="font-size: 38px; margin-bottom: 6px;">👑</div>
@@ -697,7 +691,6 @@
     </div>
   </div>
 
-  <!-- 1. หน้าแรก -->
   <div id="view-mode" class="container">
     <h1>HUNTER CYBER MISSION</h1>
     <p style="color: #64748b; font-size:14px; margin-bottom: 20px;">เกมตอบคำถามชิงความสูง (Word Master)</p>
@@ -705,7 +698,6 @@
     <button class="btn" id="btn-mode-join" style="background:#475569;" onclick="switchScreen('view-join')">🎮 นักเรียน / ผู้เรียน (Join)</button>
   </div>
 
-  <!-- 2. โฮสต์สร้างห้อง -->
   <div id="view-host" class="container hidden">
     <h2>ห้องควบคุมโฮสต์</h2>
     <p style="margin-bottom:2px; font-size:13px; color:#64748b;">รหัสเข้าห้อง (Room PIN):</p>
@@ -743,7 +735,6 @@
     <button id="btn-start" class="btn btn-sweet-green" disabled>🚀 เริ่มการแข่งขัน</button>
   </div>
 
-  <!-- 3. หน้าจอหลักของ Host / Admin (Live Monitor) -->
   <div id="view-host-live" class="hidden">
     <div class="host-header-card">
       <div style="display: flex; align-items: center; gap: 10px;">
@@ -801,7 +792,6 @@
     </div>
   </div>
 
-  <!-- 4. Modal คลังข้อสอบ -->
   <div id="questionBankModal" class="hidden">
     <div class="qb-modal-card">
       <div class="qb-header">
@@ -858,7 +848,6 @@
     </div>
   </div>
 
-  <!-- 5. หน้าเข้าห้องผู้เรียน -->
   <div id="view-join" class="container hidden">
     <h2>เข้าสู่สมรภูมิขนมหวาน</h2>
     <input type="text" id="input-pin" placeholder="รหัสห้อง 6 หลัก" maxlength="6" inputmode="numeric">
@@ -867,7 +856,6 @@
     <button class="btn" style="background:#64748b; padding:10px;" onclick="switchScreen('view-mode')">ย้อนกลับ</button>
   </div>
 
-  <!-- 6. ผู้เรียนรอเริ่ม -->
   <div id="view-waiting" class="container hidden">
     <h2>ห้องเตรียมพร้อม</h2>
     <p>รหัสห้อง: <b id="wait-pin" style="color:#e01e37;"></b></p>
@@ -875,11 +863,9 @@
     <p style="color: #f59e0b; margin-top:16px; font-size:14px; font-weight:bold;">⏳ รอสัญญาณปล่อยตัวจากผู้สอน...</p>
   </div>
 
-  <!-- 7. หน้าจอเล่นเกม Canvas -->
   <div id="game-wrapper" class="hidden">
     <canvas id="gameCanvas"></canvas>
 
-    <!-- แถบด้านบนของเกม ปรับดีไซน์แคปซูลสวยงาม -->
     <div class="game-top-bar">
       <div class="stat-pill">⚡ <span id="ui-energy" style="color:#d97706;">5</span></div>
       <button class="btn-top-quiz" id="btn-open-quiz">⚡ คำถาม (+5)</button>
@@ -908,7 +894,6 @@
     </div>
   </div>
 
-  <!-- 8. สรุปผลการแข่งขัน -->
   <div id="view-result" class="container hidden">
     <h2 style="color:#d97706; margin-bottom:4px;">🏁 หมดเวลาการแข่งขัน!</h2>
     <p style="color:#64748b; font-size:12px; margin:0 0 6px 0;">ตารางสรุปคะแนนและสถิติการเรียนรู้</p>
@@ -958,7 +943,6 @@
 
     const TEACHER_PASSWORD = "1234";
 
-    // จัดการหน้าต่างเข้าสู่ระบบของคุณครู
     window.openTeacherModal = function() {
       document.getElementById('input-teacher-pwd').value = "";
       document.getElementById('teacher-auth-modal').classList.remove('hidden');
@@ -981,7 +965,6 @@
       }
     };
 
-    // รองรับการกด Enter ในช่องรหัสผ่าน
     document.getElementById('input-teacher-pwd').addEventListener('keyup', (e) => {
       if (e.key === 'Enter') verifyTeacherPassword();
     });
@@ -1020,7 +1003,7 @@
       { id: 20, q: "หากต้องการใส่หมายเลขหน้าให้กับเอกสาร ควรเลือกคำสั่งใด?", c: ["Insert → Page Number", "Home → Numbering", "Layout → Margins", "Review → Track Changes"], a: 0 }
     ];
 
-    quizData.sort(() => Math.random() - 0.5);
+    quizData.sort((a, b) => a.id - b.id);
 
     let currentPin = null;
     let myPlayerId = null;
@@ -1031,6 +1014,7 @@
     let correctCount = 0;
     let wrongCount = 0;
     let currentQ = 0;
+    let totalAnsweredCount = 0;
     let isGameOver = false;
     let timerInterval = null;
     let allPlayersData = {};
@@ -1041,7 +1025,7 @@
 
     let myQuizAnswers = {};
     quizData.forEach(q => {
-      myQuizAnswers[q.id] = { correct: false, wrongAttempts: 0 };
+      myQuizAnswers[q.id] = { firstResult: null };
     });
 
     const smoothPositions = {};
@@ -1218,7 +1202,7 @@
           c: [a1, a2, a3, a4],
           a: correctIdx
         });
-        myQuizAnswers[newId] = { correct: false, wrongAttempts: 0 };
+        myQuizAnswers[newId] = { firstResult: null };
         showToast('➕ บันทึกข้อสอบใหม่สำเร็จ!');
       }
 
@@ -1323,6 +1307,7 @@
           correctCount = 0;
           wrongCount = 0;
           currentQ = 0;
+          totalAnsweredCount = 0;
           switchScreen('view-waiting');
         }
       });
@@ -1333,7 +1318,7 @@
       const initialEnergy = parseInt(document.getElementById('select-energy').value) || 5;
       const endTime = Date.now() + (minutes * 60 * 1000);
 
-      quizData.sort(() => Math.random() - 0.5);
+      quizData.sort((a, b) => a.id - b.id);
 
       const playerUpdates = {};
       Object.keys(allPlayersData).forEach(pid => {
@@ -1446,6 +1431,7 @@
           correctCount = 0;
           wrongCount = 0;
           currentQ = 0;
+          totalAnsweredCount = 0;
           switchScreen('view-waiting');
         }
       });
@@ -1461,8 +1447,10 @@
 
       let csvContent = "\uFEFF";
       let header = "อันดับ,ชื่อผู้เล่น,ความสูงสูงสุด (เมตร),ตอบถูกรวม (ข้อ),ตอบผิดรวม (ข้อ),ความแม่นยำ (%)";
-      quizData.forEach((q, idx) => {
-        header += `,ข้อ ${idx+1} (ผล/ผิดกี่ครั้ง)`;
+      
+      const fixedQuizList = [...quizData].sort((a, b) => a.id - b.id);
+      fixedQuizList.forEach((q, idx) => {
+        header += `,ข้อ ${idx + 1}`;
       });
       csvContent += header + "\n";
 
@@ -1476,14 +1464,9 @@
         let row = `${idx + 1},${safeName},${p.height || 0},${correct},${wrong},${accuracy}%`;
 
         const pStats = p.quizStats || {};
-        quizData.forEach(q => {
-          const qStat = pStats[q.id] || { correct: false, wrongAttempts: 0 };
-          let resText = "";
-          if (qStat.correct) {
-            resText = qStat.wrongAttempts > 0 ? `ผ่าน (ผิด ${qStat.wrongAttempts} ครั้ง)` : "ถูกครั้งแรก";
-          } else {
-            resText = qStat.wrongAttempts > 0 ? `ยังไม่ผ่าน (ผิด ${qStat.wrongAttempts} ครั้ง)` : "ยังไม่ได้ตอบ";
-          }
+        fixedQuizList.forEach(q => {
+          const qStat = pStats[q.id] || { firstResult: null };
+          let resText = qStat.firstResult || "ยังไม่ได้ทำ";
           row += `,"${resText}"`;
         });
         csvContent += row + "\n";
@@ -1493,7 +1476,7 @@
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.setAttribute("href", url);
-      link.setAttribute("download", `คะแนนเกม_พร้อมสถิติรายข้อ_${currentPin || 'SweetWord'}.csv`);
+      link.setAttribute("download", `คะแนนเกม_ผลรอบแรก_${currentPin || 'SweetWord'}.csv`);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -1506,6 +1489,7 @@
     };
 
     document.getElementById('btn-play-again').onclick = async () => {
+      totalAnsweredCount = 0;
       if (isHost && currentPin) {
         await update(ref(db, `rooms/${currentPin}`), {
           status: 'waiting'
@@ -1624,12 +1608,12 @@
       let wrongItemsCount = 0;
 
       quizData.forEach((q) => {
-        const stat = myQuizAnswers[q.id] || { correct: false, wrongAttempts: 0 };
-        if (stat.wrongAttempts > 0) {
+        const stat = myQuizAnswers[q.id] || { firstResult: null };
+        if (stat.firstResult === 'ผิด') {
           wrongItemsCount++;
           const div = document.createElement('div');
           div.className = "mb-1.5 pb-1.5 border-b border-slate-200";
-          div.innerHTML = `❌ <b>โจทย์:</b> ${q.q} <br><span style="color: #e11d48; font-weight: 600;">ตอบผิดไป ${stat.wrongAttempts} ครั้ง</span>`;
+          div.innerHTML = `❌ <b>โจทย์:</b> ${q.q} <br><span style="color: #e11d48; font-weight: 600;">(รอบแรกตอบ: ผิด)</span>`;
           reviewBox.appendChild(div);
         }
       });
@@ -1684,7 +1668,20 @@
         b.className = 'quiz-option';
         b.innerText = `${String.fromCharCode(65 + idx)}. ${choice}`;
         b.onclick = () => {
-          if (idx === q.a) {
+          const isCorrect = (idx === q.a);
+
+          // นับและบันทึกลง Excel เฉพาะ 20 ข้อแรกเท่านั้น
+          if (totalAnsweredCount < 20) {
+            if (!myQuizAnswers[q.id]) {
+              myQuizAnswers[q.id] = { firstResult: null };
+            }
+            if (myQuizAnswers[q.id].firstResult === null) {
+              myQuizAnswers[q.id].firstResult = isCorrect ? 'ถูก' : 'ผิด';
+            }
+            totalAnsweredCount++;
+          }
+
+          if (isCorrect) {
             document.getElementById('quiz-modal').classList.add('hidden');
             if (fromTrap) {
               isTrapped = false;
@@ -1696,10 +1693,6 @@
               correctCount += 1;
               document.getElementById('ui-energy').innerText = energy;
               showToast('🎉 ถูกต้อง! +5 ⚡');
-              
-              if (myQuizAnswers[q.id]) {
-                myQuizAnswers[q.id].correct = true;
-              }
             }
             currentQ++;
 
@@ -1715,9 +1708,6 @@
             showToast('❌ ผิด! ลองตอบข้อนี้ดู');
             if (!fromTrap) {
               wrongCount += 1;
-              if (myQuizAnswers[q.id]) {
-                myQuizAnswers[q.id].wrongAttempts += 1;
-              }
               if (currentPin && myPlayerId) {
                 update(ref(db, `rooms/${currentPin}/players/${myPlayerId}`), {
                   wrong: wrongCount,
